@@ -1,0 +1,16 @@
+# File Generate By android Studio
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+#File Generate By MacOS
+.DS_Store
+
+#File Gererate By IntellJ IDE
+*.iml
+BackEnd/.mvn
+BackEnd/.idea
+
+
