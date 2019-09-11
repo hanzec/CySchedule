@@ -19,6 +19,7 @@ public class AccountServiceProvider implements AuthenticationProvider {
     public AccountServiceProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
+
     @Override
     public Authentication authenticate(Authentication authenticate) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token
