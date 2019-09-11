@@ -1,8 +1,11 @@
 package edu.iastate.coms309.springbootexperiment.controller;
 
+import jdk.vm.ci.meta.Value;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
@@ -12,6 +15,13 @@ public class WebPageController {
     public String index(Model model){
 
         return "index";
+    }
+
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String webPageLogin(@RequestAttribute(value = "username", required = true) String username,
+                               @RequestAttribute( value = "password", required = true) String password){
+
     }
 
 
