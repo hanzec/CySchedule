@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5e8c7d3b-ea27-407a-9a46-9a77384fbb9c" name="Default Changelist" comment="Fix">
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/dao/UserDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/auth/EmailPasswordAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/RedisConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/dao/TokenDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/Token.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SpringBootConfigure.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SpringBootConfigure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/service/AccountServiceProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/service/AccountServiceProvider.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,7 +33,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -77,7 +77,8 @@
       <workItem from="1568139593617" duration="1344000" />
       <workItem from="1568141107985" duration="6164000" />
       <workItem from="1568170508079" duration="2540000" />
-      <workItem from="1568182483094" duration="3293000" />
+      <workItem from="1568182483094" duration="3711000" />
+      <workItem from="1568186215362" duration="2488000" />
     </task>
     <servers />
   </component>
