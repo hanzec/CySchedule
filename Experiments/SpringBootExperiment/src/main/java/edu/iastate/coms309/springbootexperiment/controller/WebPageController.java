@@ -8,21 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class WebPageController {
-
-    @RequestMapping(value = "/index")
-    public String index(Model model){
-
-        return "index";
-    }
-
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String webPageLogin(@RequestAttribute(value = "username", required = true) String username,
-                               @RequestAttribute( value = "password", required = true) String password){
-
-    }
-
-
 }

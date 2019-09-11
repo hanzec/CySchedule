@@ -19,11 +19,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http.formLogin()// 表单登录  来身份认证
                 .loginPage("/login.html")// 自定义登录页面
-                .loginProcessingUrl("/authentication/form")// 自定义登录路径
                 .and()
                 .authorizeRequests()// 对请求授权
-                .antMatchers("/myLogin.html", "/authentication/require",
-                        "/authentication/form").permitAll()// 这些页面不需要身份认证,其他请求需要认证
+                .antMatchers("/login.html").permitAll()// 这些页面不需要身份认证,其他请求需要认证
                 .anyRequest() // 任何请求
                 .authenticated()//; // 都需要身份认证
                 .and()

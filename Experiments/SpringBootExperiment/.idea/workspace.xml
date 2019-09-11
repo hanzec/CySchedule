@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5e8c7d3b-ea27-407a-9a46-9a77384fbb9c" name="Default Changelist" comment="Fix">
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/auth/EmailPasswordAuthenticationFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/RedisConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/dao/TokenDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/Token.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/RestApiController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/register.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/SpringbootexperimentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/SpringbootExperimentApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/WebPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/WebPageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/login.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,8 +29,19 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
   <component name="ProjectId" id="1QcTODJ8ZTGWXWAksYVRG7S4OOL" />
   <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -55,7 +70,7 @@
   <component name="RunManager">
     <configuration name="SpringbootexperimentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="springbootexperiment" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="edu.iastate.coms309.springbootexperiment.SpringbootexperimentApplication" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="edu.iastate.coms309.springbootexperiment.SpringbootExperimentApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
