@@ -3,8 +3,7 @@ package edu.iastate.coms309.springbootexperiment.persistence.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
-import javax.management.relation.Role;
+
 
 @Entity
 @Table(name = "user_account")
@@ -21,10 +20,10 @@ public class User {
 
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-               joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "users_roles",
+//               joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+//               inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+//    private Collection<Role> roles;
 
 }

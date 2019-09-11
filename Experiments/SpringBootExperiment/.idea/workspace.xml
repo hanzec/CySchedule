@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5e8c7d3b-ea27-407a-9a46-9a77384fbb9c" name="Default Changelist" comment="Fix">
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/RestApiController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/register.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/SpringbootexperimentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/SpringbootExperimentApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SecurityConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/WebPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/WebPageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/service/AccountServiceProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/service/AccountServiceProvider.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/login.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,7 +44,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -94,6 +90,7 @@
       <workItem from="1568170508079" duration="2540000" />
       <workItem from="1568182483094" duration="3711000" />
       <workItem from="1568186215362" duration="2488000" />
+      <workItem from="1568233500471" duration="539000" />
     </task>
     <servers />
   </component>
