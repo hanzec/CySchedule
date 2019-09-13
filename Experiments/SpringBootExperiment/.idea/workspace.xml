@@ -2,12 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5e8c7d3b-ea27-407a-9a46-9a77384fbb9c" name="Default Changelist" comment="Fix">
-      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/UserRole.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetail.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/account/UserDetailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/configure/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/WebPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/controller/WebPageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/dao/TokenDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/dao/UserDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/persistence/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/service/AccountServiceProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/iastate/coms309/springbootexperiment/service/AccountServiceProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

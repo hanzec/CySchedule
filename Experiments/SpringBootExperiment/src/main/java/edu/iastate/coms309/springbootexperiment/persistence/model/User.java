@@ -3,6 +3,8 @@ package edu.iastate.coms309.springbootexperiment.persistence.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -10,7 +12,7 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(name = "USERID",unique = true, nullable = false)
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String uuid;
 
@@ -20,10 +22,9 @@ public class User {
 
     private String lastName;
 
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(name = "users_roles",
-//               joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-//               inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-//    private Collection<Role> roles;
+    private boolean enabled;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<UserRole> authorities = new HashSet<>();
 
 }
