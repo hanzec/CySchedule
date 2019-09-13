@@ -9,15 +9,15 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.iastate.coms309</groupId>
-    <artifactId>springbootexperiment</artifactId>
+    <artifactId>cyschedulebackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springbootexperiment</name>
-    <description>Demo project for Spring Boot</description>
+    <name>cyschedulebackend</name>
+    <description>Project for coms 309 f19 gruop yt_4</description>
 
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-        <start-class>edu.iastate.coms309.springbootexperiment.SpringbootExperimentApplication</start-class>
+        <start-class>edu.iastate.coms309.cyschedulebackend.CyScheduleBackendApplication</start-class>
     </properties>
 
     <dependencies>

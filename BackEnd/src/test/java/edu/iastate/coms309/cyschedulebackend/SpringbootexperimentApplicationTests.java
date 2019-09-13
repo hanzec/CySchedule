@@ -1,4 +1,4 @@
-package edu.iastate.coms309.springbootexperiment;
+package edu.iastate.coms309.cyschedulebackend;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

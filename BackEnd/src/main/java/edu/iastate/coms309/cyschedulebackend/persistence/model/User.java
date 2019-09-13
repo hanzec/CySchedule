@@ -1,4 +1,4 @@
-package edu.iastate.coms309.springbootexperiment.persistence.model;
+package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
