@@ -2,9 +2,16 @@ package edu.iastate.coms309.cyschedulebackend.persistence.dao;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 
+import java.util.List;
+
 public interface UserDAO {
 
-    Boolean addUser(User user);
+    User findByUserID(String UUID);
 
-    User findByEmail(String email);
+    List findByEmail(String email);
+
+    void deleteUser(String userID);
+
+    String createUser(String password, String firstName, String lastName, String email);
+
 }

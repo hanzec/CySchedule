@@ -1,4 +1,4 @@
-package edu.iastate.coms309.cyschedulebackend.configure;
+package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,4 +1,4 @@
-package edu.iastate.coms309.cyschedulebackend.service;
+package edu.iastate.coms309.cyschedulebackend.account;
 
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
