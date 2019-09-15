@@ -12,6 +12,8 @@ public interface UserDAO {
 
     void deleteUser(String userID);
 
-    String createUser(String password, String firstName, String lastName, String email);
+    Boolean checKEmail(String email);
+
+    String createUser(String password, String firstName, String lastName, String email, String username);
 
 }

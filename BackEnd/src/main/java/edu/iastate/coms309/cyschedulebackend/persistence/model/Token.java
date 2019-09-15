@@ -3,7 +3,7 @@ package edu.iastate.coms309.cyschedulebackend.persistence.model;
 public class Token {
     String token;
     
-    String tokenID;
+    String owner;
     
     long issueTime;
     

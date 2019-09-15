@@ -7,9 +7,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.iastate.coms309.cyschedulebackend.Utils.SecurityUtils;
-import org.springframework.beans.factory.annotation.Value;
-
 @Entity
 @Table(name = "user_account")
 public class User implements Serializable {
@@ -22,6 +19,8 @@ public class User implements Serializable {
     private String salt;
 
     private String email;
+
+    private String username;
 
     private String lastName;
 
@@ -52,7 +51,13 @@ public class User implements Serializable {
 
     public void setPassword(String password){this.password = password;}
 
+    public void setUsername(String username){this.username = username;}
+
     public void setFirstName(String firstName){this.firstName = firstName;}
 
     public void setRegisterTime(Long registerTime){this.registerTime = registerTime;}
+
+    public String rec (Integer[] array){
+        if (array)
+    }
 }

@@ -16,7 +16,7 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class UserDAOImpl implements UserDAO{
+public class UserDAOImpl implements UserDAO{
     /*
         Maybe a improve point
             - Session could reuse for whole class (2019-9-13)
@@ -30,13 +30,14 @@ public abstract class UserDAOImpl implements UserDAO{
     private Integer hashLength;
 
     @Override
-    public String createUser(String password, String firstName, String lastName, String email) {
+    public String createUser(String password, String firstName, String lastName, String email, String username) {
         Session session = sessionFactory.openSession();
 
         session.beginTransaction();
 
         User user = new User();
         user.setEmail(email);
+        user.setUsername(username);
         user.setLastName(lastName);
         user.setFirstName(firstName);
         user.setSalt(generateSalt());
@@ -82,6 +83,15 @@ public abstract class UserDAOImpl implements UserDAO{
         session.delete(session.get(User.class,userID));
 
         session.close();
+    }
+
+    @Override
+    public Boolean checKEmail(String email){
+        Session session = sessionFactory.openSession();
+
+        User user = (User) session.createQuery("from User where User.email = :userEmail")
+                                  .setParameter("userEmail",email).uniqueResult();
+        return user == null;
     }
 
     private String generateSalt(){
