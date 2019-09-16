@@ -27,6 +27,14 @@ public class UserToken implements Serializable{
 
     private String refreshPassword;
 
+    //Permission Part
+
+    private boolean isAllowRefresh = false;
+
+    private boolean isAllowAccessAPIs = false;
+
+    private boolean isAllowAuthentication = false;
+
     public UserToken(){ this.issueTime = System.currentTimeMillis() / 1000L; }
 
     public String getToken(){return this.token;}
@@ -42,6 +50,18 @@ public class UserToken implements Serializable{
     public void setToken(String token){this.token = token;}
 
     public void setOwner(User owner){this.owner = owner;}
+
+    public boolean isAllowRefresh(){return isAllowRefresh;}
+
+    public boolean isAllowAccessAPIs(){return isAllowAccessAPIs;}
+
+    public boolean isAllowAuthentication(){return isAllowAuthentication;}
+
+    public void  setAllowRefresh(){this.isAllowRefresh = true;}
+
+    public void  setAllowAccessAPIs(){this.isAllowAccessAPIs = true;}
+
+    public void setAllowAuthentication(){this.isAllowAuthentication = true;}
 
     public void setIssueTime(long issueTime){this.issueTime = issueTime; }
 

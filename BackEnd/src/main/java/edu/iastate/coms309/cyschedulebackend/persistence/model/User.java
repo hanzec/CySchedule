@@ -5,10 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "user_account",uniqueConstraints = {
@@ -27,8 +24,6 @@ public class User implements Serializable{
 
     @Column(name = "email")
     private String email;
-
-    private boolean enable;
 
     private String username;
 
@@ -52,13 +47,15 @@ public class User implements Serializable{
 
     public String getUserID(){return this.uuid;}
 
-    public void setSalt(String salt){this.salt = salt;}
+    public String getPassword(){return this.password;}
 
-    public boolean getEnableStatus(){return this.enable;}
+    public void setSalt(String salt){this.salt = salt;}
 
     public void setEmail(String email){this.email = email;}
 
-    public void setUserID(String userID){this.uuid = userID;}
+    public void addToken(UserToken token){this.userTokens.add(token);}
+
+    public List<UserToken> getUserToken(){return this.userTokens;}
 
     public void setLastName(String lastName){this.lastName = lastName;}
 

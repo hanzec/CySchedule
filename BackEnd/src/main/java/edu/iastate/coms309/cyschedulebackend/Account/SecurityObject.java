@@ -1,9 +1,12 @@
-package edu.iastate.coms309.cyschedulebackend.account;
+package edu.iastate.coms309.cyschedulebackend.Account;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SecurityObject implements org.springframework.security.core.userdetails.UserDetails {
 
@@ -11,8 +14,15 @@ public class SecurityObject implements org.springframework.security.core.userdet
     String enabled;
     String password;
 
-    public SecurityObject(User user){
+    Map<String, UserToken> userTokenMap;
 
+    public SecurityObject(User user){
+        this.userID = user.getUserID();
+        this.password = user.getPassword();
+        for (UserToken userToken : user.getUserToken()){
+            userTo
+
+        }
     }
 
 

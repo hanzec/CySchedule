@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.dao;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class UserDAOImpl implements UserDAO{
             - Session could reuse for whole class (2019-9-13)
                 * Problem may happened when this instance is closed without close session
             - After some operation my gen waste @ redis see updateEmail
+            - Cache may not accurate after delete user (2019-9-16)
 
      */
     @Autowired
@@ -96,7 +98,6 @@ public class UserDAOImpl implements UserDAO{
     @Override
     @Cacheable(value = "userid", key = "'user_id_'+#email")
     public String gerUserID(String email) { return this.findByEmail(email).getUserID(); }
-
 
     @Override
     @Cacheable(value = "salt", key = "'user_salt_'+#email")

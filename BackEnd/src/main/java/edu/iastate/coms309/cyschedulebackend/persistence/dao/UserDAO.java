@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.dao;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 
 import java.util.List;
 

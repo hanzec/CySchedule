@@ -3,17 +3,17 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 
 public interface TokenDAO {
 
-    public UserToken getToken(String Token);
+    public UserToken generateToken(String userID);
 
-    public UserToken refreshToken(String token);
+    public boolean isExpired(String token, String userID);
 
-    public UserToken generateAuthToken(String userID);
+    public UserToken getToken(String token, String userID);
 
-    public UserToken generateAccessToken(String userID, TokenType type);
+    public UserToken refreshToken(String token, String userID);
 
-    public boolean isValid(String token, String userID);
+    public void grantTokenPermission(String userID, String token, TokenRight tokenRight);
 
-    public enum TokenType{
-        ACCESS_TOKEN, AUTH_TOKEN
+    public enum TokenRight{
+        Refresh, AccessAPIs,Authentication
     }
 }
