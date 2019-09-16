@@ -1,48 +1,60 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+import ch.qos.logback.classic.db.names.ColumnName;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import edu.iastate.coms309.cyschedulebackend.Utils.SecurityUtils;
-import org.springframework.beans.factory.annotation.Value;
-
 @Entity
-@Table(name = "user_account")
-public class User implements Serializable {
+@Table(name = "user_account",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "user_id")
+})
+public class User implements Serializable{
 
     @Id
-    @Column(name = "user_id",unique = true, nullable = false)
+    @Column(name = "user_id", nullable = false)
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String uuid;
 
+    @Column(name = "salt")
     private String salt;
 
+    @Column(name = "email")
     private String email;
+
+    private boolean enable;
+
+    private String username;
 
     private String lastName;
 
     private String password;
 
-    private boolean enabled;
-
     private String firstName;
 
     private Long registerTime;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<UserRole> authorities = new HashSet<>();
+    @Column(name = "role")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_account")
+    private List<UserRole> authorities = new ArrayList<>();
+
+    @Column(name = "owned_Token" )
+    @OneToMany(cascade = CascadeType.ALL,fetch=FetchType.LAZY,mappedBy = "user_account")
+    private List<UserToken> userTokens = new ArrayList<>();
 
     public String getSalt(){return this.salt;}
 
     public String getUserID(){return this.uuid;}
 
-    public void enablAccount(){this.enabled = true;}
-
     public void setSalt(String salt){this.salt = salt;}
+
+    public boolean getEnableStatus(){return this.enable;}
 
     public void setEmail(String email){this.email = email;}
 
@@ -51,6 +63,8 @@ public class User implements Serializable {
     public void setLastName(String lastName){this.lastName = lastName;}
 
     public void setPassword(String password){this.password = password;}
+
+    public void setUsername(String username){this.username = username;}
 
     public void setFirstName(String firstName){this.firstName = firstName;}
 

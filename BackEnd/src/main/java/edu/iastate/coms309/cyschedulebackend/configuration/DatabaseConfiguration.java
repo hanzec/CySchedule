@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 @Configuration
-public class HibernateConfiguration {
+public class DatabaseConfiguration {
 
     @Bean
     public SessionFactory sessionFactory(@Qualifier("entityManagerFactory") EntityManagerFactory emf){

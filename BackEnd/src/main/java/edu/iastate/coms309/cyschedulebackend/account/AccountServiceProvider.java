@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.account;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class AccountServiceProvider implements AuthenticationProvider {
     private UserDetailsService userDetailsService;
 
-    public AccountServiceProvider(UserDetailsService userDetailsService) {
+    public AccountServiceProvider(@Qualifier("") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

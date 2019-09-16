@@ -6,10 +6,11 @@ import javax.persistence.*;
 @Table(name ="user_role")
 public class UserRole {
     @Id
-    @Column(name = "AUTHORITY")
-    private String authority;
+    @Column(name = "role_id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Integer roleID;
 
     @ManyToOne
-    @JoinColumn(name = "USERID")
+    @JoinColumn(name = "user_id")
     private User user;
 }

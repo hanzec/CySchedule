@@ -1,0 +1,53 @@
+package edu.iastate.coms309.cyschedulebackend.account;
+
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
+
+public class SecurityObject implements org.springframework.security.core.userdetails.UserDetails {
+
+    String userID;
+    String enabled;
+    String password;
+
+    public SecurityObject(User user){
+
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+}
