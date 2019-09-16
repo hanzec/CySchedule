@@ -11,7 +11,6 @@ import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserDAO;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserDAOImpl;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -29,7 +28,7 @@ public class LoginController {
         String firstname = request.getParameter("firstname");
 
         //Trying to Register new Account to Server
-        if (userDAO.checKEmail(email)){
+        if (userDAO.checkEmail(email)){
             userDAO.createUser(password,firstname,lastname,email,username);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }else
@@ -41,12 +40,14 @@ public class LoginController {
 
         String email = request.getParameter("email");
 
-        if ()
-        Map<String,String> response = new HashMap<String,String>();
-        response.put("userID",userDAO.gerUserID(email));
-        response.put("userSalt",userDAO.getUserSalt(email));
-
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        if(userDAO.checkEmail(email))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else{
+            Map<String,String> response = new HashMap<String,String>();
+            response.put("userID",userDAO.gerUserID(email));
+            response.put("userSalt",userDAO.getUserSalt(email));
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
     }
 
 }

@@ -104,7 +104,7 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     @Cacheable(value = "isResisted", key = "'user_salt_'+#email")
-    public Boolean checkEmail(String email){
+    public boolean checkEmail(String email){
         Session session = sessionFactory.openSession();
 
         User user = (User) session.createQuery("from User where User.email = :userEmail")

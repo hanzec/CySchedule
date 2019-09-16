@@ -16,10 +16,9 @@ public interface UserDAO {
 
     String getUserSalt(String email);
 
-    Boolean checkEmail(String email);
+    boolean checkEmail(String email);
 
     String updateEmail(String oldEmail,String newEmail);
 
     String createUser(String password, String firstName, String lastName, String email, String username);
-
 }

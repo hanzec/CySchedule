@@ -34,7 +34,10 @@ public class SpringbootSecurityConfiguration extends WebSecurityConfigurerAdapte
                 .loginPage("/login.html")// 自定义登录页面
                 .and()
                 .authorizeRequests()// 对请求授权
-                .antMatchers("/login.html").permitAll()// 这些页面不需要身份认证,其他请求需要认证
+                .antMatchers(new String[]{
+                        "/api/v1/getSalt",
+                        "/api/v1/register"
+                }).permitAll()// 这些页面不需要身份认证,其他请求需要认证
                 .anyRequest() // 任何请求
                 .authenticated()//; // 都需要身份认证
                 .and()
