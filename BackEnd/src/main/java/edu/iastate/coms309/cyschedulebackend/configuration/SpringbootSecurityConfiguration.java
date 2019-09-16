@@ -14,12 +14,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SpringbootSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final
     AuthenticationProvider authenticationProvider;
 
-    public SecurityConfiguration(AuthenticationProvider authenticationProvider) {
+    public SpringbootSecurityConfiguration(AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }
 

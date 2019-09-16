@@ -8,11 +8,17 @@ public interface UserDAO {
 
     User findByUserID(String UUID);
 
-    List findByEmail(String email);
+    User findByEmail(String email);
 
     void deleteUser(String userID);
 
-    Boolean checKEmail(String email);
+    String gerUserID(String email);
+
+    String getUserSalt(String email);
+
+    Boolean checkEmail(String email);
+
+    String updateEmail(String oldEmail,String newEmail);
 
     String createUser(String password, String firstName, String lastName, String email, String username);
 

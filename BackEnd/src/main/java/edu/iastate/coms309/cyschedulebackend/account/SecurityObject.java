@@ -1,10 +1,21 @@
 package edu.iastate.coms309.cyschedulebackend.account;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
+public class SecurityObject implements org.springframework.security.core.userdetails.UserDetails {
+
+    String userID;
+    String enabled;
+    String password;
+
+    public SecurityObject(User user){
+
+    }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

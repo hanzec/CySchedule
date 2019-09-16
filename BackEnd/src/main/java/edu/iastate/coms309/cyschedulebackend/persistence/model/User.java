@@ -20,13 +20,13 @@ public class User implements Serializable {
 
     private String email;
 
+    private boolean enable;
+
     private String username;
 
     private String lastName;
 
     private String password;
-
-    private boolean enabled;
 
     private String firstName;
 
@@ -39,9 +39,9 @@ public class User implements Serializable {
 
     public String getUserID(){return this.uuid;}
 
-    public void enablAccount(){this.enabled = true;}
-
     public void setSalt(String salt){this.salt = salt;}
+
+    public boolean getEnableStatus(){return this.enable;}
 
     public void setEmail(String email){this.email = email;}
 
@@ -56,8 +56,4 @@ public class User implements Serializable {
     public void setFirstName(String firstName){this.firstName = firstName;}
 
     public void setRegisterTime(Long registerTime){this.registerTime = registerTime;}
-
-    public String rec (Integer[] array){
-        if (array)
-    }
 }
