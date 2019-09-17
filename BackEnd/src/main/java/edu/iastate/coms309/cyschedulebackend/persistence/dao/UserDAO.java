@@ -1,23 +1,25 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.dao;
 
+
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 
-import java.util.List;
-
-public interface UserDAO {
-
-    User findByUserID(String UUID);
-
-    User findByEmail(String email);
+public interface UserDAO{
 
     void deleteUser(String userID);
 
     String gerUserID(String email);
 
+    boolean userExists(String email);
+
     String getUserSalt(String email);
 
-    boolean checkEmail(String email);
+    User loadUserByEmail(String email);
+
+    User loadUserByUserID(String userId);
+
+    String getPasswordByEmail(String email);
+
+    void changePassword(String userID, String password);
 
     String updateEmail(String oldEmail,String newEmail);
 
