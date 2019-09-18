@@ -1,10 +1,8 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-import edu.iastate.coms309.cyschedulebackend.Account.JwtRealm;
-import edu.iastate.coms309.cyschedulebackend.Account.Matcher.JwtMatcher;
-import edu.iastate.coms309.cyschedulebackend.Account.UserRealm;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import edu.iastate.coms309.cyschedulebackend.Security.Matcher.JwtMatcher;
+import edu.iastate.coms309.cyschedulebackend.Security.UserRealm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
@@ -21,26 +19,9 @@ public class ShiroConfiguration {
     }
 
     @Bean
-    public HashedCredentialsMatcher hashedCredentialsMatcher() {
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        //md5加密1次
-        hashedCredentialsMatcher.setHashAlgorithmName("md5");
-        hashedCredentialsMatcher.setHashIterations(1);
-        return hashedCredentialsMatcher;
-    }
-
-    @Bean
     public UserRealm userRealm() {
         UserRealm userRealm = new UserRealm();
-        userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return userRealm;
-    }
-
-    @Bean
-    public JwtRealm jwtRealm(){
-        JwtRealm jwtRealm = new JwtRealm();
-        jwtRealm.setCredentialsMatcher(new JwtMatcher());
-        return jwtRealm;
     }
 
     @Bean

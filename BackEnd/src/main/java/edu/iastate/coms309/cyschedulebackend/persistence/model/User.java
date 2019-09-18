@@ -1,6 +1,8 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 import lombok.Data;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,7 +15,7 @@ import java.util.*;
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "user_id")
 })
-public class User implements Serializable {
+public class User implements Serializable,AuthenticationInfo {
 
     @Id
     @Column(name = "user_id", nullable = false)
@@ -26,8 +28,6 @@ public class User implements Serializable {
     @Column(name = "email")
     private String email;
 
-    private String jwtKey;
-
     private String username;
 
     private String lastName;
@@ -38,15 +38,18 @@ public class User implements Serializable {
 
     private Long registerTime;
 
-    private boolean enableStatus;
-
-    private boolean lockedStatus;
-
-    private boolean expireStatus;
-
-    private boolean firstTimeUser;
 
     @Column(name = "role")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_account")
     private List<UserRole> authorities = new ArrayList<>();
+
+    @Override
+    public PrincipalCollection getPrincipals() {
+        return userID;
+    }
+
+    @Override
+    public Object getCredentials() {
+        return null;
+    }
 }
