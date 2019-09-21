@@ -1,4 +1,4 @@
-package utilities;
+package com.cs309.cychedule.utilities;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
