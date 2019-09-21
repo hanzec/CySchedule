@@ -3,4 +3,5 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="login_to_signup">New here? Sign up now!</string>
 </resources>

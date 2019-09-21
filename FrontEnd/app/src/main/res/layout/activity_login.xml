@@ -25,20 +25,20 @@
             android:layout_gravity="center_horizontal" />
 
 
-        <!--  Email Label -->
+        <!--  用户名/手机/邮箱 -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
+            <EditText android:id="@+id/input_userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:hint="Phone / E-mail " />
         </android.support.design.widget.TextInputLayout>
 
-        <!--  Password Label -->
+        <!--  密码 -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="No account? Sign up now!"
+            android:text="@string/login_to_signup"
             android:gravity="center"
             android:textSize="16dip"/>
 
