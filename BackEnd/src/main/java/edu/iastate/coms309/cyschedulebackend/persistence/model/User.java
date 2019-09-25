@@ -5,7 +5,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -49,4 +50,6 @@ public class User implements Serializable {
     @Column(name = "role")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_account")
     private List<UserRole> authorities = new ArrayList<>();
+
+
 }

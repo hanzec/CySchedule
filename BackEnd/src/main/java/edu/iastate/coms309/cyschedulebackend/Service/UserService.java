@@ -68,7 +68,8 @@ public class UserService implements UserDAO {
     public User loadUserByEmail(String email){
         Session session = sessionFactory.openSession();
 
-        User user = session.get(User.class,this.getUserID(email));
+        User user;
+        user = session.get(User.class,this.getUserID(email));
 
         session.close();
 
