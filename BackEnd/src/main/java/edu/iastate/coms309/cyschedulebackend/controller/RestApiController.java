@@ -41,18 +41,7 @@ public class RestApiController {
             return new ResponseEntity<>("Email alereay Used",HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping("/api/v1/token")
-    public ResponseEntity<?> getUserToken(HttpServletRequest request){
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        String combinedPassword = userService.getPasswordByEmail(email) + String.valueOf(System.currentTimeMillis()/60000);
-        if(password.equals(passwordUtil.generatePasswordPBKDF2(combinedPassword,userService.getUserSalt(email))))
-
-
-    }
-
-    @RequestMapping("/api/v1/{userid}/getSalt")
+    @RequestMapping("/api/v1/getSalt")
     public ResponseEntity<Map<String,String>> getSalt(HttpServletRequest request){
 
         String email = request.getParameter("email");
