@@ -6,11 +6,20 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PermissionService implements PermissionDao {
-    @Autowired
+import javax.persistence.EntityManagerFactory;
+
+public class PermissionService{
+
     SessionFactory sessionFactory;
 
-    @Override
+    @Autowired
+    public PermissionService(EntityManagerFactory factory) {
+        if(factory.unwrap(SessionFactory.class) == null){
+            throw new NullPointerException("factory is not a hibernate factory");
+        }
+        this.sessionFactory = factory.unwrap(SessionFactory.class);
+    }
+
     public void deletePermission(Permission permission) {
         Session session = sessionFactory.openSession();
 
@@ -19,7 +28,6 @@ public class PermissionService implements PermissionDao {
         session.close();
     }
 
-    @Override
     public Permission addPermission(String name, String description) {
         Session session = sessionFactory.openSession();
 

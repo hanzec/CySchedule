@@ -2,6 +2,8 @@ package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 
 import lombok.Data;
+
+import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 
@@ -14,16 +16,11 @@ public class UserRole{
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer roleID;
 
-    @ManyToMany
-    @JoinColumn(name = "user_role_to_id")
-    private Set<User> user;
-
     private String roleName;
 
     private String description;
 
-    @ManyToMany
-    @JoinColumn(name = "user_role_to_permission")
+    @OneToMany
     private Set<Permission> rolePermissions;
 
     @Override
