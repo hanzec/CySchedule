@@ -9,11 +9,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Data
 @Entity
+@Table(name = "BlockTable",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "tbID")
+})
 public class TimeBlock implements Serializable{
 
     @Id
-    @Column(name = "tbid", nullable = false)
+    @Column(name = "block_id", nullable = false)
+    @GenericGenerator(name = "tbid", strategy = "tbid2")
+    private int tbID ;
+
+
     private User master;
 
     private Date start;
