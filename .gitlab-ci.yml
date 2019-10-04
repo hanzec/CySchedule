@@ -9,7 +9,7 @@ build-server:
   stage: build
   script: 
   - cd ./BackEnd
-  - ./mvnw package
+  - mvn package
   artifacts:
     paths:
       - target/cyschedule-server.jar
@@ -17,6 +17,7 @@ build-server:
 production:
   stage: deploy
   script:
+  - rm -rf /opt/cyschedule/*.jar
   - mv target/cyschedule-server.jar /opt/cyschedule/
   - redis-cli FLUSHALL
   only:
