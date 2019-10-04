@@ -1,0 +1,23 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+  - chmod +x ./BackEnd/mvnw
+
+build-server:
+  stage: build
+  script: 
+  - cd ./BackEnd
+  - ./mvnw package
+  artifacts:
+    paths:
+      - target/cyschedule-server.jar
+
+production:
+  stage: deploy
+  script:
+  - mv target/cyschedule-server.jar /opt/cyschedule/
+  - redis-cli FLUSHALL
+  only:
+  - master
