@@ -66,6 +66,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!--jwt util-->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -76,7 +77,18 @@
             <artifactId>thymeleaf-extras-shiro</artifactId>
             <version>1.2.1</version>
         </dependency>
-
+        <!--encryption for application.properties-->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <!-- Include GSON dependency -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.4</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

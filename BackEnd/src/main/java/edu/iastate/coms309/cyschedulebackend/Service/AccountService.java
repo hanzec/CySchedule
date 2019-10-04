@@ -2,7 +2,9 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserDAO;
+import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserRoleDAO;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserRole;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 
 @Service
-public class UserService implements UserDAO {
+public class AccountService implements UserDAO {
     /*
         Maybe a improve point
             - Session could reuse for whole class (2019-9-13)
@@ -33,10 +35,14 @@ public class UserService implements UserDAO {
 
      */
     @Autowired
+    PasswordUtil passwordUtil;
+
+    @Autowired
     SessionFactory sessionFactory;
 
     @Autowired
-    PasswordUtil passwordUtil;
+    RedisTemplate<String,Object> redisTemplate;
+
 
     @Override
     public String createUser(String password, String firstName, String lastName, String email, String username) {
@@ -122,16 +128,54 @@ public class UserService implements UserDAO {
         return user == null;
     }
 
-    @Cacheable(value = "userid", key = "'user_id_'+#email")
+    @Cacheable(value = "userid", key = "'id_'+#email")
     public String getUserID(String email) { return this.loadUserByEmail(email).getUserID(); }
 
     @Override
-    @Cacheable(value = "salt", key = "'user_salt_'+#email")
+    @Cacheable(value = "salt", key = "'salt_'+#email")
     public String getUserSalt(String email) { return this.loadUserByEmail(email).getSalt(); }
+
+    @Override
+    @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
+    public String getJwtKey(String userID) {
+        User user = loadUserByUserID(userID);
+
+        if(user.getJwtKey() == null){
+            Session session=sessionFactory.openSession();
+
+            user.setJwtKey(passwordUtil.generateSalt());
+
+            session.beginTransaction();
+
+            session.update(user);
+
+            session.getTransaction().commit();
+
+            session.close();
+        }
+
+        return user.getJwtKey();
+    }
 
     @Override
     @Cacheable(value = "password", key = "'user_pass_'+#email")
     public String getPasswordByEmail(String email) { return this.loadUserByEmail(email).getPassword(); }
+
+    @Override
+    public void setUserRole(String userID, UserRole role) {
+        User user = loadUserByUserID(userID);
+        Session session=sessionFactory.openSession();
+
+        user.getUserRoles().add(role);
+
+        session.beginTransaction();
+
+        session.update(user);
+
+        session.getTransaction().commit();
+
+        session.close();
+    }
 
     @Override
     @CachePut(value = "userid", key = "'user_id_'+#newEmail")

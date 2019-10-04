@@ -18,10 +18,7 @@ public class ShiroSecurityConfiguration {
     }
 
     @Bean
-    public UserRealm userRealm() {
-        UserRealm userRealm = new UserRealm();
-        return userRealm;
-    }
+    public UserRealm userRealm() { return new UserRealm();}
 
     @Bean
     public DefaultWebSecurityManager securityManager() {
