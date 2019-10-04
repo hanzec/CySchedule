@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Configuration
 public class DatabaseConfiguration {
 
-    @Bean
+    @Bean("SqlSessionFactory")
     public SessionFactory sessionFactory(@Qualifier("entityManagerFactory") EntityManagerFactory emf){
         return emf.unwrap(SessionFactory.class);
     }

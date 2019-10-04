@@ -28,7 +28,7 @@ import java.util.Date;
 public class TimeBlockService implements  TimeBlockDAO{
 
     @Autowired
-            SessionFactory sessionFactory;
+    SessionFactory sessionFactory;
 
     @Override
     TimeBlock addnewBlock(User user, String act, String instruction, int type, Date start, Date end, boolean regular){
@@ -80,10 +80,10 @@ public class TimeBlockService implements  TimeBlockDAO{
     }
 
     @Override
-    public TimeBlock edittime(User user, String act, Date start, Date end){
+    public TimeBlock edittime(String act, Date start, Date end){
         Session session = sessionFactory.openSession();
 
-        TimeBlock tb = session.get(TimeBlock.class,user,act);
+        TimeBlock tb = session.get(TimeBlock.class,act);
         tb.editTime(start,end);
         session.update(tb);
 
@@ -92,10 +92,10 @@ public class TimeBlockService implements  TimeBlockDAO{
     }
 
     @Override
-    public TimeBlock editinst(User user, String act, String instruction){
+    public TimeBlock editinst(String act, String instruction){
         Session session = sessionFactory.openSession();
 
-        TimeBlock tb = session.get(TimeBlock.class,user,act);
+        TimeBlock tb = session.get(TimeBlock.class,act);
         tb.editinstruction(instruction);
         session.update(tb);
 
@@ -104,8 +104,13 @@ public class TimeBlockService implements  TimeBlockDAO{
     }
 
     @Override
-    public TimeBlock[] PullAllRecord(User user){
-        return null;
+    public TimeBlock[] PullAllRecord(User master){
+        Session session = sessionFactory.openSession();
+
+        TimeBlock TB[] = (TimeBlock) session.createQuery("from TimeBlock where TimeBlock.master = :master")
+                .setParameter("master",master);
+
+        return TB;
     }
 
 

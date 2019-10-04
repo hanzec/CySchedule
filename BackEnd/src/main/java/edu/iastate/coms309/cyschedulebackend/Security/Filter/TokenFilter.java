@@ -1,37 +1,37 @@
 package edu.iastate.coms309.cyschedulebackend.Security.Filter;
 
-import edu.iastate.coms309.cyschedulebackend.Security.TokenAT;
-import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-import org.apache.shiro.web.filter.AccessControlFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.Gson;
+import edu.iastate.coms309.cyschedulebackend.Utils.JwtTokenUtil;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 public class TokenFilter extends AccessControlFilter {
 
-
     @Autowired
-    private UserTokenService userTokenService;
+    Gson gson;
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request,
                                       ServletResponse response,
                                       Object mappedValue) throws Exception {
-
-        String userID = ((HttpServletRequest) request).getHeader("userID");
         String token = ((HttpServletRequest) request).getHeader("authorization");
 
-        if (token.isEmpty() || userID.isEmpty() )
+        if (token.isEmpty())
             return false;
+
         // 获取无状态Token
-        TokenAT accessToken = new TokenAT(token,userID);
+        UserToken userToken = JwtTokenUtil.JwtFromString(token);
 
         try {
             // 委托给Realm进行登录
-            getSubject(request, response).login(accessToken);
+            getSubject(request, response).login(userToken);
         } catch (Exception e) {
             return false;
         }
@@ -43,6 +43,9 @@ public class TokenFilter extends AccessControlFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request,
                                      ServletResponse response) throws Exception {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().print(gson.toJson(new Response().Unauthorized().send()));
         return false;
     }
 

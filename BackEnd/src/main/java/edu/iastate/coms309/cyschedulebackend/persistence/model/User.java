@@ -3,12 +3,14 @@ package edu.iastate.coms309.cyschedulebackend.persistence.model;
 import lombok.Data;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.hibernate.StaleStateException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -16,7 +18,7 @@ import java.util.List;
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "user_id")
 })
-public class User implements Serializable,AuthenticationInfo {
+public class User implements Serializable{
 
     @Id
     @Column(name = "user_id", nullable = false)
@@ -25,6 +27,9 @@ public class User implements Serializable,AuthenticationInfo {
 
     @Column(name = "salt")
     private String salt;
+
+    @Column(name = "jwt_key")
+    private String jwtKey;
 
     @Column(name = "email")
     private String email;
@@ -39,22 +44,8 @@ public class User implements Serializable,AuthenticationInfo {
 
     private Long registerTime;
 
-
     @Column(name = "role")
+    @JoinTable(name = "user_to_user_role_table")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_account")
-    private List<UserRole> authorities = new ArrayList<>();
-
-<<<<<<< HEAD
-
-=======
-    @Override
-    public PrincipalCollection getPrincipals() {
-        return userID;
-    }
-
-    @Override
-    public Object getCredentials() {
-        return null;
-    }
->>>>>>> 526f294a662aad248b89a200aa9c6948ceb9c735
+    private Set<UserRole> userRoles;
 }
