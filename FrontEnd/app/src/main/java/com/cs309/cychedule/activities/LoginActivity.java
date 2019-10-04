@@ -12,16 +12,31 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cs309.cychedule.R;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import utilities.userUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.cs309.cychedule.R;
+import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.userUtil;
 
 public class LoginActivity extends AppCompatActivity {
+
+    SessionManager sessionManager;
+    private static String URL_LOGIN = "http://coms-309-yt-4.misc.iastate.edu";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
@@ -35,11 +50,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        sessionManager = new SessionManager(this);
         
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
                 login();
             }
         });
@@ -72,10 +89,68 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String userName = _userNameText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String userName = _userNameText.getText().toString();
+        final String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
+
+        _loginButton.setVisibility(View.GONE);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try
+                        {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String success = jsonObject.getString("success");
+                            JSONArray jsonArray = jsonObject.getJSONArray("login");
+
+                            if (success.equals("1"))
+                            {
+                                for (int i = 0; i < jsonArray.length(); i ++)
+                                {
+                                    JSONObject object = jsonArray.getJSONObject(i);
+                                    String userName = object.getString("userName").trim();
+
+                                    sessionManager.createSession(userName);
+
+                                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                    intent.putExtra("userName", userName);
+                                    startActivity(intent);
+                                }
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            _loginButton.setVisibility(View.VISIBLE);
+                            Toast.makeText(LoginActivity.this, "Error " + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        _loginButton.setVisibility(View.VISIBLE);
+                        Toast.makeText(LoginActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("userName", userName);
+                params.put("password", password);
+                return params;
+            }
+        };
+
+        //RequestQueue requestQueue = Volley.newRequestQueue(this);
+        //requestQueue.add(stringRequest);
+
+        RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
+        Singleton.getInstance(this).addToRequestQueue(stringRequest);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
