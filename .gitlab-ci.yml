@@ -11,8 +11,11 @@ before_script:
     ##
     ## Add ssh keys and know hosts for scp
     ##
+    - echo "$DEPLOY_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - echo "$DEPLOY_SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
     - ssh-keyscan dev.hanzec.com >> ~/.ssh/known_hosts
-    - echo "$DEPLOY_SSH_KEY" >> ~/.ssh/authorized_keys
+    
+    ##
     ##
     ## Set correct file permission for these file
     - mkdir -p ~/.ssh
