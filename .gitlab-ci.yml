@@ -48,12 +48,7 @@ deploy-server:
   - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER
   
   ##
-  ## First stop the old service
-  ##
-  - sudo /bin/systemctl stop cyschedule-server
-  
-  ##
-  ##Delete the old file and 
+  ##Delete the old file and replace with new one
   ##
   - rm -rf /opt/cyschedule/cyschedule-server.jar
   - mv /opt/cyschedule-server/cyschedule-server-new.jar /opt/cyschedule/cyschedule-server.jar
