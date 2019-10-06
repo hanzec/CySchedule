@@ -1,23 +1,26 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+
 import lombok.Data;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import org.apache.shiro.authc.AuthenticationToken;
 
 @Data
 public class UserToken{
 
     private String token;
 
+    private String userID;
+
     private String refreshKey;
 
-    private String tokenSecret;
-
-
-    public UserToken(String token, String tokenSecret, String refreshKey){
+    public UserToken(String token,String userID){
         this.token = token;
+        this.userID = userID;
+        this.refreshKey = null;;
+    }
+
+    public UserToken(String token,String refreshKey,String userID){
+        this.token = token;
+        this.userID = userID;
         this.refreshKey = refreshKey;
-        this.tokenSecret = tokenSecret;
     }
 }

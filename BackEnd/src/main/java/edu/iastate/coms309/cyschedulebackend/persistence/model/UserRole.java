@@ -1,8 +1,13 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 
+import lombok.Data;
+
+import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name ="user_role")
 public class UserRole{
@@ -11,11 +16,13 @@ public class UserRole{
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer roleID;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String roleName;
 
-    String roleName;
+    private String description;
 
-    String description;
+    @OneToMany
+    private Set<Permission> rolePermissions;
+
+    @Override
+    public String toString(){ return roleName;}
 }

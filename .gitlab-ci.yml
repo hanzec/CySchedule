@@ -1,0 +1,51 @@
+stages:
+    - build
+    - deploy
+
+before_script:
+    ##
+    ## fix "Could not open a connection to your authentication agent."
+    ##
+    - ssh-agent bash
+    
+    ##
+    ## Add ssh keys and know hosts for scp
+    ##
+    - ssh-keyscan dev.hanzec.com >> ~/.ssh/known_hosts
+    - echo "$DEPLOY_SSH_KEY" >> ~/.ssh/authorized_keys
+    ##
+    ## Set correct file permission for these file
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - chmod 644 ~/.ssh/known_hosts
+
+
+uild-server:
+  stage: build
+  script: 
+  - cd ./BackEnd
+  - mvn -Dmaven.test.skip=true package
+  - mv BackEnd/target/cyschedule-server-*.jar BackEnd/target/cyschedule-server-new.jar 
+  artifacts:
+    paths:
+      - BackEnd/target/cyschedule-server-new.jar
+
+deploy-server:
+  stage: deploy
+  script:
+  ##
+  ## Copy exec file from runner to production server
+  ##
+  - scp BackEnd/target/cyschedule-server-new.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
+  
+  ##
+  ## Login to production server
+  ##
+  - ssh $$DEPLOY_SSH_USER@$$DEPLOY_SERVER
+  - rm -rf /opt/cyschedule/cyschedule-server.jar
+  - mv /opt/cyschedule/cyschedule-server-new.jar /opt/cyschedule/cyschedule-server.jar
+  - redis-cli FLUSHALL
+  only:
+  - master
+
+

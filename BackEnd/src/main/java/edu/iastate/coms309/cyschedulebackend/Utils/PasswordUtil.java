@@ -25,7 +25,7 @@ public class PasswordUtil {
             //User SecureRandom to avoid thread problem
             random = SecureRandom.getInstance("SHA1PRNG");
             random.nextBytes(randomTmp);
-            return Arrays.toString(randomTmp);
+            return ByteArrayUtil.ByteArrayToHex(randomTmp);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -38,7 +38,7 @@ public class PasswordUtil {
         spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), 65536, 128);
         try {
             factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            return Arrays.toString(factory.generateSecret(spec).getEncoded());
+            return ByteArrayUtil.ByteArrayToHex(factory.generateSecret(spec).getEncoded());
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }

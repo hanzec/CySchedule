@@ -9,7 +9,6 @@ import android.view.MenuItem;
 
 import com.cs309.cychedule.R;
 
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
