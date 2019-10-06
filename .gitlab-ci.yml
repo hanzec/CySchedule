@@ -1,6 +1,7 @@
 stages:
     - build
     - deploy
+    - release
 
 before_script:
     ##
@@ -24,25 +25,34 @@ build-server:
   script: 
   - cd ./BackEnd
   - mvn -Dmaven.test.skip=true package
-  - ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
   artifacts:
     paths:
-      - target/cyschedule-server.jar
+      - target/cyschedule-server-*.jar
 
 deploy-server:
   stage: deploy
   script:
-  ##
-  ## Copy exec file from runner to production server
-  ##
-  - scp target/cyschedule-server.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
+    ##
+    ## Copy exec file from runner to production server
+    ##
+  - scp target/cyschedule-server-*.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
   
   ##
   ## Login to production server
   ##
   - ssh $$DEPLOY_SSH_USER@$$DEPLOY_SERVER
   - rm -rf /opt/cyschedule/*.jar
-  - mv target/cyschedule-server.jar /opt/cyschedule/
+  - mv target/cyschedule-server-*.jar /opt/cyschedule/cyschedule-server.jar
   - redis-cli FLUSHALL
   only:
-  - master
+    - master
+
+release:
+  stage : release
+  only:
+    -master
+  release ：
+    name : $CI_PROJECT_NAME Release 1.0-$CI_COMMIT_SHORT_SHA
+    asserts:
+      - name: "jar file"
+      - path: target/cyschedule-server-*.jar
