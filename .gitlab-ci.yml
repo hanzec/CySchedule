@@ -25,10 +25,10 @@ uild-server:
   script: 
   - cd ./BackEnd
   - mvn -Dmaven.test.skip=true package
-  - mv target/cyschedule-server-*.jar target/cyschedule-server.jar 
-  artifacts:
+  - mv BackEnd/target/cyschedule-server-*.jar BackEnd/target/cyschedule-server-new.jar 
+  artifacts:new
     paths:
-      - target/cyschedule-server.jar
+      - BackEnd/target/cyschedule-server-new.jar
 
 deploy-server:
   stage: deploy
@@ -36,14 +36,14 @@ deploy-server:
   ##
   ## Copy exec file from runner to production server
   ##
-  - scp target/cyschedule-server.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
+  - scp BackEnd/target/cyschedule-server-new.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
   
   ##
   ## Login to production server
   ##
   - ssh $$DEPLOY_SSH_USER@$$DEPLOY_SERVER
-  - rm -rf /opt/cyschedule/*.jar
-  - mv target/cyschedule-server.jar /opt/cyschedule/cyschedule-server.jar
+  - rm -rf /opt/cyschedule/cyschedule-server.jar
+  - mv /opt/cyschedule/cyschedule-server-new.jar /opt/cyschedule/cyschedule-server.jar
   - redis-cli FLUSHALL
   only:
   - master
