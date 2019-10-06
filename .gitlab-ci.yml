@@ -1,7 +1,6 @@
 stages:
     - build
     - deploy
-    - release
 
 before_script:
     ##
@@ -46,13 +45,3 @@ deploy-server:
         - redis-cli FLUSHALL
     only:
         - master
-
-release:
-    stage : release
-    only:
-            -master
-    release:
-        name : Release 1.0
-        asserts:
-            - name: "jar file"
-            - path: target/cyschedule-server-*.jar
