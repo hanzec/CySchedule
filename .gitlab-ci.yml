@@ -26,7 +26,7 @@ uild-server:
   - cd ./BackEnd
   - mvn -Dmaven.test.skip=true package
   - mv BackEnd/target/cyschedule-server-*.jar BackEnd/target/cyschedule-server-new.jar 
-  artifacts:new
+  artifacts:
     paths:
       - BackEnd/target/cyschedule-server-new.jar
 
