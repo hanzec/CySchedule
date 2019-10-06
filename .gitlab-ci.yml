@@ -27,7 +27,7 @@ build_server:
         - mvn -Dmaven.test.skip=true package
      artifacts:
         paths:
-        - target/cyschedule-server-*.jar
+            - target/cyschedule-server-*.jar
 
 deploy_server:
     stage: deploy
