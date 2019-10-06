@@ -21,7 +21,7 @@ before_script:
     - chmod 644 ~/.ssh/known_hosts
 
 stage: build
-    script: 
+    script:
         - cd ./BackEnd
         - mvn -Dmaven.test.skip=true package
      artifacts:
