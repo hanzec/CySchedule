@@ -12,36 +12,40 @@ before_script:
     ## Add ssh keys and know hosts for scp
     ##
     - ssh-keyscan dev.hanzec.com >> ~/.ssh/known_hosts
-    - echo "$$DEPLOY_SSH_KEY" >> ~/.ssh/authorized_keys
+    - echo "$DEPLOY_SSH_KEY" >> ~/.ssh/authorized_keys
     ##
     ## Set correct file permission for these file
-    ##
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - chmod 644 ~/.ssh/known_hosts
 
-stage: build
-    script:
-        - cd ./BackEnd
-        - mvn -Dmaven.test.skip=true package
-     artifacts:
-        paths:
-            - target/cyschedule-server-*.jar
 
-deploy_server:
-    stage: deploy
-    script:
-        ##
-        ## Copy exec file from runner to production server
-        ##
-        - scp target/cyschedule-server-*.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
+uild-server:
+  stage: build
+  script: 
+  - cd ./BackEnd
+  - mvn -Dmaven.test.skip=true package
+  - ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
+  artifacts:
+    paths:
+      - target/cyschedule-server-*.jar
+
+deploy-server:
+  stage: deploy
+  script:
+  ##
+  ## Copy exec file from runner to production server
+  ##
+  - scp target/cyschedule-server-*.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
   
-        ##
-        ## Login to production server
-         ##
-        - ssh $$DEPLOY_SSH_USER@$$DEPLOY_SERVER
-        - rm -rf /opt/cyschedule/*.jar
-        - mv target/cyschedule-server-*.jar /opt/cyschedule/cyschedule-server.jar
-        - redis-cli FLUSHALL
-    only:
-        - master
+  ##
+  ## Login to production server
+  ##
+  - ssh $$DEPLOY_SSH_USER@$$DEPLOY_SERVER
+  - rm -rf /opt/cyschedule/*.jar
+  - mv target/cyschedule-server-*.jar /opt/cyschedule/cyschedule-server.jar
+  - redis-cli FLUSHALL
+  only:
+  - master
+
+
