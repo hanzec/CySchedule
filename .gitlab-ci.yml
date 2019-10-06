@@ -5,9 +5,14 @@ stages:
 before_script:
     ##
     ## create ssh folder
+    ##
     - mkdir ~/.ssh
     
     ##
+    ## fix "Could not open a connection to your authentication agent."
+    ##
+    - ssh-agent bash
+    
     ##
     ## Add ssh keys and know hosts for scp
     ##
