@@ -15,11 +15,12 @@ before_script:
     - echo "$DEPLOY_SSH_KEY" >> ~/.ssh/authorized_keys
     ##
     ## Set correct file permission for these file
+    ##
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - chmod 644 ~/.ssh/known_hosts
 
-build-server:
+build_server:
     stage: build
     script: 
         - cd ./BackEnd
@@ -28,7 +29,7 @@ build-server:
         paths:
         - target/cyschedule-server-*.jar
 
-deploy-server:
+deploy_server:
     stage: deploy
     script:
         ##
