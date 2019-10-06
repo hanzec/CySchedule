@@ -24,6 +24,7 @@ build-server:
   script: 
   - cd ./BackEnd
   - mvn -Dmaven.test.skip=true package
+  - tree -a .
   artifacts:
     paths:
       - target/cyschedule-server.jar
