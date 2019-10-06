@@ -28,7 +28,7 @@ uild-server:
   - mv target/cyschedule-server-*.jar target/cyschedule-server-new.jar 
   artifacts:
     paths:
-      - .target/cyschedule-server-new.jar
+      - target/cyschedule-server-new.jar
 
 deploy-server:
   stage: deploy
