@@ -20,8 +20,7 @@ before_script:
     - chmod 700 ~/.ssh
     - chmod 644 ~/.ssh/known_hosts
 
-build_server:
-    stage: build
+stage: build
     script: 
         - cd ./BackEnd
         - mvn -Dmaven.test.skip=true package
@@ -40,7 +39,7 @@ deploy_server:
         ##
         ## Login to production server
          ##
-        - ssh 4$DEPLOY_SSH_USER@4$DEPLOY_SERVER
+        - ssh $$DEPLOY_SSH_USER@$$DEPLOY_SERVER
         - rm -rf /opt/cyschedule/*.jar
         - mv target/cyschedule-server-*.jar /opt/cyschedule/cyschedule-server.jar
         - redis-cli FLUSHALL
