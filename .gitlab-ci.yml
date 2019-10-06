@@ -25,11 +25,10 @@ uild-server:
   script: 
   - cd ./BackEnd
   - mvn -Dmaven.test.skip=true package
-  - ls
-  - mv BackEnd/target/cyschedule-server-2.1.8.RELEASE.jar BackEnd/target/cyschedule-server-new.jar 
+  - mv target/cyschedule-server-*.jar target/cyschedule-server-new.jar 
   artifacts:
     paths:
-      - ./BackEnd/target/cyschedule-server-new.jar
+      - .target/cyschedule-server-new.jar
 
 deploy-server:
   stage: deploy
