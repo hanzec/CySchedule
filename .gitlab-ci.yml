@@ -52,7 +52,7 @@ release:
     only:
             -master
     release:
-        name : $CI_PROJECT_NAME Release 1.0-$CI_COMMIT_SHORT_SHA
+        name : Release 1.0
         asserts:
             - name: "jar file"
             - path: target/cyschedule-server-*.jar
