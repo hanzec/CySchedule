@@ -10,7 +10,6 @@
     </parent>
     <groupId>edu.iastate.coms309</groupId>
     <artifactId>cyschedule-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>cyschedule-server</name>
     <description>Project for coms 309 f19 team yt_4</description>
 
