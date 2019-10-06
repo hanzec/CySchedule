@@ -36,12 +36,12 @@ deploy-server:
   ##
   ## Copy exec file from runner to production server
   ##
-  - scp BackEnd/target/cyschedule-server-new.jar $$DEPLOY_SSH_USER@$$DEPLOY_SERVER:/opt/cyshedule-server
+  - scp BackEnd/target/cyschedule-server-new.jar $DEPLOY_SSH_USER@$DEPLOY_SERVER:/opt/cyshedule-server
   
   ##
   ## Login to production server
   ##
-  - ssh $$DEPLOY_SSH_USER@$$DEPLOY_SERVER
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER
   - rm -rf /opt/cyschedule/cyschedule-server.jar
   - mv /opt/cyschedule/cyschedule-server-new.jar /opt/cyschedule/cyschedule-server.jar
   - redis-cli FLUSHALL
