@@ -46,9 +46,27 @@ deploy-server:
   ## Login to production server
   ##
   - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER
+  
+  ##
+  ## First stop the old service
+  ##
+  - sudo /bin/systemctl stop cyschedule-server
+  
+  ##
+  ##Delete the old file and 
+  ##
   - rm -rf /opt/cyschedule/cyschedule-server.jar
-  - mv /opt/cyschedule/cyschedule-server-new.jar /opt/cyschedule/cyschedule-server.jar
+  - mv /opt/cyschedule-server/cyschedule-server-new.jar /opt/cyschedule/cyschedule-server.jar
+  
+  ##
+  ##Clean the old caches
+  ##
   - redis-cli FLUSHALL
+  
+  ##
+  ## Start the new server
+  ##
+  - sudo /bin/systemctl start cyschedule-server
   only:
   - master
 
