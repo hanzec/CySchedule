@@ -4,6 +4,11 @@ stages:
 
 before_script:
     ##
+    ## create ssh folder
+    - mkdir ~/.ssh
+    
+    ##
+    ##
     ## Add ssh keys and know hosts for scp
     ##
     - ssh-keyscan dev.hanzec.com >> ~/.ssh/known_hosts
