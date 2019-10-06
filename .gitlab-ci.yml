@@ -24,7 +24,7 @@ build-server:
   script: 
   - cd ./BackEnd
   - mvn -Dmaven.test.skip=true package
-  - tree -a .
+  - ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
   artifacts:
     paths:
       - target/cyschedule-server.jar
