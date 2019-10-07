@@ -50,7 +50,7 @@ deploy-server:
   ##
   ## Entering the working directory
   ##
-  - cd /opt/cyshedule-server
+  - cd /opt
   ##
   ##Delete the old file and replace with new one
   ##
