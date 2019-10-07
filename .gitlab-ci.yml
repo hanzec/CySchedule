@@ -48,10 +48,14 @@ deploy-server:
   - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER
   
   ##
+  ## Entering the working directory
+  ##
+  - cd /opt/cyshedule-server
+  ##
   ##Delete the old file and replace with new one
   ##
-  - rm -rf /opt/cyschedule/cyschedule-server.jar
-  - mv /opt/cyshedule-server/cyschedule-server-new.jar opt/cyshedule-server/cyschedule-server.jar
+  - rm -rf cyschedule-server.jar
+  - mv cyschedule-server-new.jar cyschedule-server.jar
   
   ##
   ##Clean the old caches
