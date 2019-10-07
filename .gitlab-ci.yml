@@ -45,7 +45,7 @@ deploy-server:
   ##
   ## Login to production server，Delete the old file and replace with new one
   ##
-  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt && rm -rf cyschedule-server.jar && mv cyschedule-server-new.jar cyschedule-server.jar"
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt/cyshedule-server && rm -rf cyschedule-server.jar && mv cyschedule-server-new.jar cyschedule-server.jar"
   
   
   ##
