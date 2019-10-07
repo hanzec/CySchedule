@@ -51,6 +51,7 @@ deploy-server:
   ## Entering the working directory
   ##
   - cd /opt
+  - ls -l
   ##
   ##Delete the old file and replace with new one
   ##
