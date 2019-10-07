@@ -43,30 +43,20 @@ deploy-server:
   - scp BackEnd/target/cyschedule-server-new.jar $DEPLOY_SSH_USER@$DEPLOY_SERVER:/opt/cyshedule-server
   
   ##
-  ## Login to production server
+  ## Login to production server，Delete the old file and replace with new one
   ##
-  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt && rm -rf cyschedule-server.jar && mv cyschedule-server-new.jar cyschedule-server.jar"
   
-  ##
-  ## Entering the working directory
-  ##
-  - cd /opt
-  - ls -l
-  ##
-  ##Delete the old file and replace with new one
-  ##
-  - rm -rf cyschedule-server.jar
-  - mv cyschedule-server-new.jar cyschedule-server.jar
   
   ##
   ##Clean the old caches
   ##
-  - redis-cli FLUSHALL
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "redis-cli FLUSHALL"
   
   ##
   ## Start the new server
   ##
-  - sudo /bin/systemctl start cyschedule-server
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "sudo /bin/systemctl start cyschedule-server"
   only:
   - master
 
