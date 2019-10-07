@@ -51,7 +51,7 @@ deploy-server:
   ##Delete the old file and replace with new one
   ##
   - rm -rf /opt/cyschedule/cyschedule-server.jar
-  - mv /opt/cyshedule-server/cyschedule-server-new.jar /opt/cyshedule-server/cyschedule-server.jar
+  - mv /opt/cyshedule-server/cyschedule-server-new.jar opt/cyshedule-server/cyschedule-server.jar
   
   ##
   ##Clean the old caches
