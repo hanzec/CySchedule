@@ -1,22 +1,36 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import java.io.Serializable;
+import java.util.Collection;
+
+import org.hibernate.annotations.NaturalId;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 @Data
 @Entity
-public class User implements Serializable{
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "user_id"
+        }),
+        @UniqueConstraint(columnNames = {
+                "email"
+        })
+})
+public class User implements UserDetails, Serializable{
 
     @Id
     @Column(name = "user_id")
-    private String userID ;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userID ;
 
+    @Email
+    @NaturalId
     private String email;
 
     private String salt;
@@ -37,28 +51,26 @@ public class User implements Serializable{
     @OneToMany(cascade = CascadeType.ALL)
     private Set<UserRole> userRoles;
 
-    @Override
-    public int hashCode() {
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * result + (email == null ? 0 : email.hashCode());
-        result = PRIME * result + (userID == null ? 0 : userID.hashCode());
-        return result;
+    public User(String password, String firstname, String lastname, String email, String username) {
+        this.email = email;
+        this.password = password;
+        this.lastName = lastname;
+        this.username = username;
+        this.firstName = firstname;
     }
 
-    /**
-     * 覆盖equals方法，必须要有
-     */
     @Override
-    public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null) return false;
-        if(!(obj instanceof User)) return false;
-        User objKey = (User) obj;
-        if(userID.equalsIgnoreCase(objKey.userID) &&
-                email.equalsIgnoreCase(objKey.email)) {
-            return true;
-        }
-        return false;
-    }
+    public boolean isEnabled() { return true; }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() { return userRoles; }
 }

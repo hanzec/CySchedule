@@ -65,7 +65,13 @@ public class Response {
         return this;
     }
 
-    public void addResponse(String key, Object value){ this.responseBody.put(key, value);}
+    public Response addResponse(String key, Object value){
+        this.responseBody.put(key, value);
+        return this;
+    }
 
-    public void addHeader(String key, String value){ this.responseHeader.put(key, value);}
+    public Response addHeader(String key, String value){
+        this.responseHeader.put(key, value);
+        return this;
+    }
 }

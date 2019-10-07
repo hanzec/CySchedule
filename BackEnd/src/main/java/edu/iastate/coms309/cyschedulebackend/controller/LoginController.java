@@ -4,6 +4,7 @@ import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class LoginController {
 
         User user = accountService.loadUserByEmail(username);
         if(user.getPassword().equals(password))
-            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
+            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID().toString()));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());
@@ -54,18 +55,17 @@ public class LoginController {
         String lastname = request.getParameter("lastname");
         String firstname = request.getParameter("firstname");
 
-
-        System.out.println("New user registered " + email + username + password + lastname + firstname);
-
         if(email.isEmpty() || username.isEmpty() || password.isEmpty()||lastname.isEmpty()||firstname.isEmpty())
             return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
         //Trying to Register new Account to Server
-        if (!accountService.userExists(email)){
-            accountService.createUser(password,firstname,lastname,email,username);
-            return response.send(request.getRequestURI()).Created();
-       }else
+        //Check email is correct
+        if (accountService.existsByEmail(email))
             return response.BadRequested("Email address already existed").send(request.getRequestURI());
+
+        Long userID = accountService.createUser(password,firstname,lastname,email,username);
+
+        return response.send(request.getRequestURI()).addHeader("Userid",userID.toString()).Created();
     }
 
     @RequestMapping("/getSalt")
@@ -74,7 +74,7 @@ public class LoginController {
 
         String email = request.getParameter("email");
 
-        if(accountService.userExists(email))
+        if(accountService.existsByEmail(email))
         {
             response.addResponse("userID", accountService.getUserID(email));
             response.addResponse("userSalt", accountService.getUserSalt(email));
