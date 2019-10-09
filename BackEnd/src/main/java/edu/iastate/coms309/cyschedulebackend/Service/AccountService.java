@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -43,6 +44,7 @@ public class AccountService implements UserDetailsService {
     @Autowired
     RedisTemplate<String,Object> redisTemplate;
 
+    @Transactional
     public Long createUser(String password, String firstName, String lastName, String email, String username) {
 
         // create new user object
@@ -58,21 +60,27 @@ public class AccountService implements UserDetailsService {
         return user.getUserID();
     }
 
+    @Transactional
     public boolean existsByEmail(String email){ return userRepository.existsByEmail(email);}
 
+    @Transactional
     @Cacheable(value = "userid", key = "'id_'+#email")
     public Long getUserID(String email) { return userRepository.findByEmail(email).getUserID(); }
 
+    @Transactional
     @Cacheable(value = "salt", key = "'salt_'+#email")
     public String getUserSalt(String email) { return userRepository.findByEmail(email).getSalt(); }
 
+    @Transactional
     @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
     public String getJwtKey(Long userID) { return userRepository.findByUserID(userID).getJwtKey(); }
 
+    @Transactional
     @Cacheable(value = "password", key = "'user_pass_'+#email")
     public String getPasswordByEmail(String email) { return userRepository.findByEmail(email).getPassword(); }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         if (userRepository.existsByEmail(s))
             return userRepository.findByEmail(s);

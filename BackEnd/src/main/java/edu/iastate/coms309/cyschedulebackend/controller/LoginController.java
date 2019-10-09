@@ -1,31 +1,25 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
-import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
-import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserRepository;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserDAO;
+import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class LoginController {
 
     @Autowired
-    AccountService accountService;
+    PasswordUtil passwordUtil;
 
     @Autowired
-    PasswordUtil passwordUtil;
+    AccountService accountService;
 
     @Autowired
     UserTokenService userTokenService;
