@@ -49,10 +49,10 @@ public class LoginController {
 
         //retire information from HTTP request
         String email = request.getParameter("email");
-        String username = request.getParameter("username");
+        String username = request.getParameter("userName");
         String password = request.getParameter("password");
-        String lastname = request.getParameter("lastname");
-        String firstname = request.getParameter("firstname");
+        String lastname = request.getParameter("lastName");
+        String firstname = request.getParameter("firstName");
 
 
         System.out.println("New user registered " + email + username + password + lastname + firstname);
