@@ -8,6 +8,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserDAO;
@@ -49,10 +50,10 @@ public class LoginController {
     }
 
     @RequestMapping("/register")
-    public Response register(User request){
+    public Response register( @RequestBody User user){
         Response response = new Response();
 
-        System.out.println(gson.toJson(request));
+        System.out.println(gson.toJson(user));
 //        //retire information from HTTP request
 //        String email = request.getParameter("email");
 //        String username = request.getParameter("userName");
@@ -71,7 +72,7 @@ public class LoginController {
 //            accountService.createUser(password,firstname,lastname,email,username);
 //            return response.send(request.getRequestURI()).Created();
 //       }else
-            return response.OK().send(gson.toJson(request));
+            return response.OK().send(gson.toJson(user));
     }
 
     @RequestMapping("/getSalt")
