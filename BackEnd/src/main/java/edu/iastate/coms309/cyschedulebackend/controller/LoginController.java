@@ -50,7 +50,7 @@ public class LoginController {
     }
 
     @RequestMapping("/register")
-    public Response register( @RequestBody User user){
+    public Response register(HttpServletRequest user){
         Response response = new Response();
 
         System.out.println(gson.toJson(user));
