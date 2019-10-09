@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
+import com.google.gson.Gson;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
@@ -19,6 +20,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class LoginController {
+
+    @Autowired
+    Gson gson;
 
     @Autowired
     AccountService accountService;
@@ -45,10 +49,10 @@ public class LoginController {
     }
 
     @RequestMapping("/register")
-    public Response register(String request){
+    public Response register(User request){
         Response response = new Response();
 
-        System.out.println(request);
+        System.out.println(gson.toJson(request));
 //        //retire information from HTTP request
 //        String email = request.getParameter("email");
 //        String username = request.getParameter("userName");
@@ -67,7 +71,7 @@ public class LoginController {
 //            accountService.createUser(password,firstname,lastname,email,username);
 //            return response.send(request.getRequestURI()).Created();
 //       }else
-            return response.BadRequested("Email address already existed").send(request);
+            return response.OK().send(gson.toJson(request));
     }
 
     @RequestMapping("/getSalt")
