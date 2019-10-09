@@ -30,18 +30,18 @@ public class LoginController {
     UserTokenService userTokenService;
 
     @RequestMapping("/login")
-    public Response login(String request){
+    public Response login(HttpServletRequest request){
         Response response = new Response();
-//        String username = request.getParameter("username");
-//        String password = request.getParameter("password");
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-        System.out.println("New user register" + request);
-//        User user = accountService.loadUserByEmail(username);
-//        if(user.getPassword().equals(password))
-//            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
-//        else
-//            response.Forbidden();
-        return response.send(request);
+        System.out.println("New user register" + username + "    " + password);
+        User user = accountService.loadUserByEmail(username);
+        if(user.getPassword().equals(password))
+            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
+        else
+            response.Forbidden();
+        return response.send(request.getRequestURI());
     }
 
     @RequestMapping("/register")
