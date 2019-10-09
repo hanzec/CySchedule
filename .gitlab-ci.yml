@@ -62,7 +62,7 @@ deploy-server:
   ##
   ## Start the new server
   ##
-  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt/cyshedule-server/ && ./exec_script.sh"
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt/cyshedule-server/ && ./exec_script.sh >> /dev/null"
   only:
   - master
 
