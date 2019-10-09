@@ -35,7 +35,7 @@ public class LoginController {
 //        String username = request.getParameter("username");
 //        String password = request.getParameter("password");
 
-        System.out.println("New user register" + request.getEmail());
+        System.out.println("New user register" + request.getEmail() + request.getLastName() + request.getFirstName());
 //        User user = accountService.loadUserByEmail(username);
 //        if(user.getPassword().equals(password))
 //            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
