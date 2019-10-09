@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 public class WebPageController {
 
     @RequestMapping("/test")
-    string test(String request){
+    String test(String request){
         return request;
     }
 
