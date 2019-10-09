@@ -53,7 +53,7 @@ public class LoginController {
     public Response register(HttpServletRequest user){
         Response response = new Response();
 
-        System.out.println(gson.toJson(user));
+        System.out.println(user.getRequestURI() + "\n" + user.getMethod() + "\n" + user.getHeaderNames().toString() + "\n" + user.getParameterMap().toString());
 //        //retire information from HTTP request
 //        String email = request.getParameter("email");
 //        String username = request.getParameter("userName");
