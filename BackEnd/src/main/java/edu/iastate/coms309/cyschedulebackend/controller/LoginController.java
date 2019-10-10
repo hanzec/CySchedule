@@ -53,7 +53,7 @@ public class LoginController {
     public Response register(HttpServletRequest user){
         Response response = new Response();
 
-        System.out.println(user.getRequestURI() + "\n" + user.getMethod() + "\n" + user.getHeaderNames().toString() + "\n" + user.getParameterMap().toString());
+        System.out.println(user.getRequestURI() + "\n" + user.getMethod() + "\n" + gson.toJson(user.getHeaderNames()) + "\n" + gson.toJson(user.getParameterMap()));
 //        //retire information from HTTP request
 //        String email = request.getParameter("email");
 //        String username = request.getParameter("userName");
@@ -72,7 +72,7 @@ public class LoginController {
 //            accountService.createUser(password,firstname,lastname,email,username);
 //            return response.send(request.getRequestURI()).Created();
 //       }else
-            return response.OK().send(gson.toJson(user));
+            return response.OK();
     }
 
     @RequestMapping("/getSalt")
