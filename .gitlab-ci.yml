@@ -1,0 +1,69 @@
+stages:
+    - build
+    - deploy
+
+before_script:
+    ##
+    ## fix "Could not open a connection to your authentication agent."
+    ##
+    - ssh-agent bash
+    
+    ##
+    ## Add ssh keys and know hosts for scp
+    ##
+    - echo "$DEPLOY_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - echo "$DEPLOY_SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
+    - ssh-keyscan dev.hanzec.com >> ~/.ssh/known_hosts
+    
+    ##
+    ##
+    ## Set correct file permission for these file
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - chmod 644 ~/.ssh/known_hosts
+    - chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa.pub  
+
+
+uild-server:
+  stage: build
+  script: 
+  - cd ./BackEnd
+  - mvn -Dmaven.test.skip=true package
+  - mv target/cyschedule-server-*.jar target/cyschedule-server-new.jar 
+  artifacts:
+    paths:
+      - BackEnd/target/cyschedule-server-new.jar
+
+deploy-server:
+  stage: deploy
+  only:
+    - master
+  script:
+  ##
+  ## Copy exec file from runner to production server
+  ##
+  - scp BackEnd/target/cyschedule-server-new.jar $DEPLOY_SSH_USER@$DEPLOY_SERVER:/opt/cyshedule-server
+  
+  ##
+  ## Login to production server，Delete the old file and replace with new one
+  ##
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt/cyshedule-server && rm -rf cyschedule-server.jar && mv cyschedule-server-new.jar cyschedule-server.jar"
+  
+  ##
+  ## Remove old logging file
+  ##
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "rm -rf /opt/cyshedule-server/nohup.out"
+  
+  ##
+  ##Clean the old caches
+  ##
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "redis-cli FLUSHALL"
+  
+  ##
+  ## Start the new server
+  ##
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt/cyshedule-server/ && ./exec_script.sh >> /dev/null"
+  only:
+  - master
+
+

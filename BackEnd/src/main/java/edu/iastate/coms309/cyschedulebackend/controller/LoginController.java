@@ -1,10 +1,14 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
+import com.google.gson.Gson;
+import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserDAO;
@@ -17,7 +21,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class LoginController {
-    UserDAO userDAO = new AccountService();
+
+    @Autowired
+    Gson gson;
 
     @Autowired
     AccountService accountService;
@@ -25,30 +31,48 @@ public class LoginController {
     @Autowired
     PasswordUtil passwordUtil;
 
+    @Autowired
+    UserTokenService userTokenService;
+
     @RequestMapping("/login")
     public Response login(HttpServletRequest request){
         Response response = new Response();
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-        return response;
+        System.out.println("New user register" + username + "    " + password);
+        User user = accountService.loadUserByEmail(username);
+        if(user.getPassword().equals(password))
+            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
+        else
+            response.Forbidden();
+        return response.send(request.getRequestURI());
     }
 
     @RequestMapping("/register")
-    public Response register(HttpServletRequest request){
+    public Response register(HttpServletRequest user){
         Response response = new Response();
 
-        //retire information from HTTP request
-        String email = request.getParameter("email");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String lastname = request.getParameter("lastname");
-        String firstname = request.getParameter("firstname");
-
-        //Trying to Register new Account to Server
-        if (accountService.userExists(email)){
-            accountService.createUser(password,firstname,lastname,email,username);
-            return response.send().Created();
-        }else
-            return response.BadRequested("Email address already existed").send();
+        System.out.println(user.getRequestURI() + "\n" + user.getMethod() + "\n" + gson.toJson(user.getParameterMap()));
+//        //retire information from HTTP request
+//        String email = request.getParameter("email");
+//        String username = request.getParameter("userName");
+//        String password = request.getParameter("password");
+//        String lastname = request.getParameter("lastName");
+//        String firstname = request.getParameter("firstName");
+//
+//
+//        System.out.println("New user registered " + email + username + password + lastname + firstname);
+//
+//        if(email.isEmpty() || username.isEmpty() || password.isEmpty()||lastname.isEmpty()||firstname.isEmpty())
+//            return response.send(request.getRequestURI()).BadRequested("Information is not enough");
+//
+//        //Trying to Register new Account to Server
+//        if (!accountService.userExists(email)){
+//            accountService.createUser(password,firstname,lastname,email,username);
+//            return response.send(request.getRequestURI()).Created();
+//       }else
+            return response.OK();
     }
 
     @RequestMapping("/getSalt")
@@ -59,11 +83,11 @@ public class LoginController {
 
         if(accountService.userExists(email))
         {
-            response.addResponse("userID", accountService.gerUserID(email));
+            response.addResponse("userID", accountService.getUserID(email));
             response.addResponse("userSalt", accountService.getUserSalt(email));
-            return response.OK().send();
+            return response.OK().send(request.getRequestURI());
         } else
-            return response.NotFound().send();
+            return response.NotFound().send(request.getRequestURI());
     }
 
 }

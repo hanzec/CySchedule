@@ -9,13 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserRoleServices implements UserRoleDAO {
+import javax.persistence.EntityManagerFactory;
 
-    @Autowired
+@Service
+public class UserRoleServices{
+
     SessionFactory sessionFactory;
 
-    @Override
+    @Autowired
+    public UserRoleServices(EntityManagerFactory factory) {
+        if(factory.unwrap(SessionFactory.class) == null){
+            throw new NullPointerException("factory is not a hibernate factory");
+        }
+        this.sessionFactory = factory.unwrap(SessionFactory.class);
+    }
+
     public UserRole addNewUserRole(String name, String description) {
         Session session = sessionFactory.openSession();
 
@@ -37,7 +45,6 @@ public class UserRoleServices implements UserRoleDAO {
         return userRole;
     }
 
-    @Override
     public void addPermissionToRole(UserRole userRole, Permission permission) {
         Session session=sessionFactory.openSession();
 
