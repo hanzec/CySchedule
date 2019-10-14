@@ -71,7 +71,7 @@ public class LoginController {
             accountService.createUser(password,firstname,lastname,email,username);
             return response.send(request.getRequestURI()).Created();
        }else
-            return response.OK().send(request.getRequestURI()).Created();
+            return response.BadRequested("Username is Already Used").send(request.getRequestURI()).Created();
     }
 
     @RequestMapping("/getSalt")
