@@ -36,7 +36,7 @@ import com.cs309.cychedule.utilities.userUtil;
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
-    private static String URL_LOGIN = "http://coms-309-yt-4.misc.iastate.edu";
+    private static String URL_LOGIN = "http://http://10.26.187.17:8080/api/v1/auth/login?";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
