@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ import com.cs309.cychedule.utilities.userUtil;
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
-    private static String URL_LOGIN = "http://http://10.26.187.17:8080/api/v1/auth/login?";
+    private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
@@ -96,17 +97,77 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setVisibility(View.GONE);
 
+        RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
+        //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.start();
+
+        JSONObject jsonObject = new JSONObject();
+        try
+        {
+            jsonObject.put("userName", userName);
+            jsonObject.put("password", password);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_LOGIN, jsonObject,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response)
+                    {
+                        try
+                        {
+                            String status = response.getString("status");
+                            if (status.equals("200"))
+                            {
+                                Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Toast.makeText(LoginActivity.this, "Loin Error! " + e.toString(), Toast.LENGTH_SHORT).show();
+                            _loginButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(LoginActivity.this, "Login Error! " + error.toString(), Toast.LENGTH_SHORT).show();
+                        _loginButton.setVisibility(View.VISIBLE);
+                        Log.d("Error", error.toString());
+                    }
+                }
+        )
+        {
+            @Override
+            public int getMethod() {
+                return Method.POST;
+            }
+
+            @Override
+            public Priority getPriority() {
+                return Priority.NORMAL;
+            }
+        };
+        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        //requestQueue.add(jsonObjectRequest);
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try
                         {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String success = jsonObject.getString("success");
-                            JSONArray jsonArray = jsonObject.getJSONArray("login");
-
-                            if (success.equals("1"))
+                            JSONObject jObject = new JSONObject(response);
+                            String status = jObject.getString("status");
+                            JSONArray jsonArray = jObject.getJSONArray("login");
+                            if (status.equals("1"))
                             {
                                 for (int i = 0; i < jsonArray.length(); i ++)
                                 {
@@ -145,11 +206,7 @@ public class LoginActivity extends AppCompatActivity {
                 return params;
             }
         };
-
-        //RequestQueue requestQueue = Volley.newRequestQueue(this);
         //requestQueue.add(stringRequest);
-
-        RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         Singleton.getInstance(this).addToRequestQueue(stringRequest);
 
         new android.os.Handler().postDelayed(
@@ -168,7 +225,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
