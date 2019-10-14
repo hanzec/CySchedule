@@ -50,29 +50,28 @@ public class LoginController {
     }
 
     @RequestMapping("/register")
-    public Response register(HttpServletRequest user){
+    public Response register(HttpServletRequest request){
         Response response = new Response();
 
-        System.out.println(user.getRequestURI() + "\n" + user.getMethod() + "\n" + gson.toJson(user.getParameterMap()));
-//        //retire information from HTTP request
-//        String email = request.getParameter("email");
-//        String username = request.getParameter("userName");
-//        String password = request.getParameter("password");
-//        String lastname = request.getParameter("lastName");
-//        String firstname = request.getParameter("firstName");
-//
-//
-//        System.out.println("New user registered " + email + username + password + lastname + firstname);
-//
-//        if(email.isEmpty() || username.isEmpty() || password.isEmpty()||lastname.isEmpty()||firstname.isEmpty())
-//            return response.send(request.getRequestURI()).BadRequested("Information is not enough");
-//
-//        //Trying to Register new Account to Server
-//        if (!accountService.userExists(email)){
-//            accountService.createUser(password,firstname,lastname,email,username);
-//            return response.send(request.getRequestURI()).Created();
-//       }else
-            return response.OK();
+        //retire information from HTTP request
+        String email = request.getParameter("email");
+        String username = request.getParameter("userName");
+        String password = request.getParameter("password");
+        String lastname = request.getParameter("lastName");
+        String firstname = request.getParameter("firstName");
+
+
+        System.out.println("New user registered " + email + username + password + lastname + firstname);
+
+        if(email.isEmpty() || username.isEmpty() || password.isEmpty()||lastname.isEmpty()||firstname.isEmpty())
+            return response.send(request.getRequestURI()).BadRequested("Information is not enough");
+
+        //Trying to Register new Account to Server
+        if (!accountService.userExists(email)){
+            accountService.createUser(password,firstname,lastname,email,username);
+            return response.send(request.getRequestURI()).Created();
+       }else
+            return response.OK().send(request.getRequestURI()).Created();
     }
 
     @RequestMapping("/getSalt")
