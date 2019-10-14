@@ -10,51 +10,52 @@ public class Response {
 
     String status;
 
-    String timestamp;
+    String message;
 
+    Boolean success;
+
+    String timestamp;
 
     private Map<String, Object> responseBody = new HashMap<>();
 
-    private Map<String, Object> responseHeader = new HashMap<>();
-
     public Response OK(){
         this.status = "200";
-        this.responseHeader.put("Success",Boolean.TRUE);
+        success = Boolean.TRUE;
 
         return this;
     }
 
     public Response Created(){
         this.status = "201";
-        this.responseHeader.put("Success",Boolean.TRUE);
+        success = Boolean.TRUE;
         return this;
     }
 
     public Response NotFound(){
         this.status = "404";
-        this.responseHeader.put("Success",Boolean.FALSE);
+        success = Boolean.FALSE;
 
         return this;
     }
 
     public Response Forbidden(){
         this.status = "403";
-        this.responseHeader.put("Success",Boolean.FALSE);
+        success = Boolean.FALSE;
 
         return this;
     }
 
     public Response Unauthorized(){
         this.status = "401";
-        this.responseHeader.put("Success",Boolean.FALSE);
+        success = Boolean.FALSE;
 
         return this;
     }
 
     public Response BadRequested(String msg){
+        message = msg;
         this.status = "401";
-        this.responseBody.put("Message",msg);
-        this.responseHeader.put("Success",Boolean.FALSE);
+        success = Boolean.FALSE;
 
         return this;
     }
@@ -66,6 +67,4 @@ public class Response {
     }
 
     public void addResponse(String key, Object value){ this.responseBody.put(key, value);}
-
-    public void addHeader(String key, String value){ this.responseHeader.put(key, value);}
 }
