@@ -36,6 +36,8 @@ uild-server:
 
 deploy-server:
   stage: deploy
+  only:
+    - master
   script:
   ##
   ## Copy exec file from runner to production server
@@ -43,30 +45,24 @@ deploy-server:
   - scp BackEnd/target/cyschedule-server-new.jar $DEPLOY_SSH_USER@$DEPLOY_SERVER:/opt/cyshedule-server
   
   ##
-  ## Login to production server
+  ## Login to production server，Delete the old file and replace with new one
   ##
-  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt/cyshedule-server && rm -rf cyschedule-server.jar && mv cyschedule-server-new.jar cyschedule-server.jar"
   
   ##
-  ## First stop the old service
+  ## Remove old logging file
   ##
-  - sudo /bin/systemctl stop cyschedule-server
-  
-  ##
-  ##Delete the old file and 
-  ##
-  - rm -rf /opt/cyschedule/cyschedule-server.jar
-  - mv /opt/cyschedule-server/cyschedule-server-new.jar /opt/cyschedule/cyschedule-server.jar
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "rm -rf /opt/cyshedule-server/nohup.out"
   
   ##
   ##Clean the old caches
   ##
-  - redis-cli FLUSHALL
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "redis-cli FLUSHALL"
   
   ##
   ## Start the new server
   ##
-  - sudo /bin/systemctl start cyschedule-server
+  - ssh $DEPLOY_SSH_USER@$DEPLOY_SERVER "cd /opt/cyshedule-server/ && ./exec_script.sh >> /dev/null"
   only:
   - master
 

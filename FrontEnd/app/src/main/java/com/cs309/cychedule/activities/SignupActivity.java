@@ -13,16 +13,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -31,10 +36,12 @@ import butterknife.ButterKnife;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.utilities.userUtil;
 import com.cs309.cychedule.patterns.Singleton;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedHashTreeMap;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private static String URL_SIGNUP = "http://coms-309-yt-4.misc.iastate.edu";
+    private static String URL_SIGNUP = "https://dev.hanzec.com/api/v1/auth/register";
     private static final String TAG = "SignupActivity";
 
     @BindView(R.id.input_userName) EditText _userNameText;
@@ -45,7 +52,7 @@ public class SignupActivity extends AppCompatActivity {
     @BindView(R.id.input_reEnterPassword) EditText _reEnterPasswordText;
     @BindView(R.id.btn_signup) Button _signupButton;
     @BindView(R.id.link_login) TextView _loginLink;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +64,11 @@ public class SignupActivity extends AppCompatActivity {
         {
             @Override
             public void onClick(View v) {
-                signup();
+                try {
+                    signup();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -73,12 +84,11 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    public void signup() {
+    public void signup() throws JSONException {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
             onSignupFailed();
-            return;
         }
 
         _signupButton.setEnabled(false);
@@ -89,19 +99,82 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        final String userName = this._userNameText.getText().toString();
-        final String password = this._passwordText.getText().toString();
-        final String reEnterPassword = this._reEnterPasswordText.getText().toString();
-        final String email = this._emailText.getText().toString();
-        final String firstName = this._firstNameText.getText().toString();
-        final String lastName = this._lastNameText.getText().toString();
-
-        // TODO: Implement your own signup logic here.
-
+        final String userName = _userNameText.getText().toString().trim();
+        final String password = _passwordText.getText().toString().trim();
+        final String reEnterPassword = _reEnterPasswordText.getText().toString().trim();
+        final String email = _emailText.getText().toString().trim();
+        final String firstName = _firstNameText.getText().toString().trim();
+        final String lastName = _lastNameText.getText().toString().trim();
+//
+//        // TODO: Implement your own signup logic here.
+//
+//        Log.d("Inputs:", userName);
+//        System.out.println(userName + password + email + firstName + lastName);
         _signupButton.setVisibility(View.GONE);
 
-        //final String userName = this._userNameText.toString().trim();
-        //final String password = this._passwordText.toString().trim();
+        RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
+        //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.start();
+
+//        JSONObject jsonObject = new JSONObject();
+//        try
+//        {
+//            jsonObject.put("userName", userName);
+//            jsonObject.put("password", password);
+//            jsonObject.put("email", email);
+//            jsonObject.put("firstName", firstName);
+//            jsonObject.put("lastName", lastName);
+//        }
+//        catch (JSONException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_SIGNUP, jsonObject,
+//                new Response.Listener<JSONObject>()
+//                {
+//                    @Override
+//                    public void onResponse(JSONObject response)
+//                    {
+//                        try
+//                        {
+//                            String status = response.getString("status");
+//                            if (status.equals("201"))
+//                            {
+//                                Toast.makeText(SignupActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                        catch (JSONException e)
+//                        {
+//                            e.printStackTrace();
+//                            Toast.makeText(SignupActivity.this, "Register Error! " + e.toString(), Toast.LENGTH_SHORT).show();
+//                            _signupButton.setVisibility(View.VISIBLE);
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener()
+//                {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error)
+//                    {
+//                        Toast.makeText(SignupActivity.this, "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
+//                        _signupButton.setVisibility(View.VISIBLE);
+//                        Log.d("Error", error.toString());
+//                    }
+//                }
+//        )
+//        {
+//            @Override
+//            public int getMethod() {
+//                return Method.POST;
+//            }
+//
+//            @Override
+//            public Priority getPriority() {
+//                return Priority.NORMAL;
+//            }
+//        };
+//        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        //requestQueue.add(jsonObjectRequest);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_SIGNUP,
                 new Response.Listener<String>()
@@ -111,10 +184,9 @@ public class SignupActivity extends AppCompatActivity {
                     {
                         try
                         {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String success = jsonObject.getString("success");
-
-                            if (success.equals("1"))
+                            JSONObject object = new JSONObject(response);
+                            String status = object.getString("status");
+                            if (status.equals("201"))
                             {
                                 Toast.makeText(SignupActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
                             }
@@ -134,28 +206,24 @@ public class SignupActivity extends AppCompatActivity {
                     {
                         Toast.makeText(SignupActivity.this, "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
                         _signupButton.setVisibility(View.VISIBLE);
+                        Log.d("Error", error.toString());
                     }
                 }
         )
         {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError
-            {
+            protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("userName", userName);
                 params.put("password", password);
                 params.put("email", email);
                 params.put("firstName", firstName);
                 params.put("lastName", lastName);
-                return super.getParams();
+                return params;
             }
         };
-
-        //RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //requestQueue.add(stringRequest);
-
-        RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         Singleton.getInstance(this).addToRequestQueue(stringRequest);
+        //requestQueue.add(stringRequest);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -173,7 +241,10 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        startActivity(intent);
         finish();
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     public void onSignupFailed() {
@@ -188,7 +259,7 @@ public class SignupActivity extends AppCompatActivity {
         String userName = _userNameText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
-    
+
         if(Patterns.EMAIL_ADDRESS.matcher(userName).matches() || Patterns.PHONE.matcher(userName).matches()){
             _userNameText.setError(null);
         }
