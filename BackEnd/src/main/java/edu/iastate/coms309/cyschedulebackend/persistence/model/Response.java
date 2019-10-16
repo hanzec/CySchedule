@@ -70,9 +70,4 @@ public class Response {
         this.responseBody.put(key, value);
         return this;
     }
-
-    public Response addHeader(String key, String value){
-        this.responseHeader.put(key, value);
-        return this;
-    }
 }

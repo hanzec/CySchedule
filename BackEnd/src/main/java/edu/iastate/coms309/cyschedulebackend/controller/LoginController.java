@@ -2,20 +2,16 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 
 import com.google.gson.Gson;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
+
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
-import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
@@ -24,9 +20,6 @@ public class LoginController {
 
     @Autowired
     Gson gson;
-
-    @Autowired
-    AccountService accountService;
 
     @Autowired
     AccountService accountService;
@@ -41,7 +34,7 @@ public class LoginController {
         String password = request.getParameter("password");
 
         System.out.println("New user register" + username + "    " + password);
-        User user = accountService.loadUserByEmail(username);
+        User user = (User) accountService.loadUserByUsername(username);
         if(user.getPassword().equals(password))
             response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
         else
@@ -64,7 +57,7 @@ public class LoginController {
             return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
         //Trying to Register new Account to Server
-        if (!accountService.userExists(email)){
+        if (!accountService.existsByEmail(email)){
             accountService.createUser(password,firstname,lastname,email,username);
             return response.send(request.getRequestURI()).Created();
        }else
