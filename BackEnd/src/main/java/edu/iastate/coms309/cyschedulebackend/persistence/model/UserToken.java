@@ -8,17 +8,17 @@ public class UserToken{
 
     private String token;
 
-    private String userID;
+    private Long userID;
 
     private String refreshKey;
 
-    public UserToken(String token,String userID){
+    public UserToken(String token,Long userID){
         this.token = token;
         this.userID = userID;
         this.refreshKey = null;;
     }
 
-    public UserToken(String token,String refreshKey,String userID){
+    public UserToken(String token,String refreshKey,Long userID){
         this.token = token;
         this.userID = userID;
         this.refreshKey = refreshKey;

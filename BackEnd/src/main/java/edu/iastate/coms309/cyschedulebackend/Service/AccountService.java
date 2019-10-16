@@ -6,20 +6,26 @@ import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserRole;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.AbstractCachingConfiguration;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import java.util.UUID;
 
 @Service
-public class AccountService{
+public class AccountService implements UserDetailsService {
     /*
         Maybe a improve point
             - Session could reuse for whole class (2019-9-13)
@@ -32,164 +38,53 @@ public class AccountService{
     @Autowired
     PasswordUtil passwordUtil;
 
-    SessionFactory sessionFactory;
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     RedisTemplate<String,Object> redisTemplate;
 
-    @Autowired
-    public AccountService(EntityManagerFactory factory) {
-        if(factory.unwrap(SessionFactory.class) == null){
-            throw new NullPointerException("factory is not a hibernate factory");
-        }
-        this.sessionFactory = factory.unwrap(SessionFactory.class);
-    }
+    @Transactional
+    public Long createUser(String password, String firstName, String lastName, String email, String username) {
 
+        // create new user object
+        User user = new User(password,firstName,lastName,email,username);
 
-    public String createUser(String password, String firstName, String lastName, String email, String username) {
-        Session session = sessionFactory.openSession();
-
-        session.beginTransaction();
-
-        User user = new User();
-        user.setEmail(email);
-        user.setUserID(UUID.randomUUID().toString());
-        user.setUsername(username);
-        user.setLastName(lastName);
-        user.setFirstName(firstName);
+        //encrypt password
         user.setSalt(passwordUtil.generateSalt());
-        user.setRegisterTime(System.currentTimeMillis()/1000L);
-        user.setPassword(passwordUtil.generatePasswordPBKDF2(password,user.getSalt()));
+        user.setPassword(passwordUtil.generatePasswordPBKDF2(user.getPassword(),user.getSalt()));
 
-        //update Redis Cached Value
-        session.save(user);
-
-        session.getTransaction().commit();
-
-        session.close();
+        //save to the
+        userRepository.save(user);
 
         return user.getUserID();
     }
 
+    @Transactional
+    public boolean existsByEmail(String email){ return userRepository.existsByEmail(email);}
 
-    public User loadUserByUserID(String userID){
-        Session session = sessionFactory.openSession();
-
-        User user = session.get(User.class,userID);
-
-        session.close();
-
-        return user;
-    }
-
-    public User loadUserByEmail(String email){
-        Session session = sessionFactory.openSession();
-
-        User user = (User) session.createQuery("select user from User user where user.email like :userEmail")
-                .setParameter("userEmail",email).getSingleResult();
-
-        session.close();
-
-        return user;
-    }
-
-    public void deleteUser(String userID){
-        Session session = sessionFactory.openSession();
-
-        session.delete(session.get(User.class,userID));
-
-        session.close();
-    }
-
-    public void changePassword(String userID, String password) {
-        Session session = sessionFactory.openSession();
-        User user = session.get(User.class,userID);
-
-        user.setSalt(passwordUtil.generateSalt());
-        user.setPassword(passwordUtil.generatePasswordPBKDF2(password,user.getSalt()));
-
-        session.update(user);
-        session.close();
-    }
-
-    public boolean userExists(String email) {
-        try{
-            loadUserByEmail(email);
-        }catch (NoResultException e){
-            return false;
-        }
-        return true;
-    }
-
+    @Transactional
     @Cacheable(value = "userid", key = "'id_'+#email")
-    public String getUserID(String email) {
-        Session session = sessionFactory.openSession();
+    public Long getUserID(String email) { return userRepository.findByEmail(email).getUserID(); }
 
-        User user = (User) session.createQuery("select user from User user where user.email like :userEmail")
-                .setParameter("userEmail",email).getSingleResult();
-
-        session.close();
-
-        return user.getUserID();
-    }
-
+    @Transactional
     @Cacheable(value = "salt", key = "'salt_'+#email")
-    public String getUserSalt(String email) { return this.loadUserByEmail(email).getSalt(); }
+    public String getUserSalt(String email) { return userRepository.findByEmail(email).getSalt(); }
 
+    @Transactional
     @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
-    public String getJwtKey(String userID) {
-        User user = loadUserByUserID(userID);
+    public String getJwtKey(Long userID) { return userRepository.findByUserID(userID).getJwtKey(); }
 
-        if(user.getJwtKey() == null){
-            Session session=sessionFactory.openSession();
-
-            user.setJwtKey(passwordUtil.generateSalt());
-
-            session.beginTransaction();
-
-            session.update(user);
-
-            session.getTransaction().commit();
-
-            session.close();
-        }
-
-        return user.getJwtKey();
-    }
-
+    @Transactional
     @Cacheable(value = "password", key = "'user_pass_'+#email")
-    public String getPasswordByEmail(String email) { return this.loadUserByEmail(email).getPassword(); }
+    public String getPasswordByEmail(String email) { return userRepository.findByEmail(email).getPassword(); }
 
-    public void setUserRole(String userID, UserRole role) {
-        User user = loadUserByUserID(userID);
-        Session session=sessionFactory.openSession();
-
-        user.getUserRoles().add(role);
-
-        session.beginTransaction();
-
-        session.update(user);
-
-        session.getTransaction().commit();
-
-        session.close();
-    }
-
-    @CachePut(value = "userid", key = "'user_id_'+#newEmail")
-    public String updateEmail(String oldEmail, String newEmail) {
-        Session session=sessionFactory.openSession();
-
-        User user = loadUserByEmail(oldEmail);
-        user.setEmail(newEmail);
-
-        session.beginTransaction();
-
-        session.update(user);
-
-        session.getTransaction().commit();
-
-        session.close();
-
-        return user.getUserID();
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        if (userRepository.existsByEmail(s))
+            return userRepository.findByEmail(s);
+        else
+            throw new UsernameNotFoundException("username " + s + " is not found");
     }
 }

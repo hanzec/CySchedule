@@ -11,12 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserDAO;
+import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -29,7 +29,7 @@ public class LoginController {
     AccountService accountService;
 
     @Autowired
-    PasswordUtil passwordUtil;
+    AccountService accountService;
 
     @Autowired
     UserTokenService userTokenService;
@@ -60,10 +60,7 @@ public class LoginController {
         String lastname = request.getParameter("lastName");
         String firstname = request.getParameter("firstName");
 
-
-        System.out.println("New user registered " + email + username + password + lastname + firstname);
-
-        if(email.isEmpty() || username.isEmpty() || password.isEmpty()||lastname.isEmpty()||firstname.isEmpty())
+        if(email == null || username == null || password == null||lastname == null||firstname == null)
             return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
         //Trying to Register new Account to Server
@@ -80,7 +77,7 @@ public class LoginController {
 
         String email = request.getParameter("email");
 
-        if(accountService.userExists(email))
+        if(accountService.existsByEmail(email))
         {
             response.addResponse("userID", accountService.getUserID(email));
             response.addResponse("userSalt", accountService.getUserSalt(email));

@@ -2,7 +2,6 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 
 import edu.iastate.coms309.cyschedulebackend.Utils.JwtTokenUtil;
-import edu.iastate.coms309.cyschedulebackend.persistence.dao.UserTokenDAO;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,17 +30,17 @@ public class UserTokenService {
         UserToken cached = (UserToken) redisTemplate.opsForHash()
                 .get("user_token_" + userToken.getUserID(), userToken.getToken());
 
-        if (cached == null) {
+        if (cached == null)
             return false;
-        } else if (!JwtTokenUtil.isTokenExpired(userToken, accountService.getJwtKey(userToken.getUserID()))) {
+        else if (!JwtTokenUtil.isTokenExpired(userToken,accountService.getJwtKey(userToken.getUserID())))
             return false;
-        } else if (!JwtTokenUtil.isTokenValid(userToken, accountService.getJwtKey(userToken.getUserID()))){
+        else if (!JwtTokenUtil.isTokenValid(userToken, accountService.getJwtKey(userToken.getUserID())))
             return false;
-        }else
+        else
             return true;
     }
 
-    public UserToken genUserToken(String userID) {
+    public UserToken genUserToken(Long userID) {
 
         UserToken userToken = jwtTokenUtil.generateNewToken(userID,
                                                             authTokenExpireTime,
@@ -53,11 +52,11 @@ public class UserTokenService {
         return userToken;
     }
 
-    public void deleteUserToken(String userID, String token) {
+    public void deleteUserToken(Long userID, String token) {
         redisTemplate.opsForHash().delete("user_token_" + userID,token);
     }
 
-    public UserToken getToken(String userID, String token){
+    public UserToken getToken(Long userID, String token){
         return (UserToken) redisTemplate.opsForHash().get("user_token_" + userID,token);
     }
 }
