@@ -5,9 +5,12 @@ import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 
@@ -16,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Api(tags = "RestAPI Related to Authentication")
 public class LoginController {
 
     @Autowired
@@ -27,7 +31,8 @@ public class LoginController {
     @Autowired
     UserTokenService userTokenService;
 
-    @RequestMapping("/login")
+    @ApiOperation("Login API")
+    @RequestMapping(value = "/login", method= RequestMethod.POST)
     public Response login(HttpServletRequest request){
         Response response = new Response();
         String username = request.getParameter("username");
@@ -36,13 +41,14 @@ public class LoginController {
         System.out.println("New user register" + username + "    " + password);
         User user = (User) accountService.loadUserByUsername(username);
         if(user.getPassword().equals(password))
-            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
+            response.OK().addResponse(userTokenService.genUserToken(user.getUserID()));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());
     }
 
-    @RequestMapping("/register")
+    @ApiOperation("Used for register new account")
+    @RequestMapping(value = "/register", method= RequestMethod.POST)
     public Response register(HttpServletRequest request){
         Response response = new Response();
 
@@ -64,7 +70,8 @@ public class LoginController {
             return response.BadRequested("Username is Already Used").send(request.getRequestURI()).Created();
     }
 
-    @RequestMapping("/getSalt")
+    @ApiOperation("Used for get salt for specific user")
+    @RequestMapping(value = "/getSalt", method= RequestMethod.POST)
     public Response getSalt(HttpServletRequest request){
         Response response = new Response();
 
@@ -72,8 +79,7 @@ public class LoginController {
 
         if(accountService.existsByEmail(email))
         {
-            response.addResponse("userID", accountService.getUserID(email));
-            response.addResponse("userSalt", accountService.getUserSalt(email));
+            response.addResponse(accountService.getUserSalt(email));
             return response.OK().send(request.getRequestURI());
         } else
             return response.NotFound().send(request.getRequestURI());
