@@ -17,7 +17,7 @@ public class JwtTokenUtil {
     @Autowired
     PasswordUtil passwordUtil;
 
-    public UserToken generateNewToken(String userID, Integer validTimes, String password){
+    public UserToken generateNewToken(Long userID, Integer validTimes, String password){
         String keyID = passwordUtil.generateSalt();
         String refreshKey = passwordUtil.generateSalt();
         Algorithm algorithmHS = Algorithm.HMAC256(password);
@@ -40,7 +40,7 @@ public class JwtTokenUtil {
             //Invalid token
         }
         assert jwt != null;
-        return new UserToken(token,jwt.getHeaderClaim("userID").asString());
+        return new UserToken(token,jwt.getHeaderClaim("userID").asLong());
     }
 
     public static boolean isTokenValid(UserToken userToken, String password){

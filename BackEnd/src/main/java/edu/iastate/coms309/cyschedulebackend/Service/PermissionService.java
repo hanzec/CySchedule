@@ -1,6 +1,5 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
-import edu.iastate.coms309.cyschedulebackend.persistence.dao.PermissionDao;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

@@ -2,6 +2,7 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
@@ -30,9 +31,9 @@ public class LoginController {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        User user = accountService.loadUserByEmail(username);
+        User user = (User) accountService.loadUserByUsername(username);
         if(user.getPassword().equals(password))
-            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID().toString()));
+            response.OK().addResponse("LoginToken",userTokenService.genUserToken(user.getUserID()));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());
@@ -49,7 +50,7 @@ public class LoginController {
         String lastname = request.getParameter("lastname");
         String firstname = request.getParameter("firstname");
 
-        if(email.isEmpty() || username.isEmpty() || password.isEmpty()||lastname.isEmpty()||firstname.isEmpty())
+        if(email == null || username == null || password == null||lastname == null||firstname == null)
             return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
         //Trying to Register new Account to Server
