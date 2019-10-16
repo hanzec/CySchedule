@@ -46,7 +46,6 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public Long createUser(String password, String firstName, String lastName, String email, String username) {
-
         // create new user object
         User user = new User(password,firstName,lastName,email,username);
 
