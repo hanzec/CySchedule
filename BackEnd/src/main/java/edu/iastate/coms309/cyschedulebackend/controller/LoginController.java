@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
-@RequestMapping("/api/auth/v1")
+@RequestMapping("/api/v1/auth")
 @Api(tags = "RestAPI Related to Authentication")
 public class LoginController {
     /*

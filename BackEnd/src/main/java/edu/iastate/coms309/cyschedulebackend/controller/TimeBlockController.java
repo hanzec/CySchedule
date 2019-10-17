@@ -14,7 +14,7 @@ import java.security.Principal;
 
 
 @RestController
-@RequestMapping("/api/timeblock/v1")
+@RequestMapping("/api/v1/timeblock")
 @Api(tags = "RestAPI Related to TimeBlock")
 public class TimeBlockController {
 
