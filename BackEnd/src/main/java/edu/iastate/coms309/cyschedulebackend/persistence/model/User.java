@@ -33,8 +33,6 @@ public class User implements UserDetails, Serializable{
     @NaturalId
     private String email;
 
-    private String salt;
-
     private String jwtKey;
 
     private String username;

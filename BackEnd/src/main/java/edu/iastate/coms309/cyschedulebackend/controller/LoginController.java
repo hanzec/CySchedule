@@ -53,30 +53,34 @@ public class LoginController {
         String lastname = request.getParameter("lastName");
         String firstname = request.getParameter("firstName");
 
+        //New Register will give all required field
         if(email == null || username == null || password == null||lastname == null||firstname == null)
             return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
-        //Trying to Register new Account to Server
-        if (!accountService.existsByEmail(email)){
-            accountService.createUser(password,firstname,lastname,email,username);
-            return response.send(request.getRequestURI()).Created();
-       }else
+        //There should not register with same email address
+        if(!accountService.existsByEmail(email))
             return response.BadRequested("Username is Already Used").send(request.getRequestURI()).Created();
+
+
+        //Trying to Register new Account to Server
+        accountService.createUser(password,firstname,lastname,email,username);
+
+        return response.send(request.getRequestURI()).Created();
     }
 
-    @RequestMapping("/getSalt")
-    public Response getSalt(HttpServletRequest request){
+    @RequestMapping("/getChallenge")
+    public Response getChallenge(HttpServletRequest request){
         Response response = new Response();
 
         String email = request.getParameter("email");
 
         if(accountService.existsByEmail(email))
         {
-            response.addResponse("userID", accountService.getUserID(email));
+            response.addResponse("userId", accountService.getUserID(email));
             response.addResponse("userSalt", accountService.getUserSalt(email));
+            response.addResponse("currentLoginChallenge",accountService.getChallengeKeys(email));
             return response.OK().send(request.getRequestURI());
         } else
             return response.NotFound().send(request.getRequestURI());
     }
-
 }
