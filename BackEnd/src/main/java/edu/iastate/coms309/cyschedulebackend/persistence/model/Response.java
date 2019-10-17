@@ -1,9 +1,13 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+import lombok.Data;
+
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
+@Data
 public class Response {
 
     String path;
@@ -16,7 +20,7 @@ public class Response {
 
     String timestamp;
 
-    private Map<String, Object> responseBody = new HashMap<>();
+    private HashMap<String,Object> responseBody = new HashMap<>();
 
     public Response OK(){
         this.status = "200";
@@ -66,8 +70,8 @@ public class Response {
         return this;
     }
 
-    public Response addResponse(String key, Object value){
-        this.responseBody.put(key, value);
+    public Response addResponse(String key,Object object){
+        this.responseBody.put(key,object);
         return this;
     }
 }
