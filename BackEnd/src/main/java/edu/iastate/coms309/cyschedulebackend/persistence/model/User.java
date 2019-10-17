@@ -1,6 +1,8 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 import lombok.Data;
+
+import java.sql.Time;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -48,6 +50,9 @@ public class User implements UserDetails, Serializable{
     @JoinTable(name = "user_to_user_role_table")
     @OneToMany(cascade = CascadeType.ALL)
     private Set<UserRole> userRoles;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<TimeBlock> userTimeBlock;
 
     public User(String password, String firstname, String lastname, String email, String username) {
         this.email = email;
