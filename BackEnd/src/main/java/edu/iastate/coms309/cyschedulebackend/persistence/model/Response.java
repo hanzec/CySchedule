@@ -20,7 +20,7 @@ public class Response {
 
     String timestamp;
 
-    private HashMap<String,Object> responseBody = new HashMap<>();
+    private HashMap<Object,Object> responseBody = new HashMap<>();
 
     public Response OK(){
         this.status = "200";
@@ -45,6 +45,12 @@ public class Response {
     public Response Forbidden(){
         this.status = "403";
         success = Boolean.FALSE;
+        return this;
+    }
+
+    public Response noContent(){
+        this.status = "204";
+        success = Boolean.TRUE;
 
         return this;
     }
@@ -70,7 +76,7 @@ public class Response {
         return this;
     }
 
-    public Response addResponse(String key,Object object){
+    public Response addResponse(Object key,Object object){
         this.responseBody.put(key,object);
         return this;
     }

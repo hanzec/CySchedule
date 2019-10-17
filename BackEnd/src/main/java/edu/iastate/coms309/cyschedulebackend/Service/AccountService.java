@@ -22,7 +22,7 @@ import java.util.UUID;
 public class AccountService implements UserDetailsService{
     /*
         Maybe a improve point
-            - Session could reuse for whole class (2019-9-13)
+            - Session could reuse for whole class (2019-9-13)(FIXED)
                 * Problem may happened when this instance is closed without close session
             - After some operation my gen waste @ redis see updateEmail
             - Cache may not accurate after delete user (2019-9-16)
@@ -83,7 +83,7 @@ public class AccountService implements UserDetailsService{
     }
 
     public byte[] generateChallengeKeys(String username){
-        challengeStorage.put(username, UUID.randomUUID().);
+        challengeStorage.put(username, UUID.randomUUID().toString().getBytes());
         return challengeStorage.get(username);
     }
 

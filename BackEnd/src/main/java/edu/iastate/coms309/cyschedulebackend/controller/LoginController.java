@@ -18,9 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth/v1")
 @Api(tags = "RestAPI Related to Authentication")
 public class LoginController {
+    /*
+    Maybe a improve point
+        - /getChallenge api may leak user information whatever user exist or not should generate same information
+
+    */
 
     @Autowired
     Gson gson;
@@ -38,10 +43,9 @@ public class LoginController {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        System.out.println("New user register" + username + "    " + password);
         User user = (User) accountService.loadUserByUsername(username);
         if(user.getPassword().equals(password))
-            response.OK().addResponse(userTokenService.genUserToken(user.getUserID()));
+            response.OK().addResponse("loginToken",userTokenService.genUserToken(user.getUserID()));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());
@@ -75,7 +79,7 @@ public class LoginController {
     }
 
     @RequestMapping("/getChallenge")
-    @ApiOperation("Used for get salt for specific user")
+    @ApiOperation("Used for get challenge information for login")
     public Response getChallenge(HttpServletRequest request){
 
         Response response = new Response();

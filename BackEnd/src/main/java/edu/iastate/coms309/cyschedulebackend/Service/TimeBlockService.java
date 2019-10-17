@@ -35,14 +35,16 @@ public class TimeBlockService {
     }
 
     @Transactional
-    public Set<TimeBlock> getAllTimeBlock(String admin){
-        return userRepository.findByEmail(admin).getUserTimeBlock();
-    }
+    public void deleteTimeBlock(Long id){ timeBlockRepository.deleteById(id); }
 
     @Transactional
-    public TimeBlock getTimeBlockByID(Long id){
+    public TimeBlock getTimeBlock(Long id){
         return timeBlockRepository.getOne(id);
     }
 
+    @Transactional
+    public Set<TimeBlock> getAllTimeBlock(String admin){
+        return userRepository.findByEmail(admin).getUserTimeBlock();
+    }
 
 }
