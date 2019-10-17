@@ -2,9 +2,9 @@ package edu.iastate.coms309.cyschedulebackend.Utils;
 
 import lombok.var;
 
-class ByteArrayUtil {
+public class ByteArrayUtil {
 
-   static String ByteArrayToHex(byte[] barray)
+   public static String ByteArrayToHex(byte[] barray)
     {
         char[] c = new char[barray.length * 2];
         byte b;

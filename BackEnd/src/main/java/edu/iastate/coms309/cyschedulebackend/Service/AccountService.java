@@ -1,31 +1,25 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 
-import edu.iastate.coms309.cyschedulebackend.Utils.PasswordUtil;
-
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserRole;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserRepository;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.AbstractCachingConfiguration;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Service
-public class AccountService implements UserDetailsService {
+public class AccountService implements UserDetailsService{
     /*
         Maybe a improve point
             - Session could reuse for whole class (2019-9-13)
@@ -35,14 +29,18 @@ public class AccountService implements UserDetailsService {
             - exception
 
      */
-    @Autowired
-    PasswordUtil passwordUtil;
 
     @Autowired
     UserRepository userRepository;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+
+    @Autowired
     RedisTemplate<String,Object> redisTemplate;
+
+    HashMap<String,byte[]> challengeStorage = new HashMap<>();
 
     @Transactional
     public Long createUser(String password, String firstName, String lastName, String email, String username) {
@@ -50,8 +48,7 @@ public class AccountService implements UserDetailsService {
         User user = new User(password,firstName,lastName,email,username);
 
         //encrypt password
-        user.setSalt(passwordUtil.generateSalt());
-        user.setPassword(passwordUtil.generatePasswordPBKDF2(user.getPassword(),user.getSalt()));
+        user.setPassword(passwordEncoder.encode(password));
 
         //save to the
         userRepository.save(user);
@@ -68,7 +65,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     @Cacheable(value = "salt", key = "'salt_'+#email")
-    public String getUserSalt(String email) { return userRepository.findByEmail(email).getSalt(); }
+    public String getUserSalt(String email) { return userRepository.findByEmail(email).getPassword().split(".")[2]; }
 
     @Transactional
     @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
@@ -77,6 +74,18 @@ public class AccountService implements UserDetailsService {
     @Transactional
     @Cacheable(value = "password", key = "'user_pass_'+#email")
     public String getPasswordByEmail(String email) { return userRepository.findByEmail(email).getPassword(); }
+
+    public byte[] getChallengeKeys(String username){
+        if (challengeStorage.containsKey(username))
+            return challengeStorage.get(username);
+        else
+            return generateChallengeKeys(username);
+    }
+
+    public byte[] generateChallengeKeys(String username){
+        challengeStorage.put(username, UUID.randomUUID().);
+        return challengeStorage.get(username);
+    }
 
     @Override
     @Transactional

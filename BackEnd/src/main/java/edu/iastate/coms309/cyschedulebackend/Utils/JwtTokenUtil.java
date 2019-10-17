@@ -10,16 +10,14 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class JwtTokenUtil {
 
-    @Autowired
-    PasswordUtil passwordUtil;
-
     public UserToken generateNewToken(Long userID, Integer validTimes, String password){
-        String keyID = passwordUtil.generateSalt();
-        String refreshKey = passwordUtil.generateSalt();
+        String keyID = UUID.randomUUID().toString();
+        String refreshKey = UUID.randomUUID().toString();
         Algorithm algorithmHS = Algorithm.HMAC256(password);
 
         String token = JWT.create()
