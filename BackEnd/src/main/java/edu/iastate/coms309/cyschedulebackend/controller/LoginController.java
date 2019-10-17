@@ -9,16 +9,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 
 import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
-@RequestMapping("/api/auth/v1")
+@RequestMapping("/api/v1/auth")
 @Api(tags = "RestAPI Related to Authentication")
 public class LoginController {
     /*
@@ -36,8 +34,8 @@ public class LoginController {
     @Autowired
     UserTokenService userTokenService;
 
-    @ApiOperation("Login API")
-    @RequestMapping(value = "/login", method= RequestMethod.POST)
+    @PostMapping(value = "/login")
+    @ApiOperation("Log in to system and get jtw token back")
     public Response login(HttpServletRequest request){
         Response response = new Response();
         String username = request.getParameter("username");
@@ -51,8 +49,8 @@ public class LoginController {
         return response.send(request.getRequestURI());
     }
 
+    @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    @RequestMapping(value = "/register", method= RequestMethod.POST)
     public Response register(HttpServletRequest request){
         Response response = new Response();
 
@@ -78,7 +76,7 @@ public class LoginController {
         return response.send(request.getRequestURI()).Created();
     }
 
-    @RequestMapping("/getChallenge")
+    @GetMapping("/getChallenge")
     @ApiOperation("Used for get challenge information for login")
     public Response getChallenge(HttpServletRequest request){
 

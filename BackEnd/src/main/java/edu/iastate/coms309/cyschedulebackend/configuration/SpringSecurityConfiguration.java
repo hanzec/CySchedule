@@ -74,8 +74,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js",
-                        "/swagger-resources/**",
+                        "/**/*.js")
+                .permitAll()
+                .antMatchers("/swagger-resources/**", //allow swagger api document
                         "/swagger-ui.html",
                         "/v2/api-docs",
                         "/webjars/**")
