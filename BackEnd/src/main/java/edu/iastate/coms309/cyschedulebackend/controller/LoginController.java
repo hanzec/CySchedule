@@ -68,7 +68,7 @@ public class LoginController {
             return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
         //There should not register with same email address
-        if(!accountService.existsByEmail(email))
+        if(accountService.existsByEmail(email))
             return response.BadRequested("Username is Already Used").send(request.getRequestURI()).Created();
 
 
