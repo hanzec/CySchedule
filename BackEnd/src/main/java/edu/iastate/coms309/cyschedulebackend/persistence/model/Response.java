@@ -20,7 +20,7 @@ public class Response {
 
     String timestamp;
 
-    private Set<Object> responseBody = new HashSet<>();
+    private HashMap<String,Object> responseBody = new HashMap<>();
 
     public Response OK(){
         this.status = "200";
@@ -70,13 +70,8 @@ public class Response {
         return this;
     }
 
-    public Response addResponse(Object object){
-        this.responseBody.add(object);
-        return this;
-    }
-
-    public Response setResponse(Set<Object> response){
-        this.responseBody = response;
+    public Response addResponse(String key,Object object){
+        this.responseBody.put(key,object);
         return this;
     }
 }
