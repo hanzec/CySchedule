@@ -41,7 +41,7 @@ public class AccountService implements UserDetailsService{
     @Autowired
     RedisTemplate<String,Object> redisTemplate;
 
-    HashMap<Long,byte[]> challengeStorage = new HashMap<>();
+    HashMap<Long,String> challengeStorage = new HashMap<>();
 
     @Transactional
     public Long createUser(String password, String firstName, String lastName, String email, String username) {
@@ -66,7 +66,7 @@ public class AccountService implements UserDetailsService{
 
     @Transactional
     @Cacheable(value = "salt", key = "'salt_'+#email")
-    public String getUserSalt(String email) { return userRepository.findByEmail(email).getPassword(); }
+    public String getUserSalt(String email) { return userRepository.findByEmail(email).getPassword().split(".")[0]; }
 
     @Transactional
     @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
@@ -78,14 +78,14 @@ public class AccountService implements UserDetailsService{
 
     public byte[] getChallengeKeys(Long userID){
         if (challengeStorage.containsKey(userID))
-            return challengeStorage.get(userID);
+            return challengeStorage.get(userID).getBytes();
         else
             return generateChallengeKeys(userID);
     }
 
     public byte[] generateChallengeKeys(Long userID){
-        challengeStorage.put(userID, UUID.randomUUID().toString().getBytes());
-        return challengeStorage.get(userID);
+        challengeStorage.put(userID, UUID.randomUUID().toString());
+        return challengeStorage.get(userID).getBytes();
     }
 
     @Override
