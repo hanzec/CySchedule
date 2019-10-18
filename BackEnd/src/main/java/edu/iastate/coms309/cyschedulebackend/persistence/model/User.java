@@ -54,6 +54,8 @@ public class User implements UserDetails, Serializable{
     @OneToMany(cascade = CascadeType.ALL)
     private Set<TimeBlock> userTimeBlock;
 
+    public User(){};
+
     public User(String password, String firstname, String lastname, String email, String username) {
         this.email = email;
         this.password = password;

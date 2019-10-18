@@ -38,7 +38,7 @@ public class LoginController {
     UserTokenService userTokenService;
 
     @PostMapping(value = "/login")
-    @ApiOperation("Login with username and password to get jwt token")
+    @ApiOperation("Login API")
     public Response login(HttpServletRequest request){
         Response response = new Response();
         String username = request.getParameter("username");
