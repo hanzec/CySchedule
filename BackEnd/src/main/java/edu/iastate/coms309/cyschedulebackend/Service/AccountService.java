@@ -67,7 +67,10 @@ public class AccountService implements UserDetailsService{
 
     @Transactional
     @Cacheable(value = "salt", key = "'salt_'+#email")
-    public String getUserSalt(String email) { return Arrays.toString(userRepository.findByEmail(email).getPassword().split(".")); }
+    public String getUserSalt(String email) {
+        String result = userRepository.findByEmail(email).getPassword();
+        return result.split("$")[1];
+    }
 
     @Transactional
     @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
