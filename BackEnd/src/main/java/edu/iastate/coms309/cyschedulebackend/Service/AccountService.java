@@ -69,7 +69,7 @@ public class AccountService implements UserDetailsService{
     @Cacheable(value = "salt", key = "'salt_'+#email")
     public String getUserSalt(String email) {
         String result = userRepository.findByEmail(email).getPassword();
-        return result.split("\\$")[1];
+        return result.split("\\.")[1];
     }
 
     @Transactional
