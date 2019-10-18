@@ -89,8 +89,8 @@ public class LoginController {
 
         if(accountService.existsByEmail(email)) {
             response.addResponse("userId", accountService.getUserID(email));
-            response.addResponse("userSalt", accountService.getUserSalt(email));
-            response.addResponse("currentLoginChallenge",accountService.getChallengeKeys(accountService.getUserID(email)));
+            //response.addResponse("userSalt", accountService.getUserSalt(email));
+            //response.addResponse("currentLoginChallenge",accountService.getChallengeKeys(accountService.getUserID(email)));
 
             return response.OK().send(request.getRequestURI());
         } else
