@@ -30,11 +30,11 @@ public class PBKDF2PasswordEncoder{
 
     public String encode(String password) {
         byte[] salt = generateSalt();
-        return "PBKDF2$" + ByteArrayUtil.ByteArrayToHex(salt) + "$" + encode(password,salt);
+        return "PBKDF2." + ByteArrayUtil.ByteArrayToHex(salt) + "." + encode(password,salt);
     }
 
     public boolean matches(CharSequence charSequence, String s, Long userId) {
-        String[] keyStorage = charSequence.toString().split("$");
+        String[] keyStorage = charSequence.toString().split(".");
         String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(userId));
        return hashedPassword.equals(s);
     }
@@ -45,7 +45,7 @@ public class PBKDF2PasswordEncoder{
         spec = new PBEKeySpec(s.toCharArray(), password, encryptCount, 256);
         try {
             factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            return "1000$" + ByteArrayUtil.ByteArrayToHex(factory.generateSecret(spec).getEncoded());
+            return "1000." + ByteArrayUtil.ByteArrayToHex(factory.generateSecret(spec).getEncoded());
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }

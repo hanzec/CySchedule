@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FrontEnd.iml" filepath="$PROJECT_DIR$/FrontEnd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/FrontEnd-app.iml" filepath="$PROJECT_DIR$/app/FrontEnd-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yt_4-FrontEnd.iml" filepath="$PROJECT_DIR$/yt_4-FrontEnd.iml" />
     </modules>
   </component>
 </project>
