@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -66,7 +67,7 @@ public class AccountService implements UserDetailsService{
 
     @Transactional
     @Cacheable(value = "salt", key = "'salt_'+#email")
-    public String getUserSalt(String email) { return userRepository.findByEmail(email).getPassword().split(".")[0]; }
+    public String getUserSalt(String email) { return Arrays.toString(userRepository.findByEmail(email).getPassword().split(".")); }
 
     @Transactional
     @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
