@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +37,8 @@ public class LoginController {
     @Autowired
     UserTokenService userTokenService;
 
-    @ApiOperation("Login API")
-    @RequestMapping(value = "/login", method= RequestMethod.POST)
+    @PostMapping(value = "/login")
+    @ApiOperation("Login with username and password to get jwt token")
     public Response login(HttpServletRequest request){
         Response response = new Response();
         String username = request.getParameter("username");
@@ -51,8 +52,8 @@ public class LoginController {
         return response.send(request.getRequestURI());
     }
 
+    @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    @RequestMapping(value = "/register", method= RequestMethod.POST)
     public Response register(HttpServletRequest request){
         Response response = new Response();
 
@@ -78,7 +79,7 @@ public class LoginController {
         return response.send(request.getRequestURI()).Created();
     }
 
-    @RequestMapping("/getChallenge")
+    @PostMapping("/challenge")
     @ApiOperation("Used for get challenge information for login")
     public Response getChallenge(HttpServletRequest request){
 
@@ -89,7 +90,7 @@ public class LoginController {
         if(accountService.existsByEmail(email)) {
             response.addResponse("userId", accountService.getUserID(email));
             response.addResponse("userSalt", accountService.getUserSalt(email));
-            response.addResponse("currentLoginChallenge",accountService.getChallengeKeys(email));
+            response.addResponse("currentLoginChallenge",accountService.getChallengeKeys(accountService.getUserID(email)));
 
             return response.OK().send(request.getRequestURI());
         } else

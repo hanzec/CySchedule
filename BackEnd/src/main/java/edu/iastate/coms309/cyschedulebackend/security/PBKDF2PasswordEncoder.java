@@ -30,15 +30,13 @@ public class PBKDF2PasswordEncoder{
 
     public String encode(String password) {
         byte[] salt = generateSalt();
-        return "PBKDF2$" + Arrays.toString(salt) + "$" + encode(password,salt);
+        return "PBKDF2$" + ByteArrayUtil.ByteArrayToHex(salt) + "$" + encode(password,salt);
     }
 
-    public boolean matches(CharSequence charSequence, String s) {
-        String[] input = s.split("$");
+    public boolean matches(CharSequence charSequence, String s, Long userId) {
         String[] keyStorage = charSequence.toString().split("$");
-
-        String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(input[0]));
-       return hashedPassword.equals(input[1]);
+        String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(userId));
+       return hashedPassword.equals(s);
     }
 
     public String encode(String s, byte[] password){

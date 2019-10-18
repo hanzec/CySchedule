@@ -4,6 +4,7 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserRepository;
+import edu.iastate.coms309.cyschedulebackend.security.PBKDF2PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,13 +35,13 @@ public class AccountService implements UserDetailsService{
     UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    PBKDF2PasswordEncoder passwordEncoder;
 
 
     @Autowired
     RedisTemplate<String,Object> redisTemplate;
 
-    HashMap<String,byte[]> challengeStorage = new HashMap<>();
+    HashMap<Long,byte[]> challengeStorage = new HashMap<>();
 
     @Transactional
     public Long createUser(String password, String firstName, String lastName, String email, String username) {
@@ -75,16 +76,16 @@ public class AccountService implements UserDetailsService{
     @Cacheable(value = "password", key = "'user_pass_'+#email")
     public String getPasswordByEmail(String email) { return userRepository.findByEmail(email).getPassword(); }
 
-    public byte[] getChallengeKeys(String username){
-        if (challengeStorage.containsKey(username))
-            return challengeStorage.get(username);
+    public byte[] getChallengeKeys(Long userID){
+        if (challengeStorage.containsKey(userID))
+            return challengeStorage.get(userID);
         else
-            return generateChallengeKeys(username);
+            return generateChallengeKeys(userID);
     }
 
-    public byte[] generateChallengeKeys(String username){
-        challengeStorage.put(username, UUID.randomUUID().toString().getBytes());
-        return challengeStorage.get(username);
+    public byte[] generateChallengeKeys(Long userID){
+        challengeStorage.put(userID, UUID.randomUUID().toString().getBytes());
+        return challengeStorage.get(userID);
     }
 
     @Override

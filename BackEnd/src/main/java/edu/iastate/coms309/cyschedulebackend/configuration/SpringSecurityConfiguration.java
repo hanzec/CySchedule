@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -28,16 +29,15 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     AccountService accountService;
 
     @Bean
-    public PBKDF2PasswordEncoder passwordEncoder() {
+    public Pbkdf2PasswordEncoder passwordEncoder() {
 
-        return new PBKDF2PasswordEncoder();
+        return new Pbkdf2PasswordEncoder();
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(accountService)
-                .passwordEncoder(passwordEncoder());
+                .userDetailsService(accountService);
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
