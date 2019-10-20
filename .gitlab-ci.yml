@@ -5,7 +5,7 @@ stages:
     - test-frontend
     - deploy-server
     - release-frontend
-
+    
 before_script:
     ##
     ## fix "Could not open a connection to your authentication agent."
@@ -20,13 +20,18 @@ before_script:
     - ssh-keyscan dev.hanzec.com >> ~/.ssh/known_hosts
     
     ##
-    ##
     ## Set correct file permission for these file
+    ##
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - chmod 644 ~/.ssh/known_hosts
     - chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa.pub  
-
+    
+    ##
+    ## Fix android build error
+    ##
+    - export ANDROID_HOME="$HOME/Library/Android/sdk"
+    
 build-frontend:
   stage: build-server
   image: jangrewe/gitlab-ci-android
