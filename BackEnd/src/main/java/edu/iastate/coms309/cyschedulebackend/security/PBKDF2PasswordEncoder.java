@@ -1,20 +1,16 @@
 package edu.iastate.coms309.cyschedulebackend.security;
 
-import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-import edu.iastate.coms309.cyschedulebackend.Utils.ByteArrayUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.Arrays;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.SecretKeyFactory;
+import java.security.NoSuchAlgorithmException;
+import org.springframework.stereotype.Component;
+import java.security.spec.InvalidKeySpecException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import edu.iastate.coms309.cyschedulebackend.Utils.ByteArrayUtil;
+import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 
 @Component
 public class PBKDF2PasswordEncoder{
@@ -34,7 +30,7 @@ public class PBKDF2PasswordEncoder{
     }
 
     public boolean matches(CharSequence charSequence, String s, Long userId) {
-        String[] keyStorage = charSequence.toString().split(".");
+        String[] keyStorage = charSequence.toString().split("[.]");
         String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(userId));
        return hashedPassword.equals(s);
     }

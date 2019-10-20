@@ -1,21 +1,17 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
 import com.google.gson.Gson;
-import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-
-import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-
-import javax.servlet.http.HttpServletRequest;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 
 
 @RestController
@@ -54,29 +50,22 @@ public class LoginController {
 
     @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    public Response register(HttpServletRequest request){
+    public Response register(HttpServletRequest request, User user){
         Response response = new Response();
 
-        //retire information from HTTP request
-        String email = request.getParameter("email");
-        String username = request.getParameter("userName");
-        String password = request.getParameter("password");
-        String lastname = request.getParameter("lastName");
-        String firstname = request.getParameter("firstName");
-
         //New Register will give all required field
-        if(email == null || username == null || password == null||lastname == null||firstname == null)
+        if(user.getEmail() == null || user.getUsername() == null || user.getPassword() == null||user.getLastName() == null||user.getFirstName() == null)
             return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
         //There should not register with same email address
-        if(accountService.existsByEmail(email))
+        if(accountService.existsByEmail(user.getEmail()))
             return response.BadRequested("Username is Already Used").send(request.getRequestURI()).Created();
 
 
         //Trying to Register new Account to Server
-        accountService.createUser(password,firstname,lastname,email,username);
+        accountService.createUser(user);
 
-        return response.send(request.getRequestURI()).Created();
+        return response.send(request.getRequestURI()).Created().addResponse("UserID",user.getUserID());
     }
 
     @PostMapping("/challenge")
