@@ -5,14 +5,19 @@ android {
     buildToolsVersion '29.0.2'
 
     defaultConfig {
-        applicationId "com.sourcey.cycheduleexample"
-        minSdkVersion 15
+        applicationId "edu.iastate.cychedule"
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
         release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug{
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
