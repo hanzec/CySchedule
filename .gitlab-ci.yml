@@ -29,7 +29,7 @@ before_script:
 
 build-frontend:
   stage: build-frontend
-  imagine: jangrewe/gitlab-ci-android
+  image: jangrewe/gitlab-ci-android
   script:
   script:
   - cd ./FrontEnd
