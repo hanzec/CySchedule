@@ -28,7 +28,7 @@ before_script:
     - chmod 600 ~/.ssh/id_rsa ~/.ssh/id_rsa.pub  
 
 build-frontend:
-  stage: build-frontend
+  stage: build-server
   image: jangrewe/gitlab-ci-android
   script:
   script:
