@@ -35,6 +35,7 @@ build-frontend:
   script:
   - cd ./FrontEnd
   - chmod +x ./gradlew
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
   - ./gradlew assembleDebug
   - mv FrontEnd/app/build/outputs/apk/app-debug.apk FrontEnd/app/build/outputs/apk/$CI_COMMIT_TAG.apk
   artifacts:
