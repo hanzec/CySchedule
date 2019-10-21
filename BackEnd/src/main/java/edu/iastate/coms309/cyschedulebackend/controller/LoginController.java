@@ -41,7 +41,7 @@ public class LoginController {
         String password = request.getParameter("password");
 
         User user = (User) accountService.loadUserByUsername(username);
-        if(user.getPassword().equals(password))
+        if(puser.getPassword()matches(password))
             response.OK().addResponse("loginToken",userTokenService.genUserToken(user.getUserID()));
         else
             response.Forbidden();

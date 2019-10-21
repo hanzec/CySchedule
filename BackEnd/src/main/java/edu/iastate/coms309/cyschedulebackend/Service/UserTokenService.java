@@ -1,23 +1,25 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import edu.iastate.coms309.cyschedulebackend.Utils.JwtTokenUtil;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
+import edu.iastate.coms309.cyschedulebackend.security.models.LoginObject;
+import edu.iastate.coms309.cyschedulebackend.security.models.TokenObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class UserTokenService {
-
-    @Autowired
-    JwtTokenUtil jwtTokenUtil;
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    RedisTemplate<String,Object> redisTemplate;
 
     @Value("${account.security.token.authtoken.expiretime}")
     Integer authTokenExpireTime;
@@ -25,37 +27,29 @@ public class UserTokenService {
     @Value("${account.security.token.accesstoken.expiretime}")
     Integer accessTokenExpireTime;
 
-    public boolean verify(LoginToken loginToken) {
-        LoginToken cached = (LoginToken) redisTemplate.opsForHash()
-                .get("user_token_" + loginToken.getUserID(), loginToken.getToken());
+    @Autowired
+    AccountService accountService;
 
-        if (cached == null)
-            return false;
-        else if (!JwtTokenUtil.isTokenExpired(loginToken,accountService.getJwtKey(loginToken.getUserID())))
-            return false;
-        else if (!JwtTokenUtil.isTokenValid(loginToken, accountService.getJwtKey(loginToken.getUserID())))
-            return false;
-        else
-            return true;
+
+    HashMap<Long, List<UserToken>> keyStorage;
+
+    public TokenObject load(String token){
+        TokenObject tokenObject = new TokenObject();
+
+        DecodedJWT jwt = null;
+        try {
+            jwt = JWT.decode(token);
+        } catch (JWTDecodeException exception){
+            //Invalid token
+        }
+
+        tokenObject.setToken(token);
+        tokenObject.setUserID(jwt.getClaim("userID").asLong());
+        for (String permission : jwt.getClaim("Permission").toString().split("[|]")) {
+            tokenObject.getAuthorities().add(new SimpleGrantedAuthority(permission))
+        }
     }
 
-    public LoginToken genUserToken(Long userID) {
-
-        LoginToken loginToken = jwtTokenUtil.generateNewToken(userID,
-                                                            authTokenExpireTime,
-                                                            accountService.getJwtKey(userID));
-
-        //CacheItem
-        redisTemplate.opsForHash().put("user_token_" + userID, loginToken.getToken(), loginToken);
-
-        return loginToken;
-    }
-
-    public void deleteUserToken(Long userID, String token) {
-        redisTemplate.opsForHash().delete("user_token_" + userID,token);
-    }
-
-    public LoginToken getToken(Long userID, String token){
-        return (LoginToken) redisTemplate.opsForHash().get("user_token_" + userID,token);
+    public UserToken creat(LoginObject user) {
     }
 }

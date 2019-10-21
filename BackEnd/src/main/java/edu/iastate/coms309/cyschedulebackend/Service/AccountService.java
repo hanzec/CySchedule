@@ -4,16 +4,15 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserDetailsRepository;
-import edu.iastate.coms309.cyschedulebackend.security.PBKDF2PasswordEncoder;
-import edu.iastate.coms309.cyschedulebackend.security.models.LoginObject;
+import edu.iastate.coms309.cyschedulebackend.security.models.TokenObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,13 +32,10 @@ public class AccountService implements UserDetailsService{
      */
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
     UserDetailsRepository userDetailsRepository;
-
-    @Autowired
-    PBKDF2PasswordEncoder passwordEncoder;
-
-    @Autowired
-    RedisTemplate<String,Object> redisTemplate;
 
     private HashMap<Long,String> challengeStorage = new HashMap<>();
 
@@ -63,23 +59,29 @@ public class AccountService implements UserDetailsService{
     public boolean existsByEmail(String email){ return userDetailsRepository.existsByEmail(email);}
 
     @Transactional
-    @Cacheable(value = "userid", key = "'id_'+#email")
+    @Cacheable(value = "userid", key = "#email + '_id'")
     public Long getUserID(String email) { return userDetailsRepository.findByEmail(email).getUserID(); }
 
     @Transactional
-    @Cacheable(value = "salt", key = "'salt_'+#email")
+    @Cacheable(value = "salt", key = "#email + '_salt'")
     public String getUserSalt(String email) {
         String result = userDetailsRepository.findByEmail(email).getPassword();
         return result.split("[.]")[1];
     }
 
     @Transactional
-    @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
-    public String getJwtKey(Long userID) { return userDetailsRepository.findByUserID(userID).getJwtKey(); }
+    @Cacheable(value = "jwt_key", key = "#userID + '_jwt_key'")
+    public String getJwtKey(Long userID) {
+        User user = userDetailsRepository.findByUserID(userID);
 
-    @Transactional
-    @Cacheable(value = "password", key = "'user_pass_'+#email")
-    public String getPasswordByEmail(String email) { return userDetailsRepository.findByEmail(email).getPassword(); }
+        if(user.getJwtKey().isEmpty()){
+            user.setJwtKey(UUID.randomUUID().toString());
+            logger.info("New jwt Keys for [" + userID + "] is created");
+            userDetailsRepository.save(user);
+        }
+
+        return user.getJwtKey();
+    }
 
     public byte[] getChallengeKeys(Long userID){
         if (challengeStorage.containsKey(userID)) {
@@ -98,7 +100,7 @@ public class AccountService implements UserDetailsService{
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         if (userDetailsRepository.existsByEmail(email))
-            return new LoginObject(userDetailsRepository.findByEmail(email));
+            return new TokenObject(userDetailsRepository.findByEmail(email));
         else
             throw new UsernameNotFoundException("username " + email + " is not found");
     }

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import edu.iastate.coms309.cyschedulebackend.Utils.ByteArrayUtil;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 
-@Component
 public class PBKDF2PasswordEncoder implements PasswordEncoder {
 
     @Value("${account.security.saltLength}")
