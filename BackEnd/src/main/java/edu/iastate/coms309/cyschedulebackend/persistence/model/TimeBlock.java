@@ -23,15 +23,9 @@ public class TimeBlock {
 
     public String description;
 
-    public Long adminUser;
+    @OneToMany
+    public User adminUser;
 
-    public TimeBlock(){};
-
-    public TimeBlock(String name, Long adminUser, Time startTime, Time endTime){
-        this.name = name;
-        this.adminUser = adminUser;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
+    @ManyToOne
+    public Set<User> relatedUser;
 }

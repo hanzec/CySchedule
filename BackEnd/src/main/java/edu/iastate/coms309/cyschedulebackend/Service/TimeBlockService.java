@@ -3,33 +3,36 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.TimeBlock;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.TimeBlockRepository;
-import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserRepository;
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
 import java.util.Set;
 
 @Service
 public class TimeBlockService {
 
     @Autowired
-    UserRepository userRepository;
+    UserDetailsRepository userDetailsRepository;
 
     @Autowired
     TimeBlockRepository timeBlockRepository;
 
     @Transactional
-    public Long addTimeBlock(TimeBlock timeBlock){
+    public Long addTimeBlock(TimeBlock timeBlock, Long userId){
 
-        User user = userRepository.findByUserID(timeBlock.adminUser);
+        User user = userDetailsRepository.findByUserID(userId);
+
+        timeBlock.adminUser = user;
 
         timeBlockRepository.saveAndFlush(timeBlock);
 
-        user.getUserTimeBlock().add(timeBlock);
+        user.getManagedTimeBlock().add(timeBlock);
 
-        userRepository.saveAndFlush(user);
+        user.getJoinedTimeBlock().add(timeBlock);
+
+        userDetailsRepository.saveAndFlush(user);
 
         return timeBlock.blockID;
     }
@@ -43,8 +46,6 @@ public class TimeBlockService {
     }
 
     @Transactional
-    public Set<TimeBlock> getAllTimeBlock(String admin){
-        return userRepository.findByEmail(admin).getUserTimeBlock();
-    }
+    public Set<TimeBlock> getAllTimeBlock(String admin){ return userDetailsRepository.findByEmail(admin).getJoinedTimeBlock(); }
 
 }

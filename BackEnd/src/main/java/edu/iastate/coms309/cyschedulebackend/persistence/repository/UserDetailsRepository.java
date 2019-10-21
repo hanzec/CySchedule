@@ -8,11 +8,12 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserDetailsRepository extends JpaRepository<User, Long> {
 
     User findByUserID(Long userID);
 
     User findByEmail(String eamil);
 
     Boolean existsByEmail(String email);
+
 }

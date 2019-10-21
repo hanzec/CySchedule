@@ -1,10 +1,16 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
+import com.google.common.collect.Lists;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.security.PBKDF2PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,25 +20,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
-)
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
 
     @Autowired
     AccountService accountService;
-
-    @Bean
-    public Pbkdf2PasswordEncoder passwordEncoder() {
-
-        return new Pbkdf2PasswordEncoder();
-    }
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -51,13 +48,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors()
-                .and()
-                .csrf()
-                .disable()
-                .exceptionHandling()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().csrf().disable().exceptionHandling()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().formLogin().loginPage("/login").loginProcessingUrl("/api/v1/auth/login")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/", //allow all static content
