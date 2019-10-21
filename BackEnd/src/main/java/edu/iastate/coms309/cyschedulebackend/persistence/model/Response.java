@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@ApiModel
 public class Response {
 
     String path;

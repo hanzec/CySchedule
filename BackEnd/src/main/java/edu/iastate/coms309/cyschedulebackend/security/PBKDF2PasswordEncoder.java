@@ -1,20 +1,19 @@
 package edu.iastate.coms309.cyschedulebackend.security;
 
-import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-import edu.iastate.coms309.cyschedulebackend.Utils.ByteArrayUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.SecretKeyFactory;
+import java.security.NoSuchAlgorithmException;
+import org.springframework.stereotype.Component;
+import java.security.spec.InvalidKeySpecException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import edu.iastate.coms309.cyschedulebackend.Utils.ByteArrayUtil;
+import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 
-public class PBKDF2PasswordEncoder implements PasswordEncoder {
+@Component
+public class PBKDF2PasswordEncoder{
 
     @Value("${account.security.saltLength}")
     private Integer hashLength;
@@ -25,28 +24,24 @@ public class PBKDF2PasswordEncoder implements PasswordEncoder {
     @Autowired
     AccountService accountService;
 
-    @Override
-    public String encode(CharSequence charSequence) {
+    public String encode(String password) {
         byte[] salt = generateSalt();
-        return "PBKDF2$" + salt + "$" +encode(charSequence.toString(),salt);
+        return "PBKDF2." + ByteArrayUtil.ByteArrayToHex(salt) + "." + encode(password,salt);
     }
 
-    @Override
-    public boolean matches(CharSequence charSequence, String s) {
-        String[] input = s.split("$");
-        String[] keyStorage = charSequence.toString().split("$");
-
-        String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(input[0]));
-       return hashedPassword.equals(input[1]);
+    public boolean matches(CharSequence charSequence, String s, Long userId) {
+        String[] keyStorage = charSequence.toString().split("[.]");
+        String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(userId));
+       return hashedPassword.equals(s);
     }
 
     public String encode(String s, byte[] password){
         KeySpec spec;
         SecretKeyFactory factory = null;
-        spec = new PBEKeySpec(s.toCharArray(), password, encryptCount, password.length);
+        spec = new PBEKeySpec(s.toCharArray(), password, encryptCount, 256);
         try {
             factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            return "1000$" + ByteArrayUtil.ByteArrayToHex(factory.generateSecret(spec).getEncoded());
+            return "1000." + ByteArrayUtil.ByteArrayToHex(factory.generateSecret(spec).getEncoded());
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }

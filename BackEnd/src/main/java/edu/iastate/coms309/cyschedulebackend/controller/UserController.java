@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api/user/v1")
+@RequestMapping("/api/v1/user")
 @Api(tags = "RestAPI Related to Authentication")
 public class UserController{
 

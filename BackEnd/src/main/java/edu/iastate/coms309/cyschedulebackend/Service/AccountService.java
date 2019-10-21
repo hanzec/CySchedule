@@ -4,14 +4,13 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserRepository;
+import edu.iastate.coms309.cyschedulebackend.security.PBKDF2PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,26 +33,23 @@ public class AccountService implements UserDetailsService{
     UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    PBKDF2PasswordEncoder passwordEncoder;
 
 
     @Autowired
     RedisTemplate<String,Object> redisTemplate;
 
-    HashMap<String,byte[]> challengeStorage = new HashMap<>();
+    HashMap<Long,String> challengeStorage = new HashMap<>();
 
     @Transactional
-    public Long createUser(String password, String firstName, String lastName, String email, String username) {
-        // create new user object
-        User user = new User(password,firstName,lastName,email,username);
+    public void createUser(User user) {
 
         //encrypt password
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //save to the
         userRepository.save(user);
 
-        return user.getUserID();
     }
 
     @Transactional
@@ -65,7 +61,10 @@ public class AccountService implements UserDetailsService{
 
     @Transactional
     @Cacheable(value = "salt", key = "'salt_'+#email")
-    public String getUserSalt(String email) { return userRepository.findByEmail(email).getPassword().split(".")[2]; }
+    public String getUserSalt(String email) {
+        String result = userRepository.findByEmail(email).getPassword();
+        return result.split("[.]")[1];
+    }
 
     @Transactional
     @Cacheable(value = "jwt_key", key = "'jwt_key_'+#userID")
@@ -75,16 +74,16 @@ public class AccountService implements UserDetailsService{
     @Cacheable(value = "password", key = "'user_pass_'+#email")
     public String getPasswordByEmail(String email) { return userRepository.findByEmail(email).getPassword(); }
 
-    public byte[] getChallengeKeys(String username){
-        if (challengeStorage.containsKey(username))
-            return challengeStorage.get(username);
+    public byte[] getChallengeKeys(Long userID){
+        if (challengeStorage.containsKey(userID))
+            return challengeStorage.get(userID).getBytes();
         else
-            return generateChallengeKeys(username);
+            return generateChallengeKeys(userID);
     }
 
-    public byte[] generateChallengeKeys(String username){
-        challengeStorage.put(username, UUID.randomUUID().toString().getBytes());
-        return challengeStorage.get(username);
+    public byte[] generateChallengeKeys(Long userID){
+        challengeStorage.put(userID, UUID.randomUUID().toString());
+        return challengeStorage.get(userID).getBytes();
     }
 
     @Override

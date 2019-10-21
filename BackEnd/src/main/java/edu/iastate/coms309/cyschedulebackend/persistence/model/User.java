@@ -54,14 +54,6 @@ public class User implements UserDetails, Serializable{
     @OneToMany(cascade = CascadeType.ALL)
     private Set<TimeBlock> userTimeBlock;
 
-    public User(String password, String firstname, String lastname, String email, String username) {
-        this.email = email;
-        this.password = password;
-        this.lastName = lastname;
-        this.username = username;
-        this.firstName = firstname;
-    }
-
     @Override
     public boolean isEnabled() { return true; }
 

@@ -8,6 +8,9 @@
 #File Generate By MacOS
 .DS_Store
 
+#idea
+.idea/
+
 #File Gererate By IntellJ IDE
 *.iml
 BackEnd/.mvn

@@ -25,6 +25,8 @@ public class TimeBlock {
 
     public Long adminUser;
 
+    public TimeBlock(){};
+
     public TimeBlock(String name, Long adminUser, Time startTime, Time endTime){
         this.name = name;
         this.adminUser = adminUser;

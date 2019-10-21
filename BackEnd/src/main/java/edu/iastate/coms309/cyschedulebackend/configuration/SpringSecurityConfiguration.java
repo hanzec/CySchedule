@@ -2,11 +2,9 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.security.PBKDF2PasswordEncoder;
-import edu.iastate.coms309.cyschedulebackend.security.filter.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,10 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -34,16 +29,15 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     AccountService accountService;
 
     @Bean
-    public PBKDF2PasswordEncoder passwordEncoder() {
+    public Pbkdf2PasswordEncoder passwordEncoder() {
 
-        return new PBKDF2PasswordEncoder();
+        return new Pbkdf2PasswordEncoder();
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(accountService)
-                .passwordEncoder(passwordEncoder());
+                .userDetailsService(accountService);
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -81,7 +75,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/v2/api-docs",
                         "/webjars/**")
                 .permitAll()
-                .antMatchers("/api/auth/**")
+                .antMatchers("/api/v1/auth/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
