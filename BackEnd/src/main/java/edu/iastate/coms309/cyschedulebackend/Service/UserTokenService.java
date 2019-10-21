@@ -11,6 +11,7 @@ import edu.iastate.coms309.cyschedulebackend.security.models.LoginObject;
 import edu.iastate.coms309.cyschedulebackend.security.models.TokenObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class UserTokenService {
 
     HashMap<Long, List<UserToken>> keyStorage;
 
+    @Cacheable(value = "tokenObject", key = "#token + '_object")
     public TokenObject load(String token){
         TokenObject tokenObject = new TokenObject();
 
@@ -46,7 +48,7 @@ public class UserTokenService {
         tokenObject.setToken(token);
         tokenObject.setUserID(jwt.getClaim("userID").asLong());
         for (String permission : jwt.getClaim("Permission").toString().split("[|]")) {
-            tokenObject.getAuthorities().add(new SimpleGrantedAuthority(permission))
+            tokenObject.getAuthorities().add()
         }
     }
 
