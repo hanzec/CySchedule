@@ -5,6 +5,8 @@ import java.security.spec.KeySpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 import java.security.NoSuchAlgorithmException;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.security.spec.InvalidKeySpecException;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +15,7 @@ import edu.iastate.coms309.cyschedulebackend.Utils.ByteArrayUtil;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 
 @Component
-public class PBKDF2PasswordEncoder{
+public class PBKDF2PasswordEncoder implements PasswordEncoder {
 
     @Value("${account.security.saltLength}")
     private Integer hashLength;
@@ -24,20 +26,25 @@ public class PBKDF2PasswordEncoder{
     @Autowired
     AccountService accountService;
 
-    public String encode(String password) {
+    @Override
+    public String encode(CharSequence charSequence) {
         byte[] salt = generateSalt();
-        return "PBKDF2." + ByteArrayUtil.ByteArrayToHex(salt) + "." + encode(password,salt);
+        assert salt != null;
+        return "PBKDF2." + ByteArrayUtil.ByteArrayToHex(salt) + "." + encode((String) charSequence,salt);
     }
 
-    public boolean matches(CharSequence charSequence, String s, Long userId) {
+    @Override
+    public boolean matches(CharSequence charSequence, String s) {
+        String[] splitInput = s.split("[.]");
         String[] keyStorage = charSequence.toString().split("[.]");
-        String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(userId));
-       return hashedPassword.equals(s);
+        String hashedPassword = encode(keyStorage[3],accountService.getChallengeKeys(Long.parseLong(splitInput[0])));
+        assert hashedPassword != null;
+        return hashedPassword.equals(splitInput[1]);
     }
 
-    public String encode(String s, byte[] password){
+    private String encode(String s, byte[] password){
         KeySpec spec;
-        SecretKeyFactory factory = null;
+        SecretKeyFactory factory;
         spec = new PBEKeySpec(s.toCharArray(), password, encryptCount, 256);
         try {
             factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -49,8 +56,8 @@ public class PBKDF2PasswordEncoder{
         return null;
     }
 
-    public byte[] generateSalt(){
-        SecureRandom random = null;
+    private byte[] generateSalt(){
+        SecureRandom random;
         byte[] randomTmp = new byte[hashLength];
 
         try {
