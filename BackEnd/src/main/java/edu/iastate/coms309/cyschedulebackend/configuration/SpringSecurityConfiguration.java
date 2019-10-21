@@ -3,6 +3,7 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 import com.google.common.collect.Lists;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.security.PBKDF2PasswordEncoder;
+import org.graalvm.compiler.nodes.memory.Access;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    AccessDecisionManager accessDecisionManager;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -71,7 +75,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .accessDecisionManager(accessDecisionManager);
 
     }
 }
