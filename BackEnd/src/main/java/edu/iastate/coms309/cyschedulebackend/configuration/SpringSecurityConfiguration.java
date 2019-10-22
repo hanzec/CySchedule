@@ -61,9 +61,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .rememberMe().userDetailsService(userDetailsService())
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .authorizeRequests()
                 .antMatchers("/login.html","/login","/do_login")
                 .permitAll()
@@ -71,6 +68,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest()
                 .authenticated();
+
+        //RememberMe configuration
+        http
+                .rememberMe().userDetailsService(userDetailsService());
 
         //login page configuration
         http
