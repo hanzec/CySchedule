@@ -61,9 +61,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and().csrf().disable().exceptionHandling()
-                .and().rememberMe().userDetailsService(userDetailsService())
+                .rememberMe().userDetailsService(userDetailsService())
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
