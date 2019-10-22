@@ -14,7 +14,7 @@
     <string name="menu_profile">Profile</string>
     <string name="menu_calendar">Calendar</string>
     <string name="menu_daysCounter">Days Counter</string>
-    <string name="menu_timer">Timer</string>
+    <string name="menu_alarm">Alarm</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="title_activity_main3">Main3Activity</string>
