@@ -46,9 +46,9 @@ public class User implements Serializable{
     private Set<Permission> permissions;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<TimeBlock> joinedTimeBlock;
+    private Set<Event> joinedEvent;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_time_block")
-    private Set<TimeBlock> managedTimeBlock;
+    private Set<Event> managedEvent;
 }

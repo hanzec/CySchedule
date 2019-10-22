@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +46,7 @@ public class LoginController {
 
     @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    public Response register(HttpServletRequest request, User user){
+    public Response register(HttpServletRequest request, LoginRequest user){
         Response response = new Response();
 
         //New Register will give all required field

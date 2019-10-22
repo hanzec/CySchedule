@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Data
 @Entity
-public class TimeBlock {
+public class Event {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     public Long blockID;

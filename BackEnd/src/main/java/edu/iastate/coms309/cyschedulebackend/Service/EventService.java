@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 @Service
-public class TimeBlockService {
+public class EventService {
 
     @Autowired
     UserDetailsRepository userDetailsRepository;

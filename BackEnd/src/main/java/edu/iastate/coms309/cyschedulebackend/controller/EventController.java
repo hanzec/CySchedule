@@ -1,7 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
 
-import edu.iastate.coms309.cyschedulebackend.Service.TimeBlockService;
+import edu.iastate.coms309.cyschedulebackend.Service.EventService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
 import io.swagger.annotations.Api;
@@ -14,20 +14,19 @@ import java.security.Principal;
 
 
 @RestController
-@RequestMapping("/api/v1/timeblock")
+@RequestMapping("/api/v1/event")
 @Api(tags = "RestAPI Related to TimeBlock")
-public class TimeBlockController {
-
+public class EventController {
 
     @Autowired
-    TimeBlockService timeBlockService;
+    EventService eventService;
 
     @GetMapping(value= "/all")
     @ApiOperation("Get All TimeBlock")
     public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request){
         Response response = new Response();
 
-        timeBlockService.getAllTimeBlock(principal.getName()).forEach(V->{
+        eventService.getAllTimeBlock(principal.getName()).forEach(V->{
             response.addResponse(V.blockID,V);
         });
 
@@ -58,7 +57,7 @@ public class TimeBlockController {
     @DeleteMapping(value= "/{blockID}")
     public Response deleteTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
         Response response = new Response();
-        timeBlockService.deleteTimeBlock(blockID);
+        eventService.deleteTimeBlock(blockID);
         return response.noContent().send(request.getRequestURI());
     }
 
@@ -66,7 +65,7 @@ public class TimeBlockController {
     @GetMapping(value= "/{blockID}")
     public Response loadTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
         Response response = new Response();
-        response.addResponse("TimeBlock",timeBlockService.getTimeBlock(blockID));
+        response.addResponse("TimeBlock", eventService.getTimeBlock(blockID));
 
         if(response.getResponseBody().isEmpty())
             return response.NotFound().send(request.getRequestURI());
@@ -78,7 +77,7 @@ public class TimeBlockController {
     @PutMapping(value= "/{blockID}")
     public Response updateTimeBlock(HttpServletRequest request, @PathVariable Long blockID, Event newEvent){
         Response response = new Response();
-        Event event = timeBlockService.getTimeBlock(blockID);
+        Event event = eventService.getTimeBlock(blockID);
 
         if (newEvent.name != null)
             event.name = newEvent.name;
