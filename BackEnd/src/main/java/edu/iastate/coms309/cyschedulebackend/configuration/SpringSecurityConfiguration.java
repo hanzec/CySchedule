@@ -75,6 +75,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //login page configuration
         http
                 .formLogin()
+                .successForwardUrl("/swagger-ui.html")
                 .defaultSuccessUrl("/swagger-ui.html");
     }
 }
