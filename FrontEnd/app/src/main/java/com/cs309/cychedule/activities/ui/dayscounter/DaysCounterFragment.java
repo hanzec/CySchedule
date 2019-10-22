@@ -77,7 +77,6 @@ public class DaysCounterFragment extends Fragment {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //这里实现volley
                 secretText = secretInput.getText().toString().trim();
                 if (secretText.isEmpty()) {
                     Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter something!", Toast.LENGTH_SHORT);
@@ -107,8 +106,12 @@ public class DaysCounterFragment extends Fragment {
                             +"\nSecret: " + secretText, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
+    
+                //这里实现volley
             }
         });
+    
+        
         return root;
     }
 }

@@ -69,7 +69,6 @@ public class CalendarFragment extends Fragment {
 		btnAdd.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//这里实现volley
 				secretText = secretInput.getText().toString().trim();
 				if (secretText.isEmpty()) {
 					Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter something!", Toast.LENGTH_SHORT);
@@ -79,6 +78,7 @@ public class CalendarFragment extends Fragment {
 					Snackbar.make(root, "Secret :" + secretText + " @" + year + "." + month + "." + day, Snackbar.LENGTH_LONG)
 							.setAction("Action", null).show();
 				}
+				//这里实现volley
 			}
 		});
 		return root;
