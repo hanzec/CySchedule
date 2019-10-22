@@ -1,6 +1,5 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
-import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +24,6 @@ public class LoginController {
     */
 
     @Autowired
-    Gson gson;
-
-    @Autowired
     AccountService accountService;
 
     @Autowired
@@ -37,12 +33,11 @@ public class LoginController {
     @ApiOperation("Login API")
     public Response login(HttpServletRequest request){
         Response response = new Response();
-        String username = request.getParameter("username");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        User user = (User) accountService.loadUserByUsername(username);
-        if(puser.getPassword()matches(password))
-            response.OK().addResponse("loginToken",userTokenService.genUserToken(user.getUserID()));
+        if(accountService.checkPassword(email,password))
+            response.OK().addResponse("loginToken",userTokenService.creat(accountService.getUserID(email)));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());
@@ -65,7 +60,7 @@ public class LoginController {
         //Trying to Register new Account to Server
         accountService.createUser(user);
 
-        return response.send(request.getRequestURI()).Created().addResponse("UserID",user.getUserID());
+        return response.send(request.getRequestURI()).Created().addResponse("UserID",user);
     }
 
     @PostMapping("/challenge")
@@ -79,7 +74,7 @@ public class LoginController {
         if(accountService.existsByEmail(email)) {
             response.addResponse("userId", accountService.getUserID(email));
             response.addResponse("userSalt", accountService.getUserSalt(email));
-            response.addResponse("currentLoginChallenge",accountService.getChallengeKeys(accountService.getUserID(email)));
+            response.addResponse("currentLoginChallenge",accountService.createChallengeKeys(accountService.getUserID(email)));
 
             return response.OK().send(request.getRequestURI());
         } else

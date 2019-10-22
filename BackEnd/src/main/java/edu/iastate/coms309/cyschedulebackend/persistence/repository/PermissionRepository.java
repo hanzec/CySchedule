@@ -6,4 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, Long>{
+
+    public Boolean existsByRoleID(Integer roleID);
+
+    public Permission findByRoleID(Integer roleID);
 }

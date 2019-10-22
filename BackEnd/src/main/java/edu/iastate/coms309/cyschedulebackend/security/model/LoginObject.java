@@ -1,6 +1,7 @@
-package edu.iastate.coms309.cyschedulebackend.security.models;
+package edu.iastate.coms309.cyschedulebackend.security.model;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +14,12 @@ public class LoginObject implements UserDetails {
     private String password;
 
     private Collection<Permission> userPermission;
+
+    public LoginObject(User user){
+        this.userID = user.getUserID();
+        this.password = user.getPassword();
+        this.userPermission = user.getPermissions();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() { return userPermission; }

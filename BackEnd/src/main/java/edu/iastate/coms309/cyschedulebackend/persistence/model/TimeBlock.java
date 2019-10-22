@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -23,9 +24,10 @@ public class TimeBlock {
 
     public String description;
 
-    @OneToMany
+    @ManyToOne
+    @JoinColumn(name = "user_time_block")
     public User adminUser;
 
-    @ManyToOne
-    public Set<User> relatedUser;
+    @ManyToMany
+    public List<User> relatedUser;
 }

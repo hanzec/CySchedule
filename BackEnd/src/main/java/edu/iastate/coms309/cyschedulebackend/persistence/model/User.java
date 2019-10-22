@@ -36,13 +36,19 @@ public class User implements Serializable{
 
     private Long registerTime;
 
+
+    @OneToMany
+    @JoinColumn(name = "user_token")
+    private Set<UserToken> userTokens;
+
     @JoinTable(name = "user_to_user_role_table")
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<Permission> permissions;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<TimeBlock> joinedTimeBlock;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_time_block")
     private Set<TimeBlock> managedTimeBlock;
 }

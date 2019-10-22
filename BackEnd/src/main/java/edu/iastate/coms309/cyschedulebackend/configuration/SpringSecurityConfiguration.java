@@ -1,21 +1,13 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
-import com.google.common.collect.Lists;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-import edu.iastate.coms309.cyschedulebackend.security.PBKDF2PasswordEncoder;
-import org.graalvm.compiler.nodes.memory.Access;
+import edu.iastate.coms309.cyschedulebackend.security.handler.LoginFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.vote.AuthenticatedVoter;
-import org.springframework.security.access.vote.RoleVoter;
-import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,9 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.web.access.expression.WebExpressionVoter;
-
-import java.util.List;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -34,30 +24,31 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     AccountService accountService;
 
-    @Autowired
-    AccessDecisionManager accessDecisionManager;
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new Pbkdf2PasswordEncoder();
     }
 
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(accountService)
-                .passwordEncoder(passwordEncoder());
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler(){
+        return new LoginFailureHandler();
     }
 
-    @Override
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    public AuthenticationManager authenticationManagerBean() throws Exception {
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManagerBean();
     }
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/static/**");
+
+        web.ignoring()
+                .antMatchers("/js/**")
+                .antMatchers("/css/**")
+                .antMatchers("/fonts/**")
+                .antMatchers("/images/**")
+                .antMatchers("/vendor/**");
     }
 
     @Override
@@ -65,20 +56,25 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .and().csrf().disable().exceptionHandling()
+                .and().rememberMe().userDetailsService(userDetailsService())
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().formLogin().loginPage("/login").loginProcessingUrl("/api/v1/auth/login")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/swagger-resources/**", //allow swagger api document
-                        "/swagger-ui.html",
-                        "/v2/api-docs",
-                        "/webjars/**")
+                .antMatchers("/login.html","/login")
                 .permitAll()
                 .antMatchers("/api/v1/auth/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
-                .accessDecisionManager(accessDecisionManager);
+                .authenticated();
 
+        //login page configuration
+        http
+                .formLogin()
+                .loginPage("/login")
+                .usernameParameter("email")
+                .loginProcessingUrl("/login")
+                .passwordParameter("password")
+                .successForwardUrl("/swagger-ui.html")
+                .failureHandler(authenticationFailureHandler());
     }
 }

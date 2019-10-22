@@ -1,10 +1,11 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserDetailsRepository;
-import edu.iastate.coms309.cyschedulebackend.security.models.TokenObject;
+import edu.iastate.coms309.cyschedulebackend.security.model.LoginObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -46,6 +49,7 @@ public class AccountService implements UserDetailsService{
     public User createUser(User user) {
 
         //encrypt password
+        user.setRegisterTime(System.currentTimeMillis()/1000L);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //save to the
@@ -63,6 +67,10 @@ public class AccountService implements UserDetailsService{
     public Long getUserID(String email) { return userDetailsRepository.findByEmail(email).getUserID(); }
 
     @Transactional
+    @Cacheable(value = "userEmail", key = "#userID + '_email'")
+    public String getUserEmail(Long userID) { return userDetailsRepository.findByUserID(userID).getEmail(); }
+
+    @Transactional
     @Cacheable(value = "salt", key = "#email + '_salt'")
     public String getUserSalt(String email) {
         String result = userDetailsRepository.findByEmail(email).getPassword();
@@ -70,11 +78,15 @@ public class AccountService implements UserDetailsService{
     }
 
     @Transactional
+    public Set<Permission> getPermissions(Long userID){
+        return userDetailsRepository.findByUserID(userID).getPermissions();
+    }
+    @Transactional
     @Cacheable(value = "jwt_key", key = "#userID + '_jwt_key'")
     public String getJwtKey(Long userID) {
         User user = userDetailsRepository.findByUserID(userID);
 
-        if(user.getJwtKey().isEmpty()){
+        if(user.getJwtKey() == null){
             user.setJwtKey(UUID.randomUUID().toString());
             logger.info("New jwt Keys for [" + userID + "] is created");
             userDetailsRepository.save(user);
@@ -83,25 +95,29 @@ public class AccountService implements UserDetailsService{
         return user.getJwtKey();
     }
 
-    public byte[] getChallengeKeys(Long userID){
-        if (challengeStorage.containsKey(userID)) {
-            logger.info("New Challenge Keys for [" + userID + "] is created");
-            return challengeStorage.get(userID).getBytes();
-        }else
-            return generateChallengeKeys(userID);
-    }
-
-    private byte[] generateChallengeKeys(Long userID){
-        challengeStorage.put(userID, UUID.randomUUID().toString());
-        return challengeStorage.get(userID).getBytes();
-    }
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         if (userDetailsRepository.existsByEmail(email))
-            return new TokenObject(userDetailsRepository.findByEmail(email));
+            return new LoginObject(userDetailsRepository.findByEmail(email));
         else
             throw new UsernameNotFoundException("username " + email + " is not found");
+    }
+
+    public boolean checkPassword(String email, String password){
+        return passwordEncoder.matches(password, userDetailsRepository.findByEmail(email).getPassword());
+    }
+
+    public String createChallengeKeys(Long userID){
+        logger.info("New Challenge Keys for [" + userID + "] is created");
+        challengeStorage.put(userID, UUID.randomUUID().toString());
+        return challengeStorage.get(userID);
+    }
+
+    public String getChallengeKeys(Long userID){
+        if(challengeStorage.containsKey(userID))
+            return challengeStorage.get(userID);
+        else
+            return createChallengeKeys(userID);
     }
 }
