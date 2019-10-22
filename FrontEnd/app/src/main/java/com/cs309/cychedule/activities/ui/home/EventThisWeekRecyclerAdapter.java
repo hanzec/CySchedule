@@ -26,10 +26,10 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
     public EventThisWeekBasicViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
         if (viewType == VIEW_TYPE_HEADER) {
-            View listItem= layoutInflater.inflate(R.layout.header_fragment_home_event_this_week, viewGroup, false);
+            View listItem = layoutInflater.inflate(R.layout.header_fragment_home_event_this_week, viewGroup, false);
             return new EventThisWeekHeaderViewHolder(listItem);
         } else {
-            View listItem= layoutInflater.inflate(R.layout.item_view_fragment_home_event_this_week, viewGroup, false);
+            View listItem = layoutInflater.inflate(R.layout.item_view_fragment_home_event_this_week, viewGroup, false);
             return new EventThisWeekItemViewHolder(listItem);
         }
     }
@@ -47,7 +47,7 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
+        return position == 0 ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
     }
 
 
@@ -111,8 +111,8 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
     private ArrayList<Event> generateMockEvents() {
         ArrayList<Event> mockEvents = new ArrayList<>();
         mockEvents.add(new Event("header", "header", "header"));
-        for (int i = 1; i <10; i++) {
-            Event event = new Event("12:"+ i, "Canada", "test");
+        for (int i = 1; i < 10; i++) {
+            Event event = new Event("12:" + i, "Canada", "test");
             mockEvents.add(event);
         }
         return mockEvents;

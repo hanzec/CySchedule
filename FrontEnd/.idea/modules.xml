@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/FrontEnd.iml" filepath="$PROJECT_DIR$/FrontEnd.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/yt_4_git.iml" filepath="$PROJECT_DIR$/yt_4_git.iml" />
     </modules>
   </component>
 </project>

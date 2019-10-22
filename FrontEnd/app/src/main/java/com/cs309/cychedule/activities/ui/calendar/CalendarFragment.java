@@ -27,7 +27,7 @@ public class CalendarFragment extends Fragment {
     private DatePicker datepicker;
     int year, month, day, hour, minute;
     String eventText, locationText;
-   
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         calendarViewModel = ViewModelProviders.of(this).get(CalendarViewModel.class);
@@ -43,8 +43,8 @@ public class CalendarFragment extends Fragment {
 
         final EditText eventInput = root.findViewById(R.id.eventTextInput);
         final EditText locationInput = root.findViewById(R.id.locationTextInput);
-        
-        
+
+
         final DatePicker datePicker = root.findViewById(R.id.datepicker_calendar);
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -58,12 +58,12 @@ public class CalendarFragment extends Fragment {
                 CalendarFragment.this.day = dayOfMonth;
             }
         });
-    
+
         final TimePicker timePicker = root.findViewById(R.id.timepicker_calendar);
         timePicker.setIs24HourView(true);
-        
-        
-        
+
+
+
         btnRemvoe = root.findViewById(R.id.removeText_calendar);
         btnRemvoe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,8 +92,8 @@ public class CalendarFragment extends Fragment {
                     hour = timePicker.getHour();
                     minute = timePicker.getMinute();
                     Snackbar.make(root, "Secret :" + eventText
-                            + " @" + year + "." + month + "." + day + "." + hour + ":" + minute
-                            + " @" + locationText
+                                    + " @" + year + "." + month + "." + day + "." + hour + ":" + minute
+                                    + " @" + locationText
                             , Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }

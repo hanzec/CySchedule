@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:calendarViewShown="false"
         android:headerBackground="@color/primary_darker"
-            android:datePickerMode="spinner"
+        android:datePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,52 +31,52 @@
         />
 
     <TimePicker
-            android:id="@+id/timepicker_calendar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:calendarViewShown="false"
-            android:headerBackground="@color/primary_darker"
-            android:timePickerMode="spinner"
+        android:id="@+id/timepicker_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:headerBackground="@color/primary_darker"
+        android:timePickerMode="spinner"
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/textInput_calendar"
-            />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textInput_calendar"
+        />
 
     <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInput_calendar"
+        android:id="@+id/textInput_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/timepicker_calendar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        >
+        <EditText
+            android:id="@+id/eventTextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/timepicker_calendar"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            >
-        <EditText
-                android:id="@+id/eventTextInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="Event" />
+            android:inputType="text"
+            android:hint="Event" />
     </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInput2_calendar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/textInput_calendar"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginRight="30dp"
-                android:layout_marginLeft="30dp"
-                >
-            <EditText
-                    android:id="@+id/locationTextInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress"
-                    android:hint="Location" />
-        </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInput2_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/textInput_calendar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        >
+        <EditText
+            android:id="@+id/locationTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPostalAddress"
+            android:hint="Location" />
+    </android.support.design.widget.TextInputLayout>
 
 
     <LinearLayout
@@ -85,8 +85,8 @@
         android:layout_height="55dp"
         android:background="@android:color/holo_orange_dark"
         android:layout_margin="5dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textInput2_calendar"
