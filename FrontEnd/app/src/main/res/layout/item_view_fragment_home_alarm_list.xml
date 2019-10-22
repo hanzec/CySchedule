@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/nav_header_vertical_spacing">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_home_alarm_list_time"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/TextAppearance.MaterialComponents.Headline3"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        tools:text="12:01"/>
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/fragment_home_alarm_list_time"
+        app:layout_constraintHorizontal_bias="0.8"
+        android:id="@+id/fragment_home_alarm_list_switch"
+        app:layout_constraintTop_toTopOf="@id/fragment_home_alarm_list_time"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_home_alarm_list_time"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:theme="@style/SwitchTheme"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fragment_home_alarm_list_time"
+        app:layout_constraintStart_toStartOf="@id/fragment_home_alarm_list_time"
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing"
+        android:id="@+id/fragment_home_alarm_list_days_counter"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:textColor="@color/aluminum"
+        tools:text="Tomorrow"/>
+
+    <View android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.9"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragment_home_alarm_list_days_counter"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+
+</android.support.constraint.ConstraintLayout>

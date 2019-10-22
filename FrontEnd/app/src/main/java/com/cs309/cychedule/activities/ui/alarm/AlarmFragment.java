@@ -23,10 +23,10 @@ import com.cs309.cychedule.activities.LoginActivity;
 public class AlarmFragment extends Fragment {
 
     private AlarmViewModel alarmViewModel;
-    
-	private Button btnAdd;
-	int hour, minute;
-	
+
+    private Button btnAdd;
+    int hour, minute;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         alarmViewModel = ViewModelProviders.of(this).get(AlarmViewModel.class);
@@ -38,7 +38,7 @@ public class AlarmFragment extends Fragment {
         //         textView.setText(s);
         //     }
         // });
-    
+
         final TimePicker timePicker = root.findViewById(R.id.timerpicker_timer);
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
@@ -46,21 +46,21 @@ public class AlarmFragment extends Fragment {
                 Toast.makeText(root.getContext(), "Timer setting: " + i + ":" + j + "!", Toast.LENGTH_SHORT).show();
             }
         });
-        
+
         btnAdd = root.findViewById(R.id.addAlarm);
-	    btnAdd.setOnClickListener(new View.OnClickListener() {
-		    @RequiresApi(api = Build.VERSION_CODES.M)
-		    @Override
-		    public void onClick(View v) {
-		    	hour = timePicker.getHour();
-			    minute = timePicker.getMinute();
-			    Snackbar.make(root,  "Alarm is set at"+hour+":"+minute, Snackbar.LENGTH_LONG)
-					    .setAction("Action", null).show();
-		    }
-		
-		
-		    //这里实现volley
-	    });
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                hour = timePicker.getHour();
+                minute = timePicker.getMinute();
+                Snackbar.make(root,  "Alarm is set at"+hour+":"+minute, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+
+
+            //这里实现volley
+        });
         return root;
     }
 }

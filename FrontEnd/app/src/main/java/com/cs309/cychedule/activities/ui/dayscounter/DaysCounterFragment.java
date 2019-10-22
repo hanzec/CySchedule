@@ -34,11 +34,11 @@ public class DaysCounterFragment extends Fragment {
     int year, month, day;
     int daysleft;
     String secretText;
-    
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         daysCounterViewModel = ViewModelProviders.of(this).get(DaysCounterViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_dayscounter, container, false);
-        
+
         // final TextView textView = root.findViewById(R.id.text_dayscounter);
         // daysCounterViewModel.getText().observe(this, new Observer<String>() {
         //     @Override
@@ -46,10 +46,10 @@ public class DaysCounterFragment extends Fragment {
         //         textView.setText(s);
         //     }
         // });
-        
-        
+
+
         final EditText secretInput = root.findViewById(R.id.et_material_design);
-    
+
         final DatePicker datePicker = root.findViewById(R.id.datepicker_dayscounter);
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -63,7 +63,7 @@ public class DaysCounterFragment extends Fragment {
                 DaysCounterFragment.this.day = dayOfMonth;
             }
         });
-    
+
         btnRemvoe = root.findViewById(R.id.removeText_dayscounter);
         btnRemvoe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,8 +71,8 @@ public class DaysCounterFragment extends Fragment {
                 secretInput.setText("");
             }
         });
-    
-    
+
+
         btnAdd = root.findViewById(R.id.addEvent_dayscounter);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,12 +106,12 @@ public class DaysCounterFragment extends Fragment {
                             +"\nSecret: " + secretText, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
-    
+
                 //这里实现volley
             }
         });
-    
-        
+
+
         return root;
     }
 }

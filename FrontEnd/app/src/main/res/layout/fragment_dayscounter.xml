@@ -4,79 +4,79 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    <TextView-->
-<!--        android:id="@+id/text_dayscounter"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="8dp"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:textAlignment="center"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/text_dayscounter"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:textAlignment="center"-->
+    <!--        android:textSize="20sp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <DatePicker
-            android:id="@+id/datepicker_dayscounter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:calendarViewShown="false"
-            android:headerBackground="@color/primary_darker"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/textInput_dayscounter"
-            />
+        android:id="@+id/datepicker_dayscounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:headerBackground="@color/primary_darker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textInput_dayscounter"
+        />
 
     <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInput_dayscounter"
-            android:layout_margin="5dp"
-            android:padding="5dp"
-            app:passwordToggleEnabled="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/datepicker_dayscounter"
-            >
+        android:id="@+id/textInput_dayscounter"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        app:passwordToggleEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/datepicker_dayscounter"
+        >
 
         <EditText
-                android:id="@+id/et_material_design"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/edittext_layer_background_drawable"
-                android:hint="Secret"
-                android:inputType="textPassword"
-                android:textColor="#000000"
-                android:textColorHint="#000000" />
+            android:id="@+id/et_material_design"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/edittext_layer_background_drawable"
+            android:hint="Secret"
+            android:inputType="textPassword"
+            android:textColor="#000000"
+            android:textColorHint="#000000" />
 
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
-            android:id="@+id/linearLayout_dayscounter"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:background="@android:color/holo_orange_dark"
-            android:layout_margin="5dp"
+        android:id="@+id/linearLayout_dayscounter"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:background="@android:color/holo_orange_dark"
+        android:layout_margin="5dp"
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textInput_dayscounter"
-            >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textInput_dayscounter"
+        >
         <Button
-                android:id="@+id/removeText_dayscounter"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="cancel"
-                android:text="REMOVE" />
+            android:id="@+id/removeText_dayscounter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="cancel"
+            android:text="REMOVE" />
         <Button
-                android:id="@+id/addEvent_dayscounter"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="confirm"
-                android:text="ADD" />
+            android:id="@+id/addEvent_dayscounter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="confirm"
+            android:text="ADD" />
     </LinearLayout>
 
 

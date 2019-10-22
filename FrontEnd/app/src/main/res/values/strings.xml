@@ -18,4 +18,9 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="title_activity_main3">Main3Activity</string>
+
+    <!-- home -->
+    <string name="fragment_home_today_title">Today</string>
+    <string name="fragment_home_event_this_week_title">Event This Week</string>
+    <string name="fragment_home_alarm_list_title">Alarm List</string>
 </resources>

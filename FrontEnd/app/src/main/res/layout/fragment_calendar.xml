@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!--    <TextView-->
     <!--        android:id="@+id/text_calendar"-->
@@ -18,65 +18,65 @@
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <DatePicker
-            android:id="@+id/datepicker_calendar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:calendarViewShown="false"
-            android:headerBackground="@color/primary_darker"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/textInput_calendar"
-            />
+        android:id="@+id/datepicker_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:headerBackground="@color/primary_darker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textInput_calendar"
+        />
 
     <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInput_calendar"
-            android:layout_margin="5dp"
-            android:padding="5dp"
-            app:passwordToggleEnabled="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/datepicker_calendar"
-            >
+        android:id="@+id/textInput_calendar"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        app:passwordToggleEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/datepicker_calendar"
+        >
 
         <EditText
-                android:id="@+id/et_material_design"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/edittext_layer_background_drawable"
-                android:hint="Secret"
-                android:inputType="textPassword"
-                android:textColor="#000000"
-                android:textColorHint="#000000" />
+            android:id="@+id/et_material_design"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/edittext_layer_background_drawable"
+            android:hint="Secret"
+            android:inputType="textPassword"
+            android:textColor="#000000"
+            android:textColorHint="#000000" />
 
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
-            android:id="@+id/linearLayout_calendar"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:background="@android:color/holo_orange_dark"
-            android:layout_margin="5dp"
+        android:id="@+id/linearLayout_calendar"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:background="@android:color/holo_orange_dark"
+        android:layout_margin="5dp"
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textInput_calendar"
-            >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textInput_calendar"
+        >
         <Button
-                android:id="@+id/removeText_calendar"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="cancel"
-                android:text="REMOVE" />
+            android:id="@+id/removeText_calendar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="cancel"
+            android:text="REMOVE" />
         <Button
-                android:id="@+id/addEvent_calendar"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="confirm"
-                android:text="ADD" />
+            android:id="@+id/addEvent_calendar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="confirm"
+            android:text="ADD" />
     </LinearLayout>
 
 
