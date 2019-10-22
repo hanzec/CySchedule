@@ -1,6 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
-import edu.iastate.coms309.cyschedulebackend.persistence.model.TimeBlock;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.TimeBlockRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserDetailsRepository;
@@ -20,32 +20,32 @@ public class TimeBlockService {
     TimeBlockRepository timeBlockRepository;
 
     @Transactional
-    public Long addTimeBlock(TimeBlock timeBlock, Long userId){
+    public Long addTimeBlock(Event event, Long userId){
 
         User user = userDetailsRepository.findByUserID(userId);
 
-        timeBlock.adminUser = user;
+        event.adminUser = user;
 
-        timeBlockRepository.saveAndFlush(timeBlock);
+        timeBlockRepository.saveAndFlush(event);
 
-        user.getManagedTimeBlock().add(timeBlock);
+        user.getManagedEvent().add(event);
 
-        user.getJoinedTimeBlock().add(timeBlock);
+        user.getJoinedEvent().add(event);
 
         userDetailsRepository.saveAndFlush(user);
 
-        return timeBlock.blockID;
+        return event.blockID;
     }
 
     @Transactional
     public void deleteTimeBlock(Long id){ timeBlockRepository.deleteById(id); }
 
     @Transactional
-    public TimeBlock getTimeBlock(Long id){
+    public Event getTimeBlock(Long id){
         return timeBlockRepository.getOne(id);
     }
 
     @Transactional
-    public Set<TimeBlock> getAllTimeBlock(String admin){ return userDetailsRepository.findByEmail(admin).getJoinedTimeBlock(); }
+    public Set<Event> getAllTimeBlock(String admin){ return userDetailsRepository.findByEmail(admin).getJoinedEvent(); }
 
 }
