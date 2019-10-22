@@ -1,6 +1,8 @@
 package com.cs309.cychedule.activities.ui.dayscounter;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +77,7 @@ public class DaysCounterFragment extends Fragment {
 
         btnAdd = root.findViewById(R.id.addEvent_dayscounter);
         btnAdd.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
                 secretText = secretInput.getText().toString().trim();
@@ -94,20 +97,23 @@ public class DaysCounterFragment extends Fragment {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    GregorianCalendar cal1 = new GregorianCalendar();
-                    GregorianCalendar cal2 = new GregorianCalendar();
-                    cal1.setTime(date);
-                    cal2.setTime(curDate);
-                    int dayCount = (int)((cal1.getTimeInMillis() - cal2.getTimeInMillis()) / (1000*60*60*24));
+                    GregorianCalendar timer_fur = new GregorianCalendar();
+                    GregorianCalendar timer_cur = new GregorianCalendar();
+                    timer_fur.setTime(date);
+                    timer_cur.setTime(curDate);
+
+                    int dayCount = (int)((timer_fur.getTimeInMillis() - timer_cur.getTimeInMillis()) / (1000*60*60*24));
                     dayCount++;
                     // Snackbar.make(root, "Secret :" + secretText + " @" + year + "." + month + "." + day+"left"+dayCount, Snackbar.LENGTH_LONG)
                     //         .setAction("Action", null).show();
-                    Snackbar.make(root,  year + "." + month + "." + day+" to "+yearStr + "." + monthStr + "." + dayStr+" lefts "+dayCount
+                    Snackbar.make(root,  Calendar.YEAR + "." + Calendar.MONTH + "." + Calendar.DATE+" to "+yearStr + "." + monthStr + "." + dayStr+" lefts "+dayCount
                             +"\nSecret: " + secretText, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
 
                 //这里实现volley
+
+
             }
         });
 
