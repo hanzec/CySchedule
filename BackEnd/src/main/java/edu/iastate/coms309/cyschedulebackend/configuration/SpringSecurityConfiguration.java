@@ -72,8 +72,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
-                .and()
+                .authenticated();
+
+        //login page configuration
+        http
                 .formLogin()
                 .loginPage("/login")
                 .usernameParameter("email")
