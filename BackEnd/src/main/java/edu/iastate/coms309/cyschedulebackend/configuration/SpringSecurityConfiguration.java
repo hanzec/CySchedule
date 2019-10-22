@@ -64,15 +64,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/login.html","/login","/do_login")
-                .permitAll()
-                .antMatchers("/api/v1/auth/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
-
         //RememberMe configuration
         http
                 .rememberMe().userDetailsService(userDetailsService());
@@ -80,7 +71,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //login page configuration
         http
                 .formLogin()
-                .successForwardUrl("/swagger-ui.html")
                 .defaultSuccessUrl("/swagger-ui.html");
     }
 }
