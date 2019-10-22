@@ -56,6 +56,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/fonts/**")
                 .antMatchers("/images/**")
                 .antMatchers("/vendor/**");
+
+        //ignore Auth apis
+        web.ignoring()
+                .antMatchers("/api/vi/auth/**");
     }
 
     @Override
