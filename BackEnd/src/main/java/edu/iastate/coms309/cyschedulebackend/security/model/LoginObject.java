@@ -25,7 +25,7 @@ public class LoginObject implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() { return userPermission; }
 
     @Override
-    public String getPassword() { return userID + "." + password; }
+    public String getPassword() { return password; }
 
     @Override
     public String getUsername() { return userID.toString(); }

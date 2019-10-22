@@ -42,7 +42,7 @@ public class User implements Serializable{
     private Set<UserToken> userTokens;
 
     @JoinTable(name = "user_to_user_role_table")
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Permission> permissions;
 
     @OneToMany(cascade = CascadeType.ALL)

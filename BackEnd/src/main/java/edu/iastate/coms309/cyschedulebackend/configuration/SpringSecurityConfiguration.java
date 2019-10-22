@@ -34,9 +34,16 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new LoginFailureHandler();
     }
 
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder
+                .userDetailsService(accountService)
+                .passwordEncoder(passwordEncoder());
+    }
 
-    @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
+    @Override
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
@@ -60,7 +67,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login.html","/login")
+                .antMatchers("/login.html","/login","/do_login")
                 .permitAll()
                 .antMatchers("/api/v1/auth/**")
                 .permitAll()
@@ -72,7 +79,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .usernameParameter("email")
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/do_login")
                 .passwordParameter("password")
                 .successForwardUrl("/swagger-ui.html")
                 .failureHandler(authenticationFailureHandler());
