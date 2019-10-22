@@ -59,11 +59,15 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         //ignore Auth apis
         web.ignoring()
-                .antMatchers("/api/vi/auth/**");
+                .antMatchers("/api/v1/auth/login");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .anyRequest().authenticated();
+
         //RememberMe configuration
         http
                 .rememberMe().userDetailsService(userDetailsService());
