@@ -21,7 +21,4 @@ public class WebPageController {
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
     void teapot(){}
 
-    @GetMapping("/login")
-    public String loginPage(){ return "login"; }
-
 }
