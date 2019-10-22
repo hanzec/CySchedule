@@ -19,15 +19,15 @@
 
     <fragment
         android:id="@+id/nav_daysCounter"
-        android:name="com.cs309.cychedule.activities.ui.slideshow.SlideshowFragment"
+        android:name="com.cs309.cychedule.activities.ui.dayscounter.DaysCounterFragment"
         android:label="@string/menu_daysCounter"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_dayscounter" />
 
     <fragment
         android:id="@+id/nav_timer"
-        android:name="com.cs309.cychedule.activities.ui.tools.ToolsFragment"
+        android:name="com.cs309.cychedule.activities.ui.alarm.AlarmFragment"
         android:label="@string/menu_timer"
-        tools:layout="@layout/fragment_tools" />
+        tools:layout="@layout/fragment_alarm" />
 
     <fragment
         android:id="@+id/nav_share"
