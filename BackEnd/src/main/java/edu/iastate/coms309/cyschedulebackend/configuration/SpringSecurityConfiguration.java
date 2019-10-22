@@ -81,7 +81,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .loginProcessingUrl("/do_login")
-                .failureHandler(authenticationFailureHandler())
-                .defaultSuccessUrl("/swagger-ui.html", true);
+                .defaultSuccessUrl("/swagger-ui.html")
+                .failureHandler(authenticationFailureHandler());
     }
 }
