@@ -1,13 +1,12 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
 
-import edu.iastate.coms309.cyschedulebackend.Service.TimeBlockService;
+import edu.iastate.coms309.cyschedulebackend.Service.EventService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.TimeBlock;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,20 +14,19 @@ import java.security.Principal;
 
 
 @RestController
-@RequestMapping("/api/v1/timeblock")
+@RequestMapping("/api/v1/event")
 @Api(tags = "RestAPI Related to TimeBlock")
-public class TimeBlockController {
-
+public class EventController {
 
     @Autowired
-    TimeBlockService timeBlockService;
+    EventService eventService;
 
     @GetMapping(value= "/all")
     @ApiOperation("Get All TimeBlock")
     public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request){
         Response response = new Response();
 
-        timeBlockService.getAllTimeBlock(principal.getName()).forEach(V->{
+        eventService.getAllTimeBlock(principal.getName()).forEach(V->{
             response.addResponse(V.blockID,V);
         });
 
@@ -40,16 +38,16 @@ public class TimeBlockController {
 
     @GetMapping(value= "/add")
     @ApiOperation("add new TimeBlock")
-    public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request, TimeBlock newTimeBlock){
+    public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request, Event newEvent){
         Response response = new Response();
 
-       if(newTimeBlock.name == null)
+       if(newEvent.name == null)
            return response.BadRequested("No time block name").send(request.getRequestURI());
-       if (newTimeBlock.endTime == null)
+       if (newEvent.endTime == null)
            return response.BadRequested("No ending time for time block").send(request.getRequestURI());
-       if (newTimeBlock.startTime == null)
+       if (newEvent.startTime == null)
            return response.BadRequested("No starting time for time block").send(request.getRequestURI());
-       if(newTimeBlock.adminUser == null)
+       if(newEvent.adminUser == null)
            return response.BadRequested("There must be an admin user for this time block").send(request.getRequestURI());
 
        return response.Created().send(request.getRequestURI());
@@ -59,7 +57,7 @@ public class TimeBlockController {
     @DeleteMapping(value= "/{blockID}")
     public Response deleteTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
         Response response = new Response();
-        timeBlockService.deleteTimeBlock(blockID);
+        eventService.deleteTimeBlock(blockID);
         return response.noContent().send(request.getRequestURI());
     }
 
@@ -67,7 +65,7 @@ public class TimeBlockController {
     @GetMapping(value= "/{blockID}")
     public Response loadTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
         Response response = new Response();
-        response.addResponse("TimeBlock",timeBlockService.getTimeBlock(blockID));
+        response.addResponse("TimeBlock", eventService.getTimeBlock(blockID));
 
         if(response.getResponseBody().isEmpty())
             return response.NotFound().send(request.getRequestURI());
@@ -77,21 +75,21 @@ public class TimeBlockController {
 
     @ApiOperation("update timeBlock by id")
     @PutMapping(value= "/{blockID}")
-    public Response updateTimeBlock(HttpServletRequest request, @PathVariable Long blockID, TimeBlock newTimeBlock){
+    public Response updateTimeBlock(HttpServletRequest request, @PathVariable Long blockID, Event newEvent){
         Response response = new Response();
-        TimeBlock timeBlock = timeBlockService.getTimeBlock(blockID);
+        Event event = eventService.getTimeBlock(blockID);
 
-        if (newTimeBlock.name != null)
-            timeBlock.name = newTimeBlock.name;
+        if (newEvent.name != null)
+            event.name = newEvent.name;
 
-        if(newTimeBlock.endTime != null)
-            timeBlock.endTime = newTimeBlock.endTime;
+        if(newEvent.endTime != null)
+            event.endTime = newEvent.endTime;
 
-        if(newTimeBlock.startTime != null)
-            timeBlock.startTime = newTimeBlock.startTime;
+        if(newEvent.startTime != null)
+            event.startTime = newEvent.startTime;
 
-        if(newTimeBlock.description != null)
-            timeBlock.description = newTimeBlock.description;
+        if(newEvent.description != null)
+            event.description = newEvent.description;
 
         if(response.getResponseBody().isEmpty())
             return response.NotFound().send(request.getRequestURI());

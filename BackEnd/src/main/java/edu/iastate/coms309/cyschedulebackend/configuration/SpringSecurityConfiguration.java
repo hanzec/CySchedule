@@ -49,25 +49,24 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-
+        //ignoring static objects
         web.ignoring()
                 .antMatchers("/js/**")
                 .antMatchers("/css/**")
                 .antMatchers("/fonts/**")
                 .antMatchers("/images/**")
                 .antMatchers("/vendor/**");
+
+        //ignore Auth apis
+        web.ignoring()
+                .antMatchers("/api/v1/auth/login");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/login.html","/login","/do_login")
-                .permitAll()
-                .antMatchers("/api/v1/auth/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+                .anyRequest().authenticated();
 
         //RememberMe configuration
         http
@@ -76,7 +75,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //login page configuration
         http
                 .formLogin()
-                .successForwardUrl("/swagger-ui.html")
                 .defaultSuccessUrl("/swagger-ui.html");
     }
 }

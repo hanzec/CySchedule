@@ -5,6 +5,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserDetailsRepository;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import edu.iastate.coms309.cyschedulebackend.security.model.LoginObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,17 +47,25 @@ public class AccountService implements UserDetailsService{
 
 
     @Transactional
-    public User createUser(User user) {
+    public User createUser(LoginRequest user) {
+
+        User submit = new User();
+
+        submit.setEmail(user.getEmail());
+        submit.setPassword(user.getPassword());
+        submit.setUsername(user.getUsername());
+        submit.setLastName(user.getLastName());
+        submit.setFirstName(user.getFirstName());
 
         //encrypt password
-        user.setRegisterTime(System.currentTimeMillis()/1000L);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        submit.setRegisterTime(System.currentTimeMillis()/1000L);
+        submit.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //save to the
-        userDetailsRepository.save(user);
+        userDetailsRepository.save(submit);
 
-        logger.info("New User with id :[" + user.getUserID() + "] is created");
-        return user;
+        logger.info("New User with id :[" + submit.getUserID() + "] is created");
+        return submit;
     }
 
     @Transactional
