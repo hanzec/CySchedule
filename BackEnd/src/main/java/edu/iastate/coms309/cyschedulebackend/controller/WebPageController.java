@@ -1,13 +1,10 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
-@RestController
+@Controller
 public class WebPageController {
 
     @RequestMapping("/test")
@@ -19,7 +16,12 @@ public class WebPageController {
     String testGet(){
         return "I am the cySchedule server!";
     }
+
     @RequestMapping("/teapot")
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
     void teapot(){}
+
+    @GetMapping("/login")
+    public String loginPage(){ return "login"; }
+
 }

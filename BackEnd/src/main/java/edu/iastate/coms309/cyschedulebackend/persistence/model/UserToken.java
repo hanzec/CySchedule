@@ -1,26 +1,28 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
-
 import lombok.Data;
 
+import javax.persistence.*;
+import java.util.List;
+
 @Data
-public class UserToken{
+@Entity
+public class UserToken {
 
-    private String token;
+    Long userID;
 
-    private Long userID;
+    String token;
 
-    private String refreshKey;
+    @Id
+    String tokenID;
 
-    public UserToken(String token,Long userID){
-        this.token = token;
-        this.userID = userID;
-        this.refreshKey = null;;
-    }
+    String refreshKey;
 
-    public UserToken(String token,String refreshKey,Long userID){
-        this.token = token;
-        this.userID = userID;
-        this.refreshKey = refreshKey;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_token")
+    User owner;
+
+    @OneToMany
+    List<Permission> permissions;
+
 }

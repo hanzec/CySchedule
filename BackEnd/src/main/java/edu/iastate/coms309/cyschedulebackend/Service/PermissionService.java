@@ -1,50 +1,21 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManagerFactory;
-
-public class PermissionService{
-
-    SessionFactory sessionFactory;
+@Service
+public class PermissionService {
 
     @Autowired
-    public PermissionService(EntityManagerFactory factory) {
-        if(factory.unwrap(SessionFactory.class) == null){
-            throw new NullPointerException("factory is not a hibernate factory");
-        }
-        this.sessionFactory = factory.unwrap(SessionFactory.class);
+    PermissionRepository permissionRepository;
+
+    public Permission loadPermissionById(Integer permissionID){
+        return permissionRepository.findByRoleID(permissionID);
     }
 
-    public void deletePermission(Permission permission) {
-        Session session = sessionFactory.openSession();
-
-        session.delete(session.get(Permission.class,permission.getPermissionID()));
-
-        session.close();
-    }
-
-    public Permission addPermission(String name, String description) {
-        Session session = sessionFactory.openSession();
-
-        session.beginTransaction();
-
-        Permission permission = new Permission();
-
-        permission.setPermissionName(name);
-
-        permission.setPermissionDescription(description);
-
-        //update Redis Cached Value
-        session.save(permission);
-
-        session.getTransaction().commit();
-
-        session.close();
-
-        return permission;
+    public Boolean isPermissionExist(Integer permissionID){
+        return permissionRepository.existsByRoleID(permissionID);
     }
 }

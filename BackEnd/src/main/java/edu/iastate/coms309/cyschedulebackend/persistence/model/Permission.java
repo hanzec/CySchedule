@@ -1,22 +1,29 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
-import lombok.Data;
 
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "user_permission")
-public class Permission {
+@Table(name ="user_role")
+public class Permission implements GrantedAuthority {
     @Id
-    @Column(name = "permission_id")
+    @Column(name = "role_id")
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer permissionID;
+    private Integer roleID;
 
-    private String permissionName;
+    private String roleName;
 
-    private String permissionDescription;
+    private String description;
 
     @Override
-    public String toString(){return permissionName;}
+    public String toString(){ return roleName;}
+
+    @Override
+    public String getAuthority() { return roleName; }
 }

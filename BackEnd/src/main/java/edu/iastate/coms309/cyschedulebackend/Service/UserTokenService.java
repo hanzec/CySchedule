@@ -1,24 +1,32 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 
-import edu.iastate.coms309.cyschedulebackend.Utils.JwtTokenUtil;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class UserTokenService {
 
-    @Autowired
-    JwtTokenUtil jwtTokenUtil;
+    /*
+       Maybe a improve point
+           - User token will lost after server restart
+           - Very Slow speed for creating jwt Token
+           - May better if Permission object contains all related user
 
-    @Autowired
-    AccountService accountService;
 
-    @Autowired
-    RedisTemplate<String,Object> redisTemplate;
+    */
 
     @Value("${account.security.token.authtoken.expiretime}")
     Integer authTokenExpireTime;
@@ -26,37 +34,76 @@ public class UserTokenService {
     @Value("${account.security.token.accesstoken.expiretime}")
     Integer accessTokenExpireTime;
 
-    public boolean verify(UserToken userToken) {
-        UserToken cached = (UserToken) redisTemplate.opsForHash()
-                .get("user_token_" + userToken.getUserID(), userToken.getToken());
+    @Autowired AccountService accountService;
 
-        if (cached == null)
-            return false;
-        else if (!JwtTokenUtil.isTokenExpired(userToken,accountService.getJwtKey(userToken.getUserID())))
-            return false;
-        else if (!JwtTokenUtil.isTokenValid(userToken, accountService.getJwtKey(userToken.getUserID())))
-            return false;
-        else
-            return true;
+    @Autowired PermissionService permissionService;
+
+
+    private HashMap<Long, HashMap<String,UserToken>> keyStorage;
+
+    public UserTokenService(){
+        keyStorage = new HashMap<>();
     }
 
-    public UserToken genUserToken(Long userID) {
+    @Cacheable(value = "tokenObject", key = "#token + '_object")
+    public UserToken load(String token){
+        UserToken tokenObject = new UserToken();
 
-        UserToken userToken = jwtTokenUtil.generateNewToken(userID,
-                                                            authTokenExpireTime,
-                                                            accountService.getJwtKey(userID));
+        DecodedJWT jwt = null;
+        try {
+            jwt = JWT.decode(token);
+        } catch (JWTDecodeException exception){
+            //Invalid token
+        }
 
-        //CacheItem
-        redisTemplate.opsForHash().put("user_token_" + userID,userToken.getToken(),userToken);
-
-        return userToken;
+        tokenObject.setToken(token);
+        tokenObject.setUserID(jwt.getClaim("userID").asLong());
+        return tokenObject;
     }
 
-    public void deleteUserToken(Long userID, String token) {
-        redisTemplate.opsForHash().delete("user_token_" + userID,token);
+    public UserToken creat(Long userID) {
+        UserToken token = new UserToken();
+        List<Integer> permissionList = new ArrayList<>();
+        String password = accountService.getJwtKey(userID);
+
+        if(!keyStorage.containsKey(userID)) {
+            keyStorage.put(userID, new HashMap<>());
+        }
+
+        accountService.getPermissions(userID).forEach(V -> {
+            permissionList.add(V.getRoleID());
+        });
+
+        token.setTokenID(UUID.randomUUID().toString());
+        token.setRefreshKey(UUID.randomUUID().toString());
+        Algorithm algorithmHS = Algorithm.HMAC256(password);
+
+        token.setToken(JWT.create()
+                .withIssuer("CySchedule")
+                .withJWTId(token.getTokenID())
+                .withClaim("userID",userID)
+                .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
+                .withArrayClaim("permission", permissionList.toArray(new Integer[0]))
+                .sign(algorithmHS));
+
+        keyStorage.get(userID).put(token.getTokenID(),token);
+        return token;
     }
 
-    public UserToken getToken(Long userID, String token){
-        return (UserToken) redisTemplate.opsForHash().get("user_token_" + userID,token);
+    public boolean verify(UserToken tokenObject){
+        String password = accountService.getJwtKey(tokenObject.getUserID());
+
+        Algorithm algorithm = Algorithm.HMAC256(password);
+        try {
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer("CySchedule")
+                    .acceptLeeway(1)   //1 sec for nbf and iat
+                    .acceptExpiresAt(5)   //5 secs for exp
+                    .build();
+            DecodedJWT jwt = verifier.verify(tokenObject.getToken());
+        } catch (JWTVerificationException exception) {
+            return false;
+        }
+        return true;
     }
 }

@@ -7,6 +7,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.TimeBlock;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +23,8 @@ public class TimeBlockController {
     @Autowired
     TimeBlockService timeBlockService;
 
+    @GetMapping(value= "/all")
     @ApiOperation("Get All TimeBlock")
-    @RequestMapping(value= "/all", method= RequestMethod.GET)
     public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request){
         Response response = new Response();
 
@@ -37,8 +38,8 @@ public class TimeBlockController {
             return response.OK().send(request.getRequestURI());
     }
 
+    @GetMapping(value= "/add")
     @ApiOperation("add new TimeBlock")
-    @RequestMapping(value= "/add", method= RequestMethod.POST)
     public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request, TimeBlock newTimeBlock){
         Response response = new Response();
 
@@ -54,6 +55,14 @@ public class TimeBlockController {
        return response.Created().send(request.getRequestURI());
     }
 
+    @ApiOperation("delete timeBlock by id")
+    @DeleteMapping(value= "/{blockID}")
+    public Response deleteTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
+        Response response = new Response();
+        timeBlockService.deleteTimeBlock(blockID);
+        return response.noContent().send(request.getRequestURI());
+    }
+
     @ApiOperation("load timeBlock by id")
     @GetMapping(value= "/{blockID}")
     public Response loadTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
@@ -64,14 +73,6 @@ public class TimeBlockController {
             return response.NotFound().send(request.getRequestURI());
         else
             return response.OK().send(request.getRequestURI());
-    }
-
-    @ApiOperation("delete timeBlock by id")
-    @DeleteMapping(value= "/{blockID}")
-    public Response deleteTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
-        Response response = new Response();
-        timeBlockService.deleteTimeBlock(blockID);
-        return response.noContent().send(request.getRequestURI());
     }
 
     @ApiOperation("update timeBlock by id")
