@@ -73,16 +73,4 @@ public class UserTokenServiceTest {
         //userToken should be null because incorrect string
         assertNull(userToken);
     }
-
-    @Test
-    public void verifyCorrectToken(){
-        UserToken userToken = userTokenService.creat((long) 1);
-
-        assertNotNull(userToken.getToken());
-        assertNotNull(userToken.getTokenID());
-        assertNotNull(userToken.getRefreshKey());
-        assertEquals(1,userToken.getUserID());
-
-        assertTrue(userTokenService.verify(userToken));
-    }
 }
