@@ -1,13 +1,15 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.util.List;
-import java.util.Set;
 
-@Data
+@Setter
+@Getter
 @Entity
 public class Event {
     @Id
@@ -16,18 +18,16 @@ public class Event {
 
     public String name;
 
-    public Time endTime;
+    public String endTime;
 
-    public Time startTime;
+    public String startTime;
 
     public String location;
 
     public String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_time_block")
+    @JoinColumn(name = "user_id")
     public User adminUser;
 
-    @ManyToMany
-    public List<User> relatedUser;
 }

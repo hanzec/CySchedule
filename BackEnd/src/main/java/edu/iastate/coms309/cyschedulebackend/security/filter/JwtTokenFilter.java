@@ -10,15 +10,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
+import org.springframework.web.filter.AbstractRequestLoggingFilter;
+import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Time;
 
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtTokenFilter extends GenericFilterBean {
 
     @Autowired
     AccountService accountService;
@@ -27,11 +29,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     UserTokenService userTokenService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         try {
-            UserToken userToken = userTokenService.load(httpServletRequest.getHeader("Authorization"));
+            UserToken userToken = userTokenService.load(httpServletRequest.getHeader("JwtToken"));
 
-            if (userTokenService.verify(userToken)) {
+            if (userToken != null && userTokenService.verify(userToken)) {
                 Long userId = userToken.getUserID();
 
                 /*
@@ -46,6 +50,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
+            httpServletResponse.sendError(403,ex.getMessage());
             logger.error("Could not set user authentication in security context", ex);
         }
 

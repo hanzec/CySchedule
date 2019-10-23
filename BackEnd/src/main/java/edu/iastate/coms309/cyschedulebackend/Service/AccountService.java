@@ -77,23 +77,16 @@ public class AccountService implements UserDetailsService{
 
     @Transactional
     @Cacheable(value = "userEmail", key = "#userID + '_email'")
-    public String getUserEmail(Long userID) { return userDetailsRepository.findByUserID(userID).getEmail(); }
-
-    @Transactional
-    @Cacheable(value = "salt", key = "#email + '_salt'")
-    public String getUserSalt(String email) {
-        String result = userDetailsRepository.findByEmail(email).getPassword();
-        return result.split("[.]")[1];
-    }
+    public String getUserEmail(Long userID) { return userDetailsRepository.getOne(userID).getEmail(); }
 
     @Transactional
     public Set<Permission> getPermissions(Long userID){
-        return userDetailsRepository.findByUserID(userID).getPermissions();
+        return userDetailsRepository.getOne(userID).getPermissions();
     }
     @Transactional
     @Cacheable(value = "jwt_key", key = "#userID + '_jwt_key'")
     public String getJwtKey(Long userID) {
-        User user = userDetailsRepository.findByUserID(userID);
+        User user = userDetailsRepository.getOne(userID);
 
         if(user.getJwtKey() == null){
             user.setJwtKey(UUID.randomUUID().toString());
@@ -115,18 +108,5 @@ public class AccountService implements UserDetailsService{
 
     public boolean checkPassword(String email, String password){
         return passwordEncoder.matches(password, userDetailsRepository.findByEmail(email).getPassword());
-    }
-
-    public String createChallengeKeys(Long userID){
-        logger.info("New Challenge Keys for [" + userID + "] is created");
-        challengeStorage.put(userID, UUID.randomUUID().toString());
-        return challengeStorage.get(userID);
-    }
-
-    public String getChallengeKeys(Long userID){
-        if(challengeStorage.containsKey(userID))
-            return challengeStorage.get(userID);
-        else
-            return createChallengeKeys(userID);
     }
 }

@@ -37,6 +37,14 @@ public class LoginController {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        if (email == null)
+            return response.BadRequested("email should not empty").send(request.getRequestURI());
+        if (password == null)
+            return response.BadRequested("password should not empty").send(request.getRequestURI());
+
+        if(accountService.existsByEmail(email))
+            return response.BadRequested("User is not existe").send(request.getRequestURI());
+
         if(accountService.checkPassword(email,password))
             response.OK().addResponse("loginToken",userTokenService.creat(accountService.getUserID(email)));
         else
@@ -55,30 +63,12 @@ public class LoginController {
 
         //There should not register with same email address
         if(accountService.existsByEmail(user.getEmail()))
-            return response.BadRequested("Username is Already Used").send(request.getRequestURI()).Created();
+            return response.BadRequested("Username is Already Used").send(request.getRequestURI());
 
 
         //Trying to Register new Account to Server
         accountService.createUser(user);
 
-        return response.send(request.getRequestURI()).Created().addResponse("UserID",user);
-    }
-
-    @PostMapping("/challenge")
-    @ApiOperation("Used for get challenge information for login")
-    public Response getChallenge(HttpServletRequest request){
-
-        Response response = new Response();
-
-        String email = request.getParameter("email");
-
-        if(accountService.existsByEmail(email)) {
-            response.addResponse("userId", accountService.getUserID(email));
-            response.addResponse("userSalt", accountService.getUserSalt(email));
-            response.addResponse("currentLoginChallenge",accountService.createChallengeKeys(accountService.getUserID(email)));
-
-            return response.OK().send(request.getRequestURI());
-        } else
-            return response.NotFound().send(request.getRequestURI());
+        return response.send(request.getRequestURI()).Created();
     }
 }
