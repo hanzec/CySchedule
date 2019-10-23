@@ -37,6 +37,11 @@ public class LoginController {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        if (email == null)
+            return response.BadRequested("email should not empty").send(request.getRequestURI());
+        if (password == null)
+            return response.BadRequested("password should not empty").send(request.getRequestURI());
+
         if(accountService.checkPassword(email,password))
             response.OK().addResponse("loginToken",userTokenService.creat(accountService.getUserID(email)));
         else
