@@ -80,13 +80,6 @@ public class AccountService implements UserDetailsService{
     public String getUserEmail(Long userID) { return userDetailsRepository.getOne(userID).getEmail(); }
 
     @Transactional
-    @Cacheable(value = "salt", key = "#email + '_salt'")
-    public String getUserSalt(String email) {
-        String result = userDetailsRepository.findByEmail(email).getPassword();
-        return result.split("[.]")[1];
-    }
-
-    @Transactional
     public Set<Permission> getPermissions(Long userID){
         return userDetailsRepository.getOne(userID).getPermissions();
     }
@@ -115,18 +108,5 @@ public class AccountService implements UserDetailsService{
 
     public boolean checkPassword(String email, String password){
         return passwordEncoder.matches(password, userDetailsRepository.findByEmail(email).getPassword());
-    }
-
-    public String createChallengeKeys(Long userID){
-        logger.info("New Challenge Keys for [" + userID + "] is created");
-        challengeStorage.put(userID, UUID.randomUUID().toString());
-        return challengeStorage.get(userID);
-    }
-
-    public String getChallengeKeys(Long userID){
-        if(challengeStorage.containsKey(userID))
-            return challengeStorage.get(userID);
-        else
-            return createChallengeKeys(userID);
     }
 }
