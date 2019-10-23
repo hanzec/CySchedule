@@ -189,13 +189,15 @@ public class SignupActivity extends AppCompatActivity {
                             if (status.equals("201"))
                             {
                                 Toast.makeText(SignupActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
+                                onSignupSuccess();
                             }
                         }
                         catch (JSONException e)
                         {
                             e.printStackTrace();
-                            Toast.makeText(SignupActivity.this, "Register Error! " + e.toString(), Toast.LENGTH_SHORT).show();
                             _signupButton.setVisibility(View.VISIBLE);
+                            Toast.makeText(SignupActivity.this, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                            onSignupFailed();
                         }
                     }
                 },
@@ -204,9 +206,9 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
-                        Toast.makeText(SignupActivity.this, "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
                         _signupButton.setVisibility(View.VISIBLE);
-                        Log.d("Error", error.toString());
+                        Toast.makeText(SignupActivity.this, "Register Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+                        onSignupFailed();
                     }
                 }
         )

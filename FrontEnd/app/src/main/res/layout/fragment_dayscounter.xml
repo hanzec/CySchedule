@@ -44,10 +44,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/edittext_layer_background_drawable"
+            android:background="@color/primary_darker"
             android:hint="Secret"
-            android:inputType="textPassword"
-            android:textColor="#000000"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
             android:textColorHint="#000000" />
 
     </android.support.design.widget.TextInputLayout>
