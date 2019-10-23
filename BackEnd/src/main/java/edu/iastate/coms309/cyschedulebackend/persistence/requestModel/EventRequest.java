@@ -1,7 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.requestModel;
 
 import lombok.Data;
-import java.sql.Time;
 
 @Data
 public class EventRequest {
@@ -15,5 +14,5 @@ public class EventRequest {
 
     public String description;
 
-    public Long userID;
+    public Integer userID;
 }

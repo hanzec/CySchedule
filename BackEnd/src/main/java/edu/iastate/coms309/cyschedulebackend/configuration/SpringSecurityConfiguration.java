@@ -78,6 +78,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated();
 
+        //disable csrf protection for post return 403
+        http
+                .csrf().disable();
+
         //RememberMe configuration
         http
                 .rememberMe().userDetailsService(userDetailsService());

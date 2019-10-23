@@ -7,18 +7,25 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
-
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "users")
 public class User implements Serializable{
 
+    /*
+        Maybe a improve point
+            - Only managedEvent relation are checked and 100% correct
+
+    */
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userID ;
+    private Long userID;
 
     @Email
     @NaturalId
@@ -48,7 +55,6 @@ public class User implements Serializable{
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Event> joinedEvent;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_time_block")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "adminUser")
     private Set<Event> managedEvent;
 }

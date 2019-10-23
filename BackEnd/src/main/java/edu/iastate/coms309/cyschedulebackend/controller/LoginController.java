@@ -60,7 +60,7 @@ public class LoginController {
 
         //There should not register with same email address
         if(accountService.existsByEmail(user.getEmail()))
-            return response.BadRequested("Username is Already Used").send(request.getRequestURI()).Created();
+            return response.BadRequested("Username is Already Used").send(request.getRequestURI());
 
 
         //Trying to Register new Account to Server

@@ -1,7 +1,9 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+import com.google.gson.Gson;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -11,6 +13,9 @@ import java.util.Set;
 @Data
 @ApiModel
 public class Response {
+
+    @Autowired
+    Gson gson;
 
     String path;
 
@@ -22,12 +27,11 @@ public class Response {
 
     String timestamp;
 
-    private HashMap<Object,Object> responseBody = new HashMap<>();
+    private HashMap<String,Object> responseBody = new HashMap<>();
 
     public Response OK(){
         this.status = "200";
         success = Boolean.TRUE;
-
         return this;
     }
 
@@ -78,7 +82,7 @@ public class Response {
         return this;
     }
 
-    public Response addResponse(Object key,Object object){
+    public Response addResponse(String key,Object object){
         this.responseBody.put(key,object);
         return this;
     }
