@@ -16,14 +16,28 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.patterns.Singleton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
+import butterknife.BindView;
+
 public class CalendarFragment extends Fragment {
 
+    private static String URL_CALENDAR = "";
+
+    @BindView(R.id.btn_cAdd) Button _addButton;
+    @BindView(R.id.btn_cRemove) Button _removeButton;
+
     private CalendarViewModel calendarViewModel;
-    private Button btnAdd, btnRemvoe;
     private DatePicker datepicker;
     int year, month, day, hour, minute;
     String eventText, locationText;
@@ -63,9 +77,7 @@ public class CalendarFragment extends Fragment {
         timePicker.setIs24HourView(true);
 
 
-
-        btnRemvoe = root.findViewById(R.id.removeText_calendar);
-        btnRemvoe.setOnClickListener(new View.OnClickListener() {
+        _removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eventInput.setText("");
@@ -74,8 +86,7 @@ public class CalendarFragment extends Fragment {
         });
 
 
-        btnAdd = root.findViewById(R.id.addEvent_calendar);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        _addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eventText = eventInput.getText().toString();
@@ -98,6 +109,65 @@ public class CalendarFragment extends Fragment {
                             .setAction("Action", null).show();
                 }
                 //这里实现volley
+                JSONObject jsonObject = new JSONObject();
+                try
+                {
+                    jsonObject.put("eventText", eventText);
+                    jsonObject.put("year", year);
+                    jsonObject.put("month", month);
+                    jsonObject.put("day", day);
+                    jsonObject.put("hour", hour);
+                    jsonObject.put("minute", minute);
+                    jsonObject.put("locationText", locationText);
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_CALENDAR, jsonObject,
+                        new Response.Listener<JSONObject>()
+                        {
+                            @Override
+                            public void onResponse(JSONObject response)
+                            {
+                                try
+                                {
+                                    String status = response.getString("status");
+                                    if (status.equals("201"))
+                                    {
+                                        Toast.makeText(root.getContext(), "Add Event Success!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                catch (JSONException e)
+                                {
+                                    e.printStackTrace();
+                                    Toast.makeText(root.getContext(), "Add Event Error! " + e.toString(), Toast.LENGTH_SHORT).show();
+                                    _addButton.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        },
+                        new Response.ErrorListener()
+                        {
+                            @Override
+                            public void onErrorResponse(VolleyError error)
+                            {
+                                Toast.makeText(root.getContext(), "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
+                                _addButton.setVisibility(View.VISIBLE);
+                            }
+                        }
+                )
+                {
+                    @Override
+                    public int getMethod() {
+                        return Method.POST;
+                    }
+
+                    @Override
+                    public Priority getPriority() {
+                        return Priority.NORMAL;
+                    }
+                };
+                Singleton.getInstance(root.getContext()).addToRequestQueue(jsonObjectRequest);
             }
         });
         return root;
