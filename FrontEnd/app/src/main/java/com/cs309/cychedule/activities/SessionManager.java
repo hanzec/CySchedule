@@ -43,7 +43,7 @@ public class SessionManager
         {
             Intent i = new Intent(context, LoginActivity.class);
             context.startActivity(i);
-            ((HomeActivity) context).finish();
+            ((Main3Activity) context).finish();
         }
     }
 
