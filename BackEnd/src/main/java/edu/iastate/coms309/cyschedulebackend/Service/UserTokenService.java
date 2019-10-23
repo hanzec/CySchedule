@@ -24,6 +24,7 @@ public class UserTokenService {
            - User token will lost after server restart
            - Very Slow speed for creating jwt Token
            - May better if Permission object contains all related user
+           - Provide details for incorrect input using exception
 
 
     */
@@ -55,11 +56,12 @@ public class UserTokenService {
         try {
             jwt = JWT.decode(token);
         } catch (JWTDecodeException exception){
-            //Invalid token
+            return null; //should give an exception not null NEED Fix
         }
 
         tokenObject.setToken(token);
         tokenObject.setUserID(jwt.getClaim("userID").asLong());
+        tokenObject.setTokenID(jwt.getClaim("tokenID").asString());
         return tokenObject;
     }
 
@@ -84,6 +86,7 @@ public class UserTokenService {
                 .withIssuer("CySchedule")
                 .withJWTId(token.getTokenID())
                 .withClaim("userID",userID)
+                .withClaim("tokenID",token.getTokenID())
                 .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
                 .withArrayClaim("permission", permissionList.toArray(new Integer[0]))
                 .sign(algorithmHS));
