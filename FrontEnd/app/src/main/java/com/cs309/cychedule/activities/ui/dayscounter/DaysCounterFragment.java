@@ -105,13 +105,12 @@ public class DaysCounterFragment extends Fragment {
                     Snackbar.make(root,  year + "." + month + "." + day+" to "+yearStr + "." + monthStr + "." + dayStr+" lefts "+dayCount
                             +"\nSecret: " + secretText, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+    
+                    //提交year,month,day, daysleft无所谓, 主界面展示的话复制上面的实现方法就行
+                    //这里实现volley
                 }
-
-                //这里实现volley
             }
         });
-
-
         return root;
     }
 }

@@ -71,8 +71,10 @@ public class HomeFragment extends Fragment {
 		//ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyHomeData();
 		//空list
 		//ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyAlarmHomeData();
+		//塞数据
         ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateHomeData();
 		renderHomeView(homeData, activity);
+		//如果你想关闭下拉刷新的话
 		initScrollListener();
 	}
 	
