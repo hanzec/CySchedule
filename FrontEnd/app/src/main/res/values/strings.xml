@@ -7,8 +7,8 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_usrName">sharedPreference_usrName</string>
+    <string name="nav_header_abstract">sharedPreference_abstract</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_profile">Profile</string>
@@ -22,5 +22,7 @@
     <!-- home -->
     <string name="fragment_home_today_title">Today</string>
     <string name="fragment_home_event_this_week_title">Event This Week</string>
-    <string name="fragment_home_alarm_list_title">Alarm List</string>
+    <string name="fragment_home_alarm_list_title">Days Counter List</string>
+    <string name="fragment_home_alarm_list_empty">Oops. Nothing here : (\nClick me to add a new days counter </string>
+    <string name="fragment_home_empty">It\'s empty ...</string>
 </resources>

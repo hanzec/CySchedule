@@ -31,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
         _logoutButton = findViewById(R.id.btn_logout);
 
         HashMap<String, String> user = sessionManager.getUserDetail();
-        String theName = user.get(sessionManager.USERNAME);
+        String theName = user.get(sessionManager.EMAIL);
 
         _userName.setText(theName);
 

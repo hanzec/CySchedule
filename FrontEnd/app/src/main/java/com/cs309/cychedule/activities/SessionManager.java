@@ -15,7 +15,7 @@ public class SessionManager
 
     private static final String PREF_NAME = "LOGIN";
     private static final String LOGIN = "IS_LOGIN";
-    public static final String USERNAME = "USERNAME";
+    public static final String EMAIL = "EMAIL";
 
 
     public SessionManager(Context context)
@@ -25,10 +25,10 @@ public class SessionManager
         editor = sharedPreferences.edit();
     }
 
-    public void createSession(String userName)
+    public void createSession(String email)
     {
         editor.putBoolean(LOGIN, true);
-        editor.putString(USERNAME, userName);
+        editor.putString(EMAIL, email);
         editor.apply();
     }
 
@@ -43,14 +43,14 @@ public class SessionManager
         {
             Intent i = new Intent(context, LoginActivity.class);
             context.startActivity(i);
-            ((HomeActivity) context).finish();
+            ((Main3Activity) context).finish();
         }
     }
 
     public HashMap<String, String> getUserDetail()
     {
         HashMap<String, String> user = new HashMap<>();
-        user.put(USERNAME, sharedPreferences.getString(USERNAME, null));
+        user.put(EMAIL, sharedPreferences.getString(EMAIL, null));
         return user;
     }
 
@@ -60,6 +60,6 @@ public class SessionManager
         editor.commit();
         Intent i = new Intent(context, LoginActivity.class);
         context.startActivity(i);
-        ((HomeActivity) context).finish();
+        ((Main3Activity) context).finish();
     }
 }

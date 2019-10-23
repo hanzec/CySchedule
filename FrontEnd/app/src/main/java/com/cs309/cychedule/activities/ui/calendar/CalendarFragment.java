@@ -1,46 +1,45 @@
 package com.cs309.cychedule.activities.ui.calendar;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
+import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.patterns.Singleton;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Calendar;
-
-import butterknife.BindView;
+import java.util.Objects;
 
 public class CalendarFragment extends Fragment {
 
-    private static String URL_CALENDAR = "";
-
-    @BindView(R.id.btn_cAdd) Button _addButton;
-    @BindView(R.id.btn_cRemove) Button _removeButton;
-
     private CalendarViewModel calendarViewModel;
-    private DatePicker datepicker;
-    int year, month, day, hour, minute;
+    private Button btnAdd, btnRemvoe;
+    int startYear, startMonth, startDay, startHour, startMinute;
+    String startDateStr, startTimeStr;
+    int endYear, endMonth, endDay, endHour, endMinute;
+    String endDateStr, endTimeStr;
+
+    String startStr, endStr;
     String eventText, locationText;
+    private Calendar calendar;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,124 +53,285 @@ public class CalendarFragment extends Fragment {
         // 		textView.setText(s);
         // 	}
         // });
+    
+       final ImageView logo = root.findViewById(R.id.cal_logo);
 
-        final EditText eventInput = root.findViewById(R.id.eventTextInput);
-        final EditText locationInput = root.findViewById(R.id.locationTextInput);
+        calendar = Calendar.getInstance();
+        startYear = calendar.get(Calendar.YEAR);
+        startMonth = calendar.get(Calendar.MONTH);
+        startDay = calendar.get(Calendar.DAY_OF_MONTH);
+        startHour = calendar.get(Calendar.HOUR_OF_DAY);
+        startMinute = calendar.get(Calendar.MINUTE);
 
+        endYear = calendar.get(Calendar.YEAR);
+        endMonth = calendar.get(Calendar.MONTH);
+        endDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-        final DatePicker datePicker = root.findViewById(R.id.datepicker_calendar);
-        Calendar calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        datePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                CalendarFragment.this.year = year;
-                CalendarFragment.this.month = monthOfYear+1;
-                CalendarFragment.this.day = dayOfMonth;
+        final EditText startDateInput = root.findViewById(R.id.input_cal_startDate);
+        startDateInput.setClickable(true);
+        startDateInput.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog
+                        (root.getContext(), new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                startYear = year;
+                                startMonth = monthOfYear;
+                                startDay = dayOfMonth;
+                                startDateStr = String.valueOf(year) + "." + String.valueOf(monthOfYear + 1) + "." + Integer.toString(dayOfMonth);
+                                startDateInput.setText(startDateStr);
+                            }}, startYear, startMonth, startDay);
+                datePickerDialog.show();
+                // datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                Objects.requireNonNull(datePickerDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
             }
         });
 
-        final TimePicker timePicker = root.findViewById(R.id.timepicker_calendar);
-        timePicker.setIs24HourView(true);
+        final EditText startTimeInput = root.findViewById(R.id.input_cal_startTime);
+        startTimeInput.setClickable(true);
+        startTimeInput.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TimePickerDialog datePickerDialog = new TimePickerDialog
+                        (root.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                startHour = hourOfDay;
+                                startMinute = minute;
+                                startTimeStr= String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+                                startTimeInput.setText(startTimeStr);
+                            }}, startHour, startMinute, true);
+                datePickerDialog.show();
+                // datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                Objects.requireNonNull(datePickerDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            }
+        });
 
+        final EditText endDateInput = root.findViewById(R.id.input_cal_endDate);
+        endDateInput.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog
+                        (root.getContext(), new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                endYear = year;
+                                endMonth = monthOfYear;
+                                endDay = dayOfMonth;
+                                endDateStr = String.valueOf(year) + "." + String.valueOf(monthOfYear + 1) + "." + Integer.toString(dayOfMonth);
+                                endDateInput.setText(endDateStr);
+                            }}, endYear, endMonth, endDay);
+                datePickerDialog.show();
+                // datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                Objects.requireNonNull(datePickerDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            }
+        });
 
-        _removeButton.setOnClickListener(new View.OnClickListener() {
+        final EditText endTimeInput = root.findViewById(R.id.input_cal_endTime);
+        endTimeInput.setClickable(true);
+        endTimeInput.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TimePickerDialog datePickerDialog = new TimePickerDialog
+                        (root.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                endHour = hourOfDay;
+                                endMinute = minute;
+                                endTimeStr = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+                                endTimeInput.setText(endTimeStr);
+                            }}, endHour, endMinute, true);
+                datePickerDialog.show();
+                // datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                Objects.requireNonNull(datePickerDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            }
+        });
+        final EditText eventInput = root.findViewById(R.id.input_cal_event);
+        final EditText locationInput = root.findViewById(R.id.input_cal_location);
+
+        //
+        // timePicker.setIs24HourView(true);
+    
+    
+        final CheckBox cbox_justThisDay = root.findViewById(R.id.cbox_cal_justThisDay);
+        cbox_justThisDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                   root.findViewById(R.id.cal_endLayout).setVisibility(View.GONE);
+                   endDateInput.setText("");
+                   endTimeInput.setText("");
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat3));
+                }else{
+                    root.findViewById(R.id.cal_endLayout).setVisibility(View.VISIBLE);
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat));
+                }
+            }
+        });
+    
+        final CheckBox cbox_allDayAct = root.findViewById(R.id.cbox_cal_allDayActiviy);
+        cbox_allDayAct.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    // startTimeInput.setHint("ALL_DAY");
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat4));
+                    startTimeInput.setText("ALL_DAY");
+                    startTimeStr="";
+                    startTimeInput.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                        }
+                    });
+                    // startTimeInput.setFocusable(false);
+                    // startTimeInput.setClickable(false);
+                    // startTimeInput.setFocusableInTouchMode(false);
+                    // startTimeInput.setVisibility(View.INVISIBLE);
+                    // endTimeInput.setHint("ALL_DAY");
+                    endTimeInput.setText("ALL_DAY");
+                    endTimeStr="";
+                    endTimeInput.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                        }
+                    });
+                    // endTimeInput.setFocusable(false);
+                    // endTimeInput.setFocusableInTouchMode(false);
+                    // endTimeInput.setClickable(false);
+                    // endTimeInput.setVisibility(View.INVISIBLE);
+                }else{
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat));
+                    startTimeInput.setText("");
+                    startTimeInput.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            TimePickerDialog datePickerDialog = new TimePickerDialog
+                                    (root.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                                        @Override
+                                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                            startHour = hourOfDay;
+                                            startMinute = minute;
+                                            startTimeStr= String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+                                            startTimeInput.setText(startTimeStr);
+                                        }}, startHour, startMinute, true);
+                            datePickerDialog.show();
+                            // datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                            Objects.requireNonNull(datePickerDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                        }
+                    });
+                    
+                    endTimeInput.setText("");
+                    endTimeInput.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            TimePickerDialog datePickerDialog = new TimePickerDialog
+                                    (root.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                                        @Override
+                                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                            endHour = hourOfDay;
+                                            endMinute = minute;
+                                            endTimeStr = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+                                            endTimeInput.setText(endTimeStr);
+                                        }}, endHour, endMinute, true);
+                            datePickerDialog.show();
+                            // datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                            Objects.requireNonNull(datePickerDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                        }
+                    });
+                }
+            }
+        });
+        
+
+        btnRemvoe = root.findViewById(R.id.btn_cal_clear);
+        btnRemvoe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eventInput.setText("");
                 locationInput.setText("");
+                startDateInput.setText("");
+                startTimeInput.setText("");
+                endDateInput.setText("");
+                endTimeInput.setText("");
+                
             }
         });
 
 
-        _addButton.setOnClickListener(new View.OnClickListener() {
+        btnAdd = root.findViewById(R.id.btn_cal_add);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eventText = eventInput.getText().toString();
                 locationText = locationInput.getText().toString();
-                if (eventText.isEmpty()) {
-                    Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter the even description!", Toast.LENGTH_SHORT);
+                boolean error = false;
+                if (startDateInput.getText().toString().isEmpty()){
+                    Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter the start date!", Toast.LENGTH_SHORT);
                     emptyInputWarning.show();
+                    error = true;
                 }
-                else {
-                    if(locationText.isEmpty()){
-                        locationInput.setText("Anywhere");
-                    }
+                if (endDateInput.getText().toString().isEmpty() && !cbox_justThisDay.isChecked()){
+                    Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter the end date!", Toast.LENGTH_SHORT);
+                    emptyInputWarning.show();
+                    error = true;
+                }
+    
+                if (startTimeInput.getText().toString().isEmpty() && !cbox_allDayAct.isChecked()){
+                    startTimeInput.setText("ALL_DAY");
+                }
+    
+                if (endTimeInput.getText().toString().isEmpty() && !cbox_allDayAct.isChecked()){
+                    endTimeInput.setText("ALL_DAY");
+                }
+                if ((startTimeInput.getText().toString().equals("ALL_DAY") || endTimeInput.getText().toString().equals("ALL_DAY"))
+                        && !startTimeInput.getText().toString().equals(endTimeInput.getText().toString())
+                        && !cbox_justThisDay.isChecked()
+                ){
+                    Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please check the time or either check All_day_act checkbox!", Toast.LENGTH_SHORT);
+                    emptyInputWarning.show();
+                    error = true;
+                }
+                if (locationInput.getText().toString().isEmpty()) {
+                    locationInput.setText("Anywhere");
+                }
+                if (eventText.isEmpty()) {
+                    Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter the event description!", Toast.LENGTH_SHORT);
+                    emptyInputWarning.show();
+                    error = true;
+                }
+                String startIntTemp,endIntTemp;
+                if (startTimeInput.getText().toString().equals("ALL_DAY") || endTimeInput.getText().toString().equals("ALL_DAY")) {
+                    startIntTemp = "" + startYear + startMonth + startDay;
+                    endIntTemp = "" + endYear + endMonth + endDay;
+                }else {
+                    startIntTemp = "" + startYear + startMonth + startDay+startHour+startMinute;
+                    endIntTemp = "" + endYear + endMonth + endDay+endHour+endMinute;
+                }
+                int startInt = Integer.parseInt(startIntTemp);
+                int endInt = Integer.parseInt(endIntTemp);
+                if (startInt>=endInt && !cbox_justThisDay.isChecked()){
+                    Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter a valid end date", Toast.LENGTH_SHORT);
+                    emptyInputWarning.show();
+                    error = true;
+                }
+                if(!error){
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat2));
                     locationText = locationInput.getText().toString();
-                    hour = timePicker.getHour();
-                    minute = timePicker.getMinute();
-                    Snackbar.make(root, "Secret :" + eventText
-                                    + " @" + year + "." + month + "." + day + "." + hour + ":" + minute
-                                    + " @" + locationText
-                            , Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-                //这里实现volley
-                JSONObject jsonObject = new JSONObject();
-                try
-                {
-                    jsonObject.put("eventText", eventText);
-                    jsonObject.put("year", year);
-                    jsonObject.put("month", month);
-                    jsonObject.put("day", day);
-                    jsonObject.put("hour", hour);
-                    jsonObject.put("minute", minute);
-                    jsonObject.put("locationText", locationText);
-                }
-                catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_CALENDAR, jsonObject,
-                        new Response.Listener<JSONObject>()
-                        {
-                            @Override
-                            public void onResponse(JSONObject response)
-                            {
-                                try
-                                {
-                                    String status = response.getString("status");
-                                    if (status.equals("201"))
-                                    {
-                                        Toast.makeText(root.getContext(), "Add Event Success!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                catch (JSONException e)
-                                {
-                                    e.printStackTrace();
-                                    Toast.makeText(root.getContext(), "Add Event Error! " + e.toString(), Toast.LENGTH_SHORT).show();
-                                    _addButton.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        },
-                        new Response.ErrorListener()
-                        {
-                            @Override
-                            public void onErrorResponse(VolleyError error)
-                            {
-                                Toast.makeText(root.getContext(), "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
-                                _addButton.setVisibility(View.VISIBLE);
-                            }
-                        }
-                )
-                {
-                    @Override
-                    public int getMethod() {
-                        return Method.POST;
+                    startStr = startDateInput.getText() + " " + startTimeInput.getText();
+                    endStr = endDateInput.getText() + " " + endTimeInput.getText();
+                    
+                    //提交这些变量startStr,endStr,eventText,locationText, and Token
+                    if(cbox_justThisDay.isChecked()){
+                        Snackbar.make(root,  startStr
+                                        +":\nEvent: " + eventText + " @" + locationText
+                                , Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }else {
+                        Snackbar.make(root,  "From"+startStr +"to" + endStr
+                                        +"\nEvent: " + eventText + " @" + locationText
+                                , Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                     }
-
-                    @Override
-                    public Priority getPriority() {
-                        return Priority.NORMAL;
-                    }
-                };
-                Singleton.getInstance(root.getContext()).addToRequestQueue(jsonObjectRequest);
+                   
+    
+    
+                    //这里实现volley
+                }
             }
         });
         return root;
     }
-
-
 }
