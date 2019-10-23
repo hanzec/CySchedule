@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserTokenServiceTest {
+
     @Mock
     AccountService accountService;
 
@@ -49,7 +50,7 @@ public class UserTokenServiceTest {
 
     @Test
     public void loadTokenString(){
-        final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDeVNjaGVkdWxlIiwicGVybWlzc2lvbiI6W10sImV4cCI6MTU3MTg0OTA0OCwidXNlcklEIjoxLCJqdGkiOiJmYmY1NTQ5OS1hYzlmLTQ1YTYtYTExMy00M2MwMGY4OWZiNGEifQ.EFm10yycNKxwNlsBtpHTYs2hiRf_l_5VCv8J0_Eh1Bs";
+        final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbklEIjoiOWVlOWUxNzYtN2MxOS00MTFjLWFiZmYtMzI4ODY0NjBlMGVkIiwiaXNzIjoiQ3lTY2hlZHVsZSIsInBlcm1pc3Npb24iOltdLCJleHAiOjE1NzE4NTUwMjksInVzZXJJRCI6MSwianRpIjoiOWVlOWUxNzYtN2MxOS00MTFjLWFiZmYtMzI4ODY0NjBlMGVkIn0.HIdx_Wrf-8IFrgf3SzpOFEUEeS_PUqDdF5krceyg4Kk";
 
         UserToken userToken = userTokenService.load(token);
 
