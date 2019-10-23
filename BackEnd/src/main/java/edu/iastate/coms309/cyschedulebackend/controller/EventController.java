@@ -28,7 +28,7 @@ public class EventController {
         Response response = new Response();
 
         eventService.getAllEvent(principal.getName()).forEach(V->{
-            response.addResponse(V.blockID,V);
+            response.addResponse(V.getBlockID().toString(),V);
         });
 
         if(response.getResponseBody().isEmpty())
@@ -37,7 +37,7 @@ public class EventController {
             return response.OK().send(request.getRequestURI());
     }
 
-    @GetMapping(value= "/add")
+    @PostMapping(value= "/add")
     @ApiOperation("add new TimeBlock")
     public Response addNewEvent(Principal principal, HttpServletRequest request, EventRequest newEvent){
         Response response = new Response();
@@ -57,17 +57,17 @@ public class EventController {
 
     @ApiOperation("delete timeBlock by id")
     @DeleteMapping(value= "/{blockID}")
-    public Response deleteTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
+    public Response deleteTimeBlock(HttpServletRequest request, @PathVariable Integer blockID){
         Response response = new Response();
-        eventService.deleteEvent(blockID);
+        eventService.deleteEvent(blockID.longValue());
         return response.noContent().send(request.getRequestURI());
     }
 
     @ApiOperation("load timeBlock by id")
     @GetMapping(value= "/{blockID}")
-    public Response loadTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
+    public Response loadTimeBlock(HttpServletRequest request, @PathVariable Integer blockID){
         Response response = new Response();
-        response.addResponse("TimeBlock", eventService.getEvent(blockID));
+        response.addResponse("TimeBlock", eventService.getEvent(blockID.longValue()));
 
         if(response.getResponseBody().isEmpty())
             return response.NotFound().send(request.getRequestURI());
@@ -77,9 +77,9 @@ public class EventController {
 
     @ApiOperation("update timeBlock by id")
     @PutMapping(value= "/{blockID}")
-    public Response updateTimeBlock(HttpServletRequest request, @PathVariable Long blockID, EventRequest newEvent){
+    public Response updateTimeBlock(HttpServletRequest request, @PathVariable Integer blockID, EventRequest newEvent){
         Response response = new Response();
-        Event event = eventService.getEvent(blockID);
+        Event event = eventService.getEvent(blockID.longValue());
 
         if (newEvent.name != null)
             event.name = newEvent.name;

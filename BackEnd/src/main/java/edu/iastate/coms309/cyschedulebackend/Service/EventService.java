@@ -12,6 +12,10 @@ import java.util.Set;
 
 @Service
 public class EventService {
+    /*
+    Maybe a improve point
+            - Token never revoke
+     */
 
     @Autowired
     EventRepository eventRepository;
@@ -44,7 +48,7 @@ public class EventService {
         event.setLocation(newEvent.getLocation());
         event.setStartTime(newEvent.getStartTime());
         event.setDescription(newEvent.getDescription());
-        event.setAdminUser(userDetailsRepository.getOne(newEvent.userID));
+        event.setAdminUser(userDetailsRepository.getOne(newEvent.getUserID().longValue()));
 
         //set relation with user
         event.getAdminUser().getManagedEvent().add(event);
