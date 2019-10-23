@@ -42,6 +42,9 @@ public class LoginController {
         if (password == null)
             return response.BadRequested("password should not empty").send(request.getRequestURI());
 
+        if(accountService.existsByEmail(email))
+            return response.BadRequested("User is not existe").send(request.getRequestURI());
+
         if(accountService.checkPassword(email,password))
             response.OK().addResponse("loginToken",userTokenService.creat(accountService.getUserID(email)));
         else
