@@ -85,15 +85,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/calendar/CalendarFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="392">
-              <caret line="308" column="77" lean-forward="true" selection-start-line="308" selection-start-column="77" selection-end-line="308" selection-end-column="77" />
+            <state relative-caret-position="578">
+              <caret line="318" column="43" lean-forward="true" selection-start-line="318" selection-start-column="43" selection-end-line="318" selection-end-column="43" />
               <folding>
                 <element signature="e#7727#8240#0" expanded="true" />
                 <element signature="e#8239#8240#0" expanded="true" />
                 <element signature="e#8386#12449#0" expanded="true" />
                 <element signature="e#12448#12449#0" expanded="true" />
-                <element signature="e#13039#16596#0" expanded="true" />
-                <element signature="e#16595#16596#0" expanded="true" />
+                <element signature="e#13039#17119#0" expanded="true" />
+                <element signature="e#17118#17119#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -183,11 +183,11 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="83" />
-    <option name="y" value="69" />
-    <option name="width" value="1938" />
-    <option name="height" value="1058" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="81" />
+    <option name="y" value="67" />
+    <option name="width" value="1940" />
+    <option name="height" value="1060" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -369,8 +369,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="-6" width="1452" height="932" extended-state="6" />
-    <editor active="true" />
+    <frame x="-6" y="-6" width="1452" height="932" extended-state="7" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="1" sideWeight="0.4993742" visible="true" weight="0.20272206" />
@@ -764,15 +763,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/calendar/CalendarFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="392">
-          <caret line="308" column="77" lean-forward="true" selection-start-line="308" selection-start-column="77" selection-end-line="308" selection-end-column="77" />
+        <state relative-caret-position="578">
+          <caret line="318" column="43" lean-forward="true" selection-start-line="318" selection-start-column="43" selection-end-line="318" selection-end-column="43" />
           <folding>
             <element signature="e#7727#8240#0" expanded="true" />
             <element signature="e#8239#8240#0" expanded="true" />
             <element signature="e#8386#12449#0" expanded="true" />
             <element signature="e#12448#12449#0" expanded="true" />
-            <element signature="e#13039#16596#0" expanded="true" />
-            <element signature="e#16595#16596#0" expanded="true" />
+            <element signature="e#13039#17119#0" expanded="true" />
+            <element signature="e#17118#17119#0" expanded="true" />
           </folding>
         </state>
       </provider>
