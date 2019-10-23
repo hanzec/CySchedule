@@ -64,7 +64,22 @@ public class EventService {
     public void deleteEvent(Long id){ eventRepository.deleteById(id); }
 
     @Transactional
-    public Event getEvent(Long id){
+    public EventRequest getEvent(Long id){
+        Event event = eventRepository.getOne(id);
+        EventRequest eventRequest = new EventRequest();
+
+
+        eventRequest.setName(event.getName());
+        eventRequest.setEndTime(event.getEndTime());
+        eventRequest.setLocation(event.getLocation());
+        eventRequest.setStartTime(event.getStartTime());
+        eventRequest.setDescription(event.getDescription());
+
+        return eventRequest;
+    }
+
+    @Transactional
+    public Event getEventInstance(Long id){
         return eventRepository.getOne(id);
     }
 
