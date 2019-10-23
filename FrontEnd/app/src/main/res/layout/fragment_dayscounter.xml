@@ -23,9 +23,8 @@
         android:layout_height="wrap_content"
         android:calendarViewShown="false"
         android:headerBackground="@color/primary_darker"
+            app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/textInput_dayscounter"
         />
 
