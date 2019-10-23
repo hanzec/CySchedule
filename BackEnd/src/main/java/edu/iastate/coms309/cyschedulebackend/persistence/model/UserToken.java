@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class UserToken {
 
-    Long userID;
+    long userID;
 
     String token;
 
