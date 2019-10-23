@@ -2,6 +2,7 @@ package com.cs309.cychedule.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -40,47 +41,58 @@ public class LoginActivity extends AppCompatActivity {
     private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private static String EMAIL = null;
 
-    @BindView(R.id.input_userName) EditText _userNameText;
+    @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
-    
+
+    private void initData() {
+        SharedPreferences sp = getSharedPreferences("loginToken", 0);
+        EMAIL = sp.getString("email", null);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
-        sessionManager = new SessionManager(this);
-        
-        _loginButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
+        if (EMAIL == null) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);
+            ButterKnife.bind(this);
+            sessionManager = new SessionManager(this);
 
-                login();
-            }
-        });
-        _signupLink.setOnClickListener(new View.OnClickListener() {
+            _loginButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
-                finish();
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
-        });
+                @Override
+                public void onClick(View v) {
+
+                    login();
+                }
+            });
+            _signupLink.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // Start the Signup activity
+                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                    startActivityForResult(intent, REQUEST_SIGNUP);
+                    finish();
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                }
+            });
+        }
+        else {
+            Intent intent = new Intent(this, Main3Activity.class);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        }
     }
 
     public void login() {
         Log.d(TAG, "Login");
 
-        if (!validate()) {
-            onLoginFailed();
-            return;
-        }
 
         _loginButton.setEnabled(false);
 
@@ -90,73 +102,15 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        final String userName = _userNameText.getText().toString();
+        final String email = _emailText.getText().toString();
         final String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
 
-        _loginButton.setVisibility(View.GONE);
 
         RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.start();
-
-        JSONObject jsonObject = new JSONObject();
-        try
-        {
-            jsonObject.put("userName", userName);
-            jsonObject.put("password", password);
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_LOGIN, jsonObject,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response)
-                    {
-                        try
-                        {
-                            String status = response.getString("status");
-                            if (status.equals("200"))
-                            {
-                                Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                            Toast.makeText(LoginActivity.this, "Loin Error! " + e.toString(), Toast.LENGTH_SHORT).show();
-                            _loginButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
-                        Toast.makeText(LoginActivity.this, "Login Error! " + error.toString(), Toast.LENGTH_SHORT).show();
-                        _loginButton.setVisibility(View.VISIBLE);
-                        Log.d("Error", error.toString());
-                    }
-                }
-        )
-        {
-            @Override
-            public int getMethod() {
-                return Method.POST;
-            }
-
-            @Override
-            public Priority getPriority() {
-                return Priority.NORMAL;
-            }
-        };
-        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
-        //requestQueue.add(jsonObjectRequest);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
                 new Response.Listener<String>() {
@@ -164,29 +118,30 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try
                         {
-                            JSONObject jObject = new JSONObject(response);
-                            String status = jObject.getString("status");
-                            JSONArray jsonArray = jObject.getJSONArray("login");
-                            if (status.equals("1"))
+                            JSONObject object = new JSONObject(response);
+                            String status = object.getString("status");
+                            JSONObject loginToken = object.getJSONObject("responseBody");
+                            if (status.equals("200"))
                             {
-                                for (int i = 0; i < jsonArray.length(); i ++)
-                                {
-                                    JSONObject object = jsonArray.getJSONObject(i);
-                                    String userName = object.getString("userName").trim();
-
-                                    sessionManager.createSession(userName);
-
-                                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                    intent.putExtra("userName", userName);
-                                    startActivity(intent);
-                                }
+                                Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
+                                SharedPreferences sp = getSharedPreferences("loginToken", 0);
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("email", email);
+                                editor.commit();
+                                onLoginSuccess();
+                            }
+                            else
+                            {
+                                Toast.makeText(LoginActivity.this, "Login Failed. Please check your password.", Toast.LENGTH_SHORT).show();
+                                onLoginFailed();
                             }
                         }
                         catch (JSONException e)
                         {
                             e.printStackTrace();
                             _loginButton.setVisibility(View.VISIBLE);
-                            Toast.makeText(LoginActivity.this, "Error " + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                            onLoginFailed();
                         }
                     }
                 },
@@ -194,14 +149,15 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         _loginButton.setVisibility(View.VISIBLE);
-                        Toast.makeText(LoginActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Login Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+                        onLoginFailed();
                     }
                 })
         {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("userName", userName);
+                params.put("email", email);
                 params.put("password", password);
                 return params;
             }
@@ -209,15 +165,15 @@ public class LoginActivity extends AppCompatActivity {
         //requestQueue.add(stringRequest);
         Singleton.getInstance(this).addToRequestQueue(stringRequest);
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 1000);
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onLoginSuccess or onLoginFailed
+//                        onLoginSuccess();
+//                        // onLoginFailed();
+//                        progressDialog.dismiss();
+//                    }
+//                }, 1000);
     }
 
 
@@ -251,41 +207,4 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
     }
 
-    public boolean validate() {
-        //判断username输入是否合法
-        boolean valid = true;
-        String userName = _userNameText.getText().toString();
-        String password = _passwordText.getText().toString();
-
-        if(Patterns.EMAIL_ADDRESS.matcher(userName).matches() || Patterns.PHONE.matcher(userName).matches()){
-            _userNameText.setError(null);
-        }
-        else if (userName.isEmpty()) {
-            _userNameText.setError("Please enter your email address or phone number!");
-            valid = false;
-        }
-        else if ((userName.contains("@") ||userName.contains(".com")) && !Patterns.EMAIL_ADDRESS.matcher(userName).matches()) {
-            _userNameText.setError("Please enter a valid email address!");
-            valid = false;
-        }
-        else if ( userUtil.isNumeric(userName) && !Patterns.PHONE.matcher(userName).matches()) {
-            _userNameText.setError("Please enter a valid phone number!");
-            valid = false;
-        }
-        else if ( userUtil.hasSpecialChar(userName)) {
-            _userNameText.setError("Please enter a valid email address or phone number!");
-            valid = false;
-        }
-        else {
-            _userNameText.setError(null);
-        }
-
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
-            valid = false;
-        } else {
-            _passwordText.setError(null);
-        }
-        return valid;
-    }
 }
