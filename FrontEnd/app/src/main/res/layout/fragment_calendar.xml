@@ -92,14 +92,14 @@
         app:layout_constraintTop_toBottomOf="@id/textInput2_calendar"
         >
         <Button
-            android:id="@+id/removeText_calendar"
+            android:id="@+id/btn_cRemove"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:onClick="cancel"
             android:text="Clear" />
         <Button
-            android:id="@+id/addEvent_calendar"
+            android:id="@+id/btn_cAdd"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
