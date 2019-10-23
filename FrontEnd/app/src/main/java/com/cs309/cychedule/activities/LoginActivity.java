@@ -2,6 +2,7 @@ package com.cs309.cychedule.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -169,9 +170,14 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             JSONObject object = new JSONObject(response);
                             String status = object.getString("status");
+                            String token = object.getString("token");
                             if (status.equals("200"))
                             {
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
+                                SharedPreferences sp = getSharedPreferences("loginToken", 0);
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("email", email);
+                                editor.commit();
                                 onLoginSuccess();
                             }
                             else
@@ -250,4 +256,5 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }
+
 }
