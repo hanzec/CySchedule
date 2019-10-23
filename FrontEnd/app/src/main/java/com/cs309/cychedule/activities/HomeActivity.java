@@ -1,6 +1,5 @@
 package com.cs309.cychedule.activities;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +14,7 @@ import butterknife.BindView;
 
 public class HomeActivity extends AppCompatActivity {
 
-    @BindView(R.id.input_userName) TextView _userName;
+    @BindView(R.id.input_email) TextView _userName;
     @BindView(R.id.btn_logout) Button _logoutButton;
     SessionManager sessionManager;
 
@@ -27,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
-        _userName = findViewById(R.id.input_userName);
+        _userName = findViewById(R.id.input_email);
         _logoutButton = findViewById(R.id.btn_logout);
 
         HashMap<String, String> user = sessionManager.getUserDetail();

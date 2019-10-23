@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +17,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
 import java.util.HashMap;
@@ -27,13 +25,11 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.patterns.Singleton;
-import com.cs309.cychedule.utilities.userUtil;
 
 public class LoginActivity extends AppCompatActivity {
 

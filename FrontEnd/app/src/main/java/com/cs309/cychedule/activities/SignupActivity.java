@@ -13,21 +13,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -36,8 +31,6 @@ import butterknife.ButterKnife;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.utilities.userUtil;
 import com.cs309.cychedule.patterns.Singleton;
-import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedHashTreeMap;
 
 public class SignupActivity extends AppCompatActivity {
 
