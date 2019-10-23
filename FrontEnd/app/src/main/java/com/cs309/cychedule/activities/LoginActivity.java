@@ -116,12 +116,12 @@ public class LoginActivity extends AppCompatActivity {
                             if (status.equals("200"))
                             {
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
-//                                SharedPreferences sp = getSharedPreferences("loginToken", 0);
-//                                SharedPreferences.Editor editor = sp.edit();
-//                                editor.putString("email", email);
-//                                editor.commit();
+                                SharedPreferences sp = getSharedPreferences("loginToken", 0);
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("email", email);
+                                editor.commit();
 
-                                sessionManager.createSession(email);
+//                                sessionManager.createSession(email);
 
                                 onLoginSuccess();
                             }
