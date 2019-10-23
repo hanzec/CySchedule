@@ -9,14 +9,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.Dark"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activities.Main3Activity"
+            android:name=".activities.WelcomeActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan"
             tools:ignore="DuplicateActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +28,10 @@
         <activity
             android:name=".activities.SignupActivity"
             android:theme="@style/AppTheme.Dark" />
+        <activity
+                android:name=".activities.Main3Activity"
+                android:theme="@style/AppTheme.Dark"
+                android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
+import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -52,7 +53,8 @@ public class CalendarFragment extends Fragment {
         // 		textView.setText(s);
         // 	}
         // });
-
+    
+       final ImageView logo = root.findViewById(R.id.cal_logo);
 
         calendar = Calendar.getInstance();
         startYear = calendar.get(Calendar.YEAR);
@@ -156,8 +158,10 @@ public class CalendarFragment extends Fragment {
                    root.findViewById(R.id.cal_endLayout).setVisibility(View.GONE);
                    endDateInput.setText("");
                    endTimeInput.setText("");
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat3));
                 }else{
                     root.findViewById(R.id.cal_endLayout).setVisibility(View.VISIBLE);
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat));
                 }
             }
         });
@@ -168,6 +172,7 @@ public class CalendarFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     // startTimeInput.setHint("ALL_DAY");
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat4));
                     startTimeInput.setText("ALL_DAY");
                     startTimeStr="";
                     startTimeInput.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +195,7 @@ public class CalendarFragment extends Fragment {
                     // endTimeInput.setClickable(false);
                     // endTimeInput.setVisibility(View.INVISIBLE);
                 }else{
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat));
                     startTimeInput.setText("");
                     startTimeInput.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
@@ -302,6 +308,7 @@ public class CalendarFragment extends Fragment {
                     error = true;
                 }
                 if(!error){
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat2));
                     locationText = locationInput.getText().toString();
                     startStr = startDateInput.getText() + " " + startTimeInput.getText();
                     endStr = endDateInput.getText() + " " + endTimeInput.getText();
