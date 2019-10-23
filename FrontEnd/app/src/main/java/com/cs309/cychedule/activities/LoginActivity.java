@@ -41,47 +41,58 @@ public class LoginActivity extends AppCompatActivity {
     private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private static String EMAIL = null;
 
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
-    
+
+    private void initData() {
+        SharedPreferences sp = getSharedPreferences("loginToken", 0);
+        EMAIL = sp.getString("email", null);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
-        sessionManager = new SessionManager(this);
-        
-        _loginButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
+        if (EMAIL == null) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);
+            ButterKnife.bind(this);
+            sessionManager = new SessionManager(this);
 
-                login();
-            }
-        });
-        _signupLink.setOnClickListener(new View.OnClickListener() {
+            _loginButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
-                finish();
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
-        });
+                @Override
+                public void onClick(View v) {
+
+                    login();
+                }
+            });
+            _signupLink.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // Start the Signup activity
+                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                    startActivityForResult(intent, REQUEST_SIGNUP);
+                    finish();
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                }
+            });
+        }
+        else {
+            Intent intent = new Intent(this, Main3Activity.class);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        }
     }
 
     public void login() {
         Log.d(TAG, "Login");
 
-//        if (!validate()) {
-//            onLoginFailed();
-//            return;
-//        }
 
         _loginButton.setEnabled(false);
 
@@ -96,71 +107,10 @@ public class LoginActivity extends AppCompatActivity {
 
         // TODO: Implement your own authentication logic here.
 
-        _loginButton.setVisibility(View.GONE);
 
         RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.start();
-
-//        JSONObject jsonObject = new JSONObject();
-//        try
-//        {
-//            jsonObject.put("email", email);
-//            jsonObject.put("password", password);
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_LOGIN, jsonObject,
-//                new Response.Listener<JSONObject>()
-//                {
-//                    @Override
-//                    public void onResponse(JSONObject response)
-//                    {
-//                        try
-//                        {
-//                            String status = response.getString("status");
-//                            if (status.equals("201"))
-//                            {
-//                                Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
-//                                onLoginSuccess();
-//                            }
-//                        }
-//                        catch (JSONException e)
-//                        {
-//                            e.printStackTrace();
-//                            Toast.makeText(LoginActivity.this, "Loin Error! " + e.toString(), Toast.LENGTH_SHORT).show();
-//                            _loginButton.setVisibility(View.VISIBLE);
-//                            onLoginFailed();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener()
-//                {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error)
-//                    {
-//                        Toast.makeText(LoginActivity.this, "Login Error! " + error.toString(), Toast.LENGTH_SHORT).show();
-//                        _loginButton.setVisibility(View.VISIBLE);
-//                        Log.d("Error", error.toString());
-//                        onLoginFailed();
-//                    }
-//                }
-//        )
-//        {
-//            @Override
-//            public int getMethod() {
-//                return Method.POST;
-//            }
-//
-//            @Override
-//            public Priority getPriority() {
-//                return Priority.NORMAL;
-//            }
-//        };
-//        Singleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
-//        //requestQueue.add(jsonObjectRequest);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
                 new Response.Listener<String>() {
@@ -170,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             JSONObject object = new JSONObject(response);
                             String status = object.getString("status");
-                            String token = object.getString("token");
+                            JSONObject loginToken = object.getJSONObject("responseBody");
                             if (status.equals("200"))
                             {
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
