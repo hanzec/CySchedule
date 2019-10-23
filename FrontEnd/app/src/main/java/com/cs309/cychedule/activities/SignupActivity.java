@@ -110,7 +110,6 @@ public class SignupActivity extends AppCompatActivity {
 //
 //        Log.d("Inputs:", userName);
 //        System.out.println(userName + password + email + firstName + lastName);
-        _signupButton.setVisibility(View.GONE);
 
         RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -216,7 +215,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("userName", userName);
+                params.put("username", userName);
                 params.put("password", password);
                 params.put("email", email);
                 params.put("firstName", firstName);
@@ -227,16 +226,16 @@ public class SignupActivity extends AppCompatActivity {
         Singleton.getInstance(this).addToRequestQueue(stringRequest);
         //requestQueue.add(stringRequest);
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onSignupSuccess or onSignupFailed
+//                        // depending on success
+//                        onSignupSuccess();
+//                        // onSignupFailed();
+//                        progressDialog.dismiss();
+//                    }
+//                }, 3000);
     }
 
 

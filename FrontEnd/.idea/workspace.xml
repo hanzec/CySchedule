@@ -30,16 +30,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/calendar/CalendarFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1302">
-              <caret line="137" column="84" lean-forward="true" selection-start-line="137" selection-start-column="84" selection-end-line="137" selection-end-column="84" />
+            <state relative-caret-position="1197">
+              <caret line="88" column="38" selection-start-line="88" selection-start-column="38" selection-end-line="88" selection-end-column="38" />
               <folding>
+                <element signature="e#2718#2917#0" expanded="true" />
+                <element signature="e#2916#2917#0" expanded="true" />
+                <element signature="e#3022#4224#0" expanded="true" />
                 <element signature="e#6376#6377#0" expanded="true" />
                 <element signature="e#6442#6443#0" expanded="true" />
                 <element signature="e#6525#6526#0" expanded="true" />
                 <element signature="e#6595#6596#0" expanded="true" />
+                <element signature="e#4223#4224#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -49,7 +53,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/dayscounter/DaysCounterFragment.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="206">
-              <caret line="190" column="94" lean-forward="true" selection-start-line="135" selection-start-column="16" selection-end-line="190" selection-end-column="94" />
+              <caret line="190" column="94" selection-start-line="135" selection-start-column="16" selection-end-line="190" selection-end-column="94" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3314#3471#0" expanded="true" />
@@ -69,7 +73,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="215">
-              <caret line="105" column="8" lean-forward="true" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="67" />
+              <caret line="105" column="8" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="67" />
               <folding>
                 <element signature="e#2093#2264#0" expanded="true" />
                 <element signature="e#2263#2264#0" expanded="true" />
@@ -78,15 +82,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/SignupActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="118" column="10" lean-forward="true" selection-start-line="118" selection-start-column="10" selection-end-line="175" selection-end-column="75" />
-              <folding>
-                <element signature="e#9067#9434#0" expanded="true" />
-                <element signature="e#9433#9434#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="698">
+              <caret line="283" column="21" selection-start-line="283" selection-start-column="13" selection-end-line="283" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -140,6 +140,9 @@
       <find>btnAdd</find>
       <find>btnRemvoe</find>
       <find>toast</find>
+      <find>onSignupSuccess();</find>
+      <find>onSignupSuccess()</find>
+      <find>userName</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -189,7 +192,6 @@
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/BaseActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/SignupActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/response/Response.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/response/UserToken.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/LoginActivity.java" />
@@ -197,6 +199,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/dayscounter/DaysCounterFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_calendar.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/calendar/CalendarFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/SignupActivity.java" />
       </list>
     </option>
   </component>
@@ -430,7 +433,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="-6" width="1549" height="837" extended-state="6" />
+    <frame x="-6" y="-6" width="1549" height="837" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
@@ -815,21 +818,10 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/LoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="215">
-          <caret line="105" column="8" lean-forward="true" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="67" />
+          <caret line="105" column="8" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="67" />
           <folding>
             <element signature="e#2093#2264#0" expanded="true" />
             <element signature="e#2263#2264#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/SignupActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="118" column="10" lean-forward="true" selection-start-line="118" selection-start-column="10" selection-end-line="175" selection-end-column="75" />
-          <folding>
-            <element signature="e#9067#9434#0" expanded="true" />
-            <element signature="e#9433#9434#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -853,7 +845,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/dayscounter/DaysCounterFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="206">
-          <caret line="190" column="94" lean-forward="true" selection-start-line="135" selection-start-column="16" selection-end-line="190" selection-end-column="94" />
+          <caret line="190" column="94" selection-start-line="135" selection-start-column="16" selection-end-line="190" selection-end-column="94" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3314#3471#0" expanded="true" />
@@ -870,14 +862,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/ui/calendar/CalendarFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1302">
-          <caret line="137" column="84" lean-forward="true" selection-start-line="137" selection-start-column="84" selection-end-line="137" selection-end-column="84" />
+        <state relative-caret-position="1197">
+          <caret line="88" column="38" selection-start-line="88" selection-start-column="38" selection-end-line="88" selection-end-column="38" />
           <folding>
+            <element signature="e#2718#2917#0" expanded="true" />
+            <element signature="e#2916#2917#0" expanded="true" />
+            <element signature="e#3022#4224#0" expanded="true" />
             <element signature="e#6376#6377#0" expanded="true" />
             <element signature="e#6442#6443#0" expanded="true" />
             <element signature="e#6525#6526#0" expanded="true" />
             <element signature="e#6595#6596#0" expanded="true" />
+            <element signature="e#4223#4224#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cs309/cychedule/activities/SignupActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="698">
+          <caret line="283" column="21" selection-start-line="283" selection-start-column="13" selection-end-line="283" selection-end-column="21" />
         </state>
       </provider>
     </entry>
