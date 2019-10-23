@@ -111,8 +111,9 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
     private ArrayList<Event> generateMockEvents() {
         ArrayList<Event> mockEvents = new ArrayList<>();
         mockEvents.add(new Event("header", "header", "header"));
+        int hrs = 12;
         for (int i = 1; i < 10; i++) {
-            Event event = new Event("12:" + i, "Canada", "test");
+            Event event = new Event(hrs+":" + i, "Middle Earth", "U see how it works, little brother?");
             mockEvents.add(event);
         }
         return mockEvents;

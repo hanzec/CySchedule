@@ -25,17 +25,17 @@
             android:layout_gravity="center_horizontal"/>
 
 
-        <!--  邮箱 -->
+        <!--  用户名/手机/邮箱 -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
+            <EditText android:id="@+id/input_userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:inputType="textPersonName"
+                android:hint="Username " />
         </android.support.design.widget.TextInputLayout>
 
         <!--  密码 -->
