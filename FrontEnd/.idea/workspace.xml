@@ -161,7 +161,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_dayscounter.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
+            <state relative-caret-position="117">
               <caret line="27" column="56" lean-forward="true" selection-start-line="27" selection-start-column="56" selection-end-line="27" selection-end-column="56" />
             </state>
           </provider>
@@ -554,10 +554,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1452" height="932" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.4993742" visible="true" weight="0.2636103" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.4993742" visible="true" weight="0.2636103" />
       <window_info id="Structure" order="2" sideWeight="0.5006258" side_tool="true" weight="0.20272206" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -571,7 +570,7 @@
       <window_info anchor="bottom" id="Logcat" order="3" sideWeight="0.49641833" weight="0.6871089" />
       <window_info anchor="bottom" id="TODO" order="4" weight="0.32916147" />
       <window_info anchor="bottom" id="Debug" order="5" weight="0.7709637" />
-      <window_info anchor="bottom" id="Terminal" order="6" weight="0.32916147" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="6" visible="true" weight="0.32916147" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50358164" side_tool="true" weight="0.6871089" />
       <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.4989339" weight="0.3279099" />
       <window_info anchor="bottom" id="Build" order="9" sideWeight="0.49713466" weight="0.23153943" />
@@ -827,7 +826,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_dayscounter.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
+        <state relative-caret-position="117">
           <caret line="27" column="56" lean-forward="true" selection-start-line="27" selection-start-column="56" selection-end-line="27" selection-end-column="56" />
         </state>
       </provider>
