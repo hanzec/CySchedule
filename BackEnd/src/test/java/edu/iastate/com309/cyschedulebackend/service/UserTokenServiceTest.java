@@ -60,8 +60,8 @@ public class UserTokenServiceTest {
         //make sure user id is 1
         assertEquals((long) 1,userToken.getUserID());
 
-        //make sure tokenID is fbf55499-ac9f-45a6-a113-43c00f89fb4a
-        assertEquals("fbf55499-ac9f-45a6-a113-43c00f89fb4a",userToken.getTokenID());
+        //make sure tokenID is 9ee9e176-7c19-411c-abff-32886460e0ed
+        assertEquals("9ee9e176-7c19-411c-abff-32886460e0ed",userToken.getTokenID());
     }
 
     @Test
