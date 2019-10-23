@@ -13,21 +13,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -36,8 +31,6 @@ import butterknife.ButterKnife;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.utilities.userUtil;
 import com.cs309.cychedule.patterns.Singleton;
-import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedHashTreeMap;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -110,7 +103,6 @@ public class SignupActivity extends AppCompatActivity {
 //
 //        Log.d("Inputs:", userName);
 //        System.out.println(userName + password + email + firstName + lastName);
-        _signupButton.setVisibility(View.GONE);
 
         RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -189,13 +181,15 @@ public class SignupActivity extends AppCompatActivity {
                             if (status.equals("201"))
                             {
                                 Toast.makeText(SignupActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
+                                onSignupSuccess();
                             }
                         }
                         catch (JSONException e)
                         {
                             e.printStackTrace();
-                            Toast.makeText(SignupActivity.this, "Register Error! " + e.toString(), Toast.LENGTH_SHORT).show();
                             _signupButton.setVisibility(View.VISIBLE);
+                            Toast.makeText(SignupActivity.this, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                            onSignupFailed();
                         }
                     }
                 },
@@ -204,9 +198,9 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
-                        Toast.makeText(SignupActivity.this, "Register Error! " + error.toString(), Toast.LENGTH_SHORT).show();
                         _signupButton.setVisibility(View.VISIBLE);
-                        Log.d("Error", error.toString());
+                        Toast.makeText(SignupActivity.this, "Register Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+                        onSignupFailed();
                     }
                 }
         )
@@ -214,7 +208,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("userName", userName);
+                params.put("username", userName);
                 params.put("password", password);
                 params.put("email", email);
                 params.put("firstName", firstName);
@@ -225,23 +219,23 @@ public class SignupActivity extends AppCompatActivity {
         Singleton.getInstance(this).addToRequestQueue(stringRequest);
         //requestQueue.add(stringRequest);
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+//        new android.os.Handler().postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        // On complete call either onSignupSuccess or onSignupFailed
+//                        // depending on success
+//                        onSignupSuccess();
+//                        // onSignupFailed();
+//                        progressDialog.dismiss();
+//                    }
+//                }, 3000);
     }
 
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
         finish();
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
