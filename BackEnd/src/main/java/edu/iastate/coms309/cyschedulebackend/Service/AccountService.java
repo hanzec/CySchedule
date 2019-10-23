@@ -77,7 +77,7 @@ public class AccountService implements UserDetailsService{
 
     @Transactional
     @Cacheable(value = "userEmail", key = "#userID + '_email'")
-    public String getUserEmail(Long userID) { return userDetailsRepository.findByUserID(userID).getEmail(); }
+    public String getUserEmail(Long userID) { return userDetailsRepository.getOne(userID).getEmail(); }
 
     @Transactional
     @Cacheable(value = "salt", key = "#email + '_salt'")
@@ -88,12 +88,12 @@ public class AccountService implements UserDetailsService{
 
     @Transactional
     public Set<Permission> getPermissions(Long userID){
-        return userDetailsRepository.findByUserID(userID).getPermissions();
+        return userDetailsRepository.getOne(userID).getPermissions();
     }
     @Transactional
     @Cacheable(value = "jwt_key", key = "#userID + '_jwt_key'")
     public String getJwtKey(Long userID) {
-        User user = userDetailsRepository.findByUserID(userID);
+        User user = userDetailsRepository.getOne(userID);
 
         if(user.getJwtKey() == null){
             user.setJwtKey(UUID.randomUUID().toString());
