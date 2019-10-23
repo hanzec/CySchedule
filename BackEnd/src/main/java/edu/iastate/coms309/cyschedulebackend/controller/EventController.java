@@ -4,6 +4,7 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 import edu.iastate.coms309.cyschedulebackend.Service.EventService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.EventRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,10 @@ public class EventController {
 
     @GetMapping(value= "/all")
     @ApiOperation("Get All TimeBlock")
-    public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request){
+    public Response getAllEventByUser(Principal principal, HttpServletRequest request){
         Response response = new Response();
 
-        eventService.getAllTimeBlock(principal.getName()).forEach(V->{
+        eventService.getAllEvent(principal.getName()).forEach(V->{
             response.addResponse(V.blockID,V);
         });
 
@@ -38,18 +39,19 @@ public class EventController {
 
     @GetMapping(value= "/add")
     @ApiOperation("add new TimeBlock")
-    public Response getAllTimeBlockByUser(Principal principal, HttpServletRequest request, Event newEvent){
+    public Response addNewEvent(Principal principal, HttpServletRequest request, EventRequest newEvent){
         Response response = new Response();
 
-       if(newEvent.name == null)
+       if(newEvent.getName() == null)
            return response.BadRequested("No time block name").send(request.getRequestURI());
-       if (newEvent.endTime == null)
+       if (newEvent.getEndTime() == null)
            return response.BadRequested("No ending time for time block").send(request.getRequestURI());
-       if (newEvent.startTime == null)
+       if (newEvent.getStartTime() == null)
            return response.BadRequested("No starting time for time block").send(request.getRequestURI());
-       if(newEvent.adminUser == null)
+       if(newEvent.getUserID() == null)
            return response.BadRequested("There must be an admin user for this time block").send(request.getRequestURI());
 
+       eventService.addEvent(newEvent);
        return response.Created().send(request.getRequestURI());
     }
 
@@ -57,7 +59,7 @@ public class EventController {
     @DeleteMapping(value= "/{blockID}")
     public Response deleteTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
         Response response = new Response();
-        eventService.deleteTimeBlock(blockID);
+        eventService.deleteEvent(blockID);
         return response.noContent().send(request.getRequestURI());
     }
 
@@ -65,7 +67,7 @@ public class EventController {
     @GetMapping(value= "/{blockID}")
     public Response loadTimeBlock(HttpServletRequest request, @PathVariable Long blockID){
         Response response = new Response();
-        response.addResponse("TimeBlock", eventService.getTimeBlock(blockID));
+        response.addResponse("TimeBlock", eventService.getEvent(blockID));
 
         if(response.getResponseBody().isEmpty())
             return response.NotFound().send(request.getRequestURI());
@@ -75,9 +77,9 @@ public class EventController {
 
     @ApiOperation("update timeBlock by id")
     @PutMapping(value= "/{blockID}")
-    public Response updateTimeBlock(HttpServletRequest request, @PathVariable Long blockID, Event newEvent){
+    public Response updateTimeBlock(HttpServletRequest request, @PathVariable Long blockID, EventRequest newEvent){
         Response response = new Response();
-        Event event = eventService.getTimeBlock(blockID);
+        Event event = eventService.getEvent(blockID);
 
         if (newEvent.name != null)
             event.name = newEvent.name;

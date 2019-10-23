@@ -45,9 +45,11 @@ public class UserTokenService {
         keyStorage = new HashMap<>();
     }
 
-    @Cacheable(value = "tokenObject", key = "#token + '_object")
     public UserToken load(String token){
         UserToken tokenObject = new UserToken();
+
+        if (token == null)
+            return null;
 
         DecodedJWT jwt = null;
         try {

@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
+import edu.iastate.coms309.cyschedulebackend.security.filter.JwtTokenFilter;
 import edu.iastate.coms309.cyschedulebackend.security.handler.LoginFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
+import org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +27,11 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     AccountService accountService;
+
+    @Bean
+    public JwtTokenFilter jwtTokenFilter() {
+        return new JwtTokenFilter();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -33,6 +42,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationFailureHandler authenticationFailureHandler(){
         return new LoginFailureHandler();
     }
+
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -59,7 +69,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         //ignore Auth apis
         web.ignoring()
-                .antMatchers("/api/v1/auth/login");
+                .antMatchers("/api/v1/auth/**");
     }
 
     @Override
@@ -72,9 +82,16 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .rememberMe().userDetailsService(userDetailsService());
 
+        //logout configuration
+        http
+                .logout();
+
         //login page configuration
         http
                 .formLogin()
                 .defaultSuccessUrl("/swagger-ui.html");
+
+        // Add our custom JWT security filter
+        http.addFilterAfter(jwtTokenFilter(), DefaultLogoutPageGeneratingFilter.class);
     }
 }

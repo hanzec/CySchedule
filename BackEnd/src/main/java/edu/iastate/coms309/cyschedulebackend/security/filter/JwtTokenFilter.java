@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Time;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
@@ -29,9 +30,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         try {
-            UserToken userToken = userTokenService.load(httpServletRequest.getHeader("Authorization"));
+            String asd = httpServletRequest.getHeader("JwtToken");
+            UserToken userToken = userTokenService.load(asd);
 
-            if (userTokenService.verify(userToken)) {
+            if (userToken != null && userTokenService.verify(userToken)) {
                 Long userId = userToken.getUserID();
 
                 /*
@@ -46,6 +48,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
+            httpServletResponse.sendError(403,ex.getMessage());
             logger.error("Could not set user authentication in security context", ex);
         }
 

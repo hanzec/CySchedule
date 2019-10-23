@@ -1,11 +1,11 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+
 import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Time;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -16,9 +16,9 @@ public class Event {
 
     public String name;
 
-    public Time endTime;
+    public String endTime;
 
-    public Time startTime;
+    public String startTime;
 
     public String location;
 
