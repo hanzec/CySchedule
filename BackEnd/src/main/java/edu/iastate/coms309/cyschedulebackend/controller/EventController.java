@@ -79,7 +79,7 @@ public class EventController {
     @PutMapping(value= "/{blockID}")
     public Response updateTimeBlock(HttpServletRequest request, @PathVariable Integer blockID, EventRequest newEvent){
         Response response = new Response();
-        Event event = eventService.getEvent(blockID.longValue());
+        Event event = eventService.getEventInstance(blockID.longValue());
 
         if (newEvent.name != null)
             event.name = newEvent.name;
