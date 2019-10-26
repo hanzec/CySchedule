@@ -15,7 +15,9 @@ before_script:
     ##
     ## Add ssh keys and know hosts for scp
     ##
+    - rm -rf ~/.ssh/id_rsa
     - echo "$DEPLOY_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - rm -rf ~/.ssh/id_rsa.pub
     - echo "$DEPLOY_SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
     - ssh-keyscan dev.hanzec.com >> ~/.ssh/known_hosts
     
