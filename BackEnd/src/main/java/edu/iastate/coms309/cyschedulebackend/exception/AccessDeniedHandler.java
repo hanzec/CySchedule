@@ -1,4 +1,4 @@
-package edu.iastate.coms309.cyschedulebackend.security.handler;
+package edu.iastate.coms309.cyschedulebackend.exception;
 
 import org.springframework.security.access.AccessDeniedException;
 

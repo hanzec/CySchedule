@@ -4,7 +4,7 @@ import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.PermissionService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -12,9 +12,7 @@ import org.mockito.*;
 import static org.junit.Assert.*;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -52,25 +50,25 @@ public class UserTokenServiceTest {
     public void loadTokenString(){
         final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbklEIjoiOWVlOWUxNzYtN2MxOS00MTFjLWFiZmYtMzI4ODY0NjBlMGVkIiwiaXNzIjoiQ3lTY2hlZHVsZSIsInBlcm1pc3Npb24iOltdLCJleHAiOjE1NzE4NTUwMjksInVzZXJJRCI6MSwianRpIjoiOWVlOWUxNzYtN2MxOS00MTFjLWFiZmYtMzI4ODY0NjBlMGVkIn0.HIdx_Wrf-8IFrgf3SzpOFEUEeS_PUqDdF5krceyg4Kk";
 
-        UserToken userToken = userTokenService.load(token);
+        UserLoginToken userLoginToken = userTokenService.load(token);
 
         //make sure token is storage in userToken
-        assertEquals(token,userToken.getToken());
+        assertEquals(token, userLoginToken.getToken());
 
         //make sure user id is 1
-        assertEquals((long) 1,userToken.getUserID());
+        assertEquals((long) 1, userLoginToken.getUserID());
 
         //make sure tokenID is 9ee9e176-7c19-411c-abff-32886460e0ed
-        assertEquals("9ee9e176-7c19-411c-abff-32886460e0ed",userToken.getTokenID());
+        assertEquals("9ee9e176-7c19-411c-abff-32886460e0ed", userLoginToken.getTokenID());
     }
 
     @Test
     public void loadIncorrectToken(){
         final String token = "not correct string";
 
-        UserToken userToken = userTokenService.load(token);
+        UserLoginToken userLoginToken = userTokenService.load(token);
 
         //userToken should be null because incorrect string
-        assertNull(userToken);
+        assertNull(userLoginToken);
     }
 }

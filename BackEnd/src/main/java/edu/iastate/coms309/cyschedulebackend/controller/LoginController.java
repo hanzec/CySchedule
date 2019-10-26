@@ -1,6 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
-import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 
@@ -54,12 +53,8 @@ public class LoginController {
 
     @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    public Response register(HttpServletRequest request, LoginRequest user){
+    public Response register(HttpServletRequest request, RegisterRequest user, RegisterRequest registerRequest){
         Response response = new Response();
-
-        //New Register will give all required field
-        if(user.getEmail() == null || user.getUsername() == null || user.getPassword() == null||user.getLastName() == null||user.getFirstName() == null)
-            return response.send(request.getRequestURI()).BadRequested("Information is not enough");
 
         //There should not register with same email address
         if(accountService.existsByEmail(user.getEmail()))

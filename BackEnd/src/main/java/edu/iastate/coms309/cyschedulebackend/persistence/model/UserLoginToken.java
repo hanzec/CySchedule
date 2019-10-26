@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class UserToken {
+public class UserLoginToken {
 
     long userID;
 
@@ -20,7 +20,7 @@ public class UserToken {
 
     @ManyToOne
     @JoinColumn(name = "user_token")
-    User owner;
+    UserDetails owner;
 
     @OneToMany
     List<Permission> permissions;

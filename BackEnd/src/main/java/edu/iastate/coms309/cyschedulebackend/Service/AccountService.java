@@ -2,16 +2,14 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserDetails;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserDetailsRepository;
-import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
-import edu.iastate.coms309.cyschedulebackend.security.model.LoginObject;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,9 +45,9 @@ public class AccountService implements UserDetailsService{
 
 
     @Transactional
-    public User createUser(LoginRequest user) {
+    public UserDetails createUser(RegisterRequest user) {
 
-        User submit = new User();
+        UserDetails submit = new UserDetails();
 
         submit.setEmail(user.getEmail());
         submit.setPassword(user.getPassword());
@@ -86,20 +84,20 @@ public class AccountService implements UserDetailsService{
     @Transactional
     @Cacheable(value = "jwt_key", key = "#userID + '_jwt_key'")
     public String getJwtKey(Long userID) {
-        User user = userDetailsRepository.getOne(userID);
+        UserDetails userDetails = userDetailsRepository.getOne(userID);
 
-        if(user.getJwtKey() == null){
-            user.setJwtKey(UUID.randomUUID().toString());
+        if(userDetails.getJwtKey() == null){
+            userDetails.setJwtKey(UUID.randomUUID().toString());
             logger.info("New jwt Keys for [" + userID + "] is created");
-            userDetailsRepository.save(user);
+            userDetailsRepository.save(userDetails);
         }
 
-        return user.getJwtKey();
+        return userDetails.getJwtKey();
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         if (userDetailsRepository.existsByEmail(email))
             return new LoginObject(userDetailsRepository.findByEmail(email));
         else

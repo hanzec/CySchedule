@@ -1,13 +1,13 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.repository;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
 
 @Repository
-public interface UserDetailsRepository extends JpaRepository<User, Long> {
+public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> {
 
-    User findByEmail(String eamil);
+    UserDetails findByEmail(String eamil);
 
     boolean existsByEmail(String email);
 }

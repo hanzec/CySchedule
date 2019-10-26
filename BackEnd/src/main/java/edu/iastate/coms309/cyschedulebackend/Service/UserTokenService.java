@@ -7,11 +7,9 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -40,14 +38,14 @@ public class UserTokenService {
     @Autowired PermissionService permissionService;
 
 
-    private HashMap<Long, HashMap<String,UserToken>> keyStorage;
+    private HashMap<Long, HashMap<String, UserLoginToken>> keyStorage;
 
     public UserTokenService(){
         keyStorage = new HashMap<>();
     }
 
-    public UserToken load(String token){
-        UserToken tokenObject = new UserToken();
+    public UserLoginToken load(String token){
+        UserLoginToken tokenObject = new UserLoginToken();
 
         if (token == null)
             return null;
@@ -65,8 +63,8 @@ public class UserTokenService {
         return tokenObject;
     }
 
-    public UserToken creat(Long userID) {
-        UserToken token = new UserToken();
+    public UserLoginToken creat(Long userID) {
+        UserLoginToken token = new UserLoginToken();
         List<Integer> permissionList = new ArrayList<>();
         String password = accountService.getJwtKey(userID);
 
@@ -95,7 +93,7 @@ public class UserTokenService {
         return token;
     }
 
-    public boolean verify(UserToken tokenObject){
+    public boolean verify(UserLoginToken tokenObject){
         String password = accountService.getJwtKey(tokenObject.getUserID());
 
         Algorithm algorithm = Algorithm.HMAC256(password);

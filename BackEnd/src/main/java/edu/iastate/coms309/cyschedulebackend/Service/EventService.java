@@ -48,14 +48,14 @@ public class EventService {
         event.setLocation(newEvent.getLocation());
         event.setStartTime(newEvent.getStartTime());
         event.setDescription(newEvent.getDescription());
-        event.setAdminUser(userDetailsRepository.getOne(newEvent.getUserID().longValue()));
+        event.setAdminUserDetails(userDetailsRepository.getOne(newEvent.getUserID().longValue()));
 
         //set relation with user
-        event.getAdminUser().getManagedEvent().add(event);
+        event.getAdminUserDetails().getManagedEvent().add(event);
 
         //submit object
         eventRepository.save(event);
-        userDetailsRepository.save(event.getAdminUser());
+        userDetailsRepository.save(event.getAdminUserDetails());
 
         return event;
     }

@@ -1,12 +1,10 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Setter
 @Getter
@@ -28,6 +26,6 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public User adminUser;
+    public UserDetails adminUserDetails;
 
 }

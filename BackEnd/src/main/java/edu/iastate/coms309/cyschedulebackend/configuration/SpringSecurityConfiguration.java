@@ -2,7 +2,7 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.security.filter.JwtTokenFilter;
-import edu.iastate.coms309.cyschedulebackend.security.handler.LoginFailureHandler;
+import edu.iastate.coms309.cyschedulebackend.exception.LoginFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
