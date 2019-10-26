@@ -1,21 +1,13 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
-import com.google.gson.Gson;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 @Data
 @ApiModel
 public class Response {
-
-    @Autowired
-    Gson gson;
 
     String path;
 
