@@ -3,6 +3,7 @@ package edu.iastate.coms309.cyschedulebackend.security.filter;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
+import edu.iastate.coms309.cyschedulebackend.security.model.TokenObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,20 +29,14 @@ public class JwtTokenFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         try {
-            UserLoginToken userLoginToken = userTokenService.load(httpServletRequest.getHeader("JwtToken"));
+            TokenObject userLoginToken = userTokenService.load(httpServletRequest.getHeader("JwtToken"));
 
             if (userLoginToken != null && userTokenService.verify(userLoginToken)) {
-                Long userId = userLoginToken.getUserID();
+                String userId = userLoginToken.getUserID();
 
-                /*
-                    Note that you could also encode the user's username and roles inside JWT claims
-                    and create the UserDetails object by parsing those claims from the JWT.
-                    That would avoid the following database hit. It's completely up to you.
-                 */
                 UserDetails userDetails = accountService.loadUserByUsername(accountService.getUserEmail(userId));
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {

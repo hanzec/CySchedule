@@ -1,11 +1,12 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.requestModel;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-@Getter
+@Data
 public class EventRequest {
 
     @NotBlank(message = "Event should contains a name")
@@ -23,6 +24,5 @@ public class EventRequest {
     @NotBlank(message = "Event should contains a description")
     public String description;
 
-    @NotNull(message = "Event should contains a administrator ID")
-    public Integer userID;
+    public String userID;
 }

@@ -3,17 +3,19 @@ package edu.iastate.coms309.cyschedulebackend.persistence.model;
 import java.util.Set;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GeneratorType;
 import org.hibernate.annotations.GenericGenerator;
 
 @Setter
 @Getter
 @Entity
-@Table(name = "user_details")
-@GenericGenerator(name = "idGenerator", strategy = "uuid")
-public class UserDetails implements Serializable{
+@Table(name = "user_information")
+@GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+public class UserInformation implements Serializable{
 
     /*
         Maybe a improve point
@@ -22,8 +24,10 @@ public class UserDetails implements Serializable{
     */
 
     @Id
-    @GeneratedValue(generator = "idGenerator")
-    private long UserID;
+    @Column(name = "user_id")
+    @GeneratedValue(generator = "uuid2")
+    private String UserID;
+
 
     private String username;
 
@@ -33,26 +37,40 @@ public class UserDetails implements Serializable{
 
     private Long registerTime;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "user_event",
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "user_id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "event_id",
+                    referencedColumnName = "event_id"
+            )
+    )
     private Set<Event> joinedEvent;
 
     @OneToMany(
             cascade = CascadeType.ALL,
-            mappedBy = "adminUser"
+            mappedBy = "adminUser",
+            targetEntity = Event.class
     )
     private Set<Event> managedEvent;
 
     @OneToOne(
+            optional = false,
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy="user_credential"
+            mappedBy = "userInformation"
     )
     private UserCredential userCredential;
 
     @JoinColumn(name = "user_jwt_token")
     @OneToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            targetEntity = UserLoginToken.class
     )
     private Set<UserLoginToken> userLoginTokens;
 }

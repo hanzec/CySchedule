@@ -22,8 +22,20 @@ public class UserCredential implements org.springframework.security.core.userdet
 
     private String password;
 
-    @JoinColumn(name="userID",unique=true)
-    private UserDetails userDetails;
+    @Column(
+            name = "user_id",
+            updatable = false,
+            insertable = false
+    )
+    private String userID;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(
+            unique=true,
+            name="user_id",
+            referencedColumnName = "user_id"
+    )
+    private UserInformation userInformation;
 
     @JoinTable(name = "user_permission")
     @ManyToMany(
@@ -32,18 +44,16 @@ public class UserCredential implements org.springframework.security.core.userdet
     )
     private Set<Permission> permissions;
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
     @Override
     public String getUsername() { return email; }
 
     @Override
     public String getPassword() { return password; }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return permissions;
+    }
 
     @Override
     public boolean isAccountNonExpired() {

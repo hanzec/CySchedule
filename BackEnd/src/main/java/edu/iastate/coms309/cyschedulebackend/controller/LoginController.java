@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,21 +32,14 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @ApiOperation("Login API")
-    public Response login(HttpServletRequest request){
+    public Response login(HttpServletRequest request, LoginRequest loginRequest){
         Response response = new Response();
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
 
-        if (email == null)
-            return response.BadRequested("email should not empty").send(request.getRequestURI());
-        if (password == null)
-            return response.BadRequested("password should not empty").send(request.getRequestURI());
-
-        if(!accountService.existsByEmail(email))
+        if(!accountService.existsByEmail(loginRequest.getEmail()))
             return response.BadRequested("User is not existe").send(request.getRequestURI());
 
-        if(accountService.checkPassword(email,password))
-            response.OK().addResponse("loginToken",userTokenService.creat(accountService.getUserID(email)));
+        if(accountService.checkPassword(loginRequest.getEmail(),loginRequest.getPassword()))
+            response.OK().addResponse("loginToken",userTokenService.creat(loginRequest.getEmail()));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());
@@ -53,7 +47,7 @@ public class LoginController {
 
     @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    public Response register(HttpServletRequest request, RegisterRequest user, RegisterRequest registerRequest){
+    public Response register(HttpServletRequest request, RegisterRequest user){
         Response response = new Response();
 
         //There should not register with same email address

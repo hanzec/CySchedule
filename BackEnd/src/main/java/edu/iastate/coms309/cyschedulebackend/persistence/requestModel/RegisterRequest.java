@@ -1,13 +1,14 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.requestModel;
 
 
+import lombok.Data;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Getter
+@Data
 public class RegisterRequest {
 
     @Email(message = "Not a correct Email")
