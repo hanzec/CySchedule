@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 
-
-import static reactor.core.publisher.Mono.when;
-
 public class AccountServiceTest {
     @Mock
     UserInformationRepository userInformationRepository;

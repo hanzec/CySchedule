@@ -6,11 +6,14 @@ import java.util.Set;
 import javax.persistence.*;
 import java.util.Collection;
 import javax.validation.constraints.Email;
+
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Getter
 @Setter
+@Cacheable
 @Table(name = "user_credential")
 public class UserCredential implements org.springframework.security.core.userdetails.UserDetails {
 
