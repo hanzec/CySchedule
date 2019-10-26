@@ -1,15 +1,15 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-public class UserToken {
-
-    long userID;
+@GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+public class UserLoginToken {
 
     String token;
 
@@ -18,9 +18,10 @@ public class UserToken {
 
     String refreshKey;
 
+
     @ManyToOne
     @JoinColumn(name = "user_token")
-    User owner;
+    UserInformation owner;
 
     @OneToMany
     List<Permission> permissions;
