@@ -29,6 +29,14 @@ public class UserCredential implements org.springframework.security.core.userdet
     )
     private String userID;
 
+
+    @JoinTable(name = "user_permission")
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Set<Permission> permissions;
+
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(
             unique=true,
@@ -37,12 +45,12 @@ public class UserCredential implements org.springframework.security.core.userdet
     )
     private UserInformation userInformation;
 
-    @JoinTable(name = "user_permission")
-    @ManyToMany(
-            fetch = FetchType.EAGER,
+    @OneToMany(
+            mappedBy = "owner",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    private Set<Permission> permissions;
+    private Set<UserLoginToken> userLoginTokens;
 
     @Override
     public String getUsername() { return email; }

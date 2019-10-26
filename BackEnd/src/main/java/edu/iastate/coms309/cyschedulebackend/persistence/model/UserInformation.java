@@ -65,12 +65,4 @@ public class UserInformation implements Serializable{
             mappedBy = "userInformation"
     )
     private UserCredential userCredential;
-
-    @JoinColumn(name = "user_jwt_token")
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            targetEntity = UserLoginToken.class
-    )
-    private Set<UserLoginToken> userLoginTokens;
 }
