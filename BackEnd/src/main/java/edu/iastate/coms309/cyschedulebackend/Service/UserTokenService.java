@@ -41,9 +41,6 @@ public class UserTokenService {
     AccountService accountService;
 
     @Autowired
-    UserCredentialRepository userCredentialRepository;
-
-    @Autowired
     UserLoginTokenRepository userLoginTokenRepository;
 
 
@@ -74,7 +71,7 @@ public class UserTokenService {
 
     public UserLoginToken creat(String email) {
         UserLoginToken token = new UserLoginToken();
-        UserCredential userCredential = userCredentialRepository.getOne(email);
+        UserCredential userCredential = (UserCredential) accountService.loadUserByUsername(email);
 
         token.setTokenID(UUID.randomUUID().toString());
         token.setRefreshKey(UUID.randomUUID().toString());
@@ -83,7 +80,7 @@ public class UserTokenService {
             keyStorage.put(userCredential.getUserID(), new HashMap<>());
         }
 
-        Algorithm algorithmHS = Algorithm.HMAC256(userCredential.getJwtKey());
+        Algorithm algorithmHS = Algorithm.HMAC256(accountService.getJwtKey(userCredential.getEmail()));
 
         token.setToken(JWT.create()
                 .withIssuer("CySchedule")
@@ -92,9 +89,12 @@ public class UserTokenService {
                 .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
                 .sign(algorithmHS));
 
+
+        token.setOwner(userCredential);
+        userLoginTokenRepository.save(token);
         keyStorage.get(userCredential.getUserID()).put(token.getTokenID(),token);
 
-        userLoginTokenRepository.save(token);
+
         return token;
     }
 

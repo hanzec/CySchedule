@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+import com.google.gson.annotations.Expose;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
@@ -9,16 +10,22 @@ import java.util.HashMap;
 @ApiModel
 public class Response {
 
+    @Expose
     String path;
 
+    @Expose
     String status;
 
+    @Expose
     String message;
 
+    @Expose
     Boolean success;
 
+    @Expose
     String timestamp;
 
+    @Expose
     private HashMap<String,Object> responseBody = new HashMap<>();
 
     public Response OK(){
