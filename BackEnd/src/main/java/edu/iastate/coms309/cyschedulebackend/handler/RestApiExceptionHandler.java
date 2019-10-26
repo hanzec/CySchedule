@@ -1,4 +1,4 @@
-package edu.iastate.coms309.cyschedulebackend.exception;
+package edu.iastate.coms309.cyschedulebackend.handler;
 
 import com.google.gson.Gson;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
@@ -35,6 +35,7 @@ public class RestApiExceptionHandler {
                         result
                                 .BadRequested("Not include Enough Information")
                                 .send(request.getRequestURI())
+                                .addResponse("Error Item",errorList)
                                 .Created()));
     }
 }

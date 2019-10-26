@@ -1,4 +1,4 @@
-package edu.iastate.coms309.cyschedulebackend.exception;
+package edu.iastate.coms309.cyschedulebackend.handler;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
