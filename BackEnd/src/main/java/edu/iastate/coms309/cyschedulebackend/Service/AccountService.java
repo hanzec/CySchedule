@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,6 +47,7 @@ public class AccountService implements UserDetailsService{
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Async
     @Transactional
     public void createUser(RegisterRequest user) {
 

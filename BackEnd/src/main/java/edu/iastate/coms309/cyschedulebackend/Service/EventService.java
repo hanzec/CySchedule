@@ -7,6 +7,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserInformat
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.EventRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +44,9 @@ public class EventService {
         return event;
     }
 
+    @Async
     @Transactional
-    public Event addEvent(EventRequest newEvent){
+    public void addEvent(EventRequest newEvent){
         Event event = new Event();
 
         //set event object
@@ -60,8 +62,6 @@ public class EventService {
 
         //submit object
         userInformationRepository.save(event.getAdminUser());
-
-        return event;
     }
 
     @Transactional
@@ -79,6 +79,7 @@ public class EventService {
         return eventRequest;
     }
 
+    @Async
     @Transactional
     public void deleteEvent(String id){ eventRepository.deleteById(id); }
 
