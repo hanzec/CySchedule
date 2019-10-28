@@ -28,7 +28,6 @@ public class UserInformation implements Serializable{
     @GeneratedValue(generator = "uuid2")
     private String UserID;
 
-
     private String username;
 
     private String lastName;
@@ -36,6 +35,9 @@ public class UserInformation implements Serializable{
     private String firstName;
 
     private Long registerTime;
+
+    @OneToOne
+    private FileObject avatar;
 
     @ManyToMany
     @JoinTable(

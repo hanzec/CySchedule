@@ -1,6 +1,8 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
+import edu.iastate.coms309.cyschedulebackend.handler.AccessDeniedHandler;
+import edu.iastate.coms309.cyschedulebackend.handler.RestApiExceptionHandler;
 import edu.iastate.coms309.cyschedulebackend.security.filter.JwtTokenFilter;
 import edu.iastate.coms309.cyschedulebackend.handler.LoginFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable();
 
+
         //RememberMe configuration
         http
                 .rememberMe().userDetailsService(userDetailsService());
@@ -90,6 +93,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //login page configuration
         http
                 .formLogin()
+                .failureHandler(new LoginFailureHandler())
                 .defaultSuccessUrl("/swagger-ui.html");
 
         // Add our custom JWT security filter
