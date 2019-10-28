@@ -7,6 +7,8 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
 import edu.iastate.coms309.cyschedulebackend.security.model.TokenObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +32,8 @@ public class JwtTokenFilter extends GenericFilterBean {
     @Autowired
     UserTokenService userTokenService;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
@@ -49,9 +53,9 @@ public class JwtTokenFilter extends GenericFilterBean {
             servletResponse.getWriter().write(
                     gson.toJson(
                             response
-                                    .BadRequested("Not include Enough Information")
+                                    .BadRequested("Token is Not Correct")
                                     .send(((HttpServletRequest) servletRequest).getRequestURI())
-                                    .addResponse("Error Item", ex.getMessage())));
+                                    .addResponse("item", ex.getMessage())));
             logger.error("Could not set user authentication in security context", ex);
         }
 
