@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 
+import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,8 +35,8 @@ public class AccountService implements UserDetailsService{
             - After some operation my gen waste @ redis see updateEmail
             - Cache may not accurate after delete user (2019-9-16)
             - exception
-            - getUserEmail/getUserID need to improve （2019-10-26）
-
+            - getUserEmail/getUserID need to improve （2019-10-26）(finished)
+            - cache may not update when password is update (2019-10-27)
      */
 
     @Autowired
@@ -72,22 +75,16 @@ public class AccountService implements UserDetailsService{
         logger.info("New User with id :[" + userInformation.getUserID() + "] is created");
     }
 
-    @Transactional
     @Cacheable(
             value = "false",
             unless = "#result == false"
     )
     public boolean existsByEmail(String email){ return userCredentialRepository.existsById(email);}
 
+    @Async
     @Transactional
-    @Cacheable(
-            value = "userid",
-            key = "#email + '_id'"
-    )
-    public String getUserID(String email) { return userCredentialRepository.getOne(email).getUserInformation().getUserID(); }
+    public void updateUserInformation(UserInformation userInformation){ userInformationRepository.save(userInformation); }
 
-
-    @Transactional
     @Cacheable(value = "email", key = "#userID + '_id'")
     public String getUserEmail(String userID) { return userInformationRepository.getOne(userID).getUserCredential().getEmail(); }
 
@@ -104,13 +101,9 @@ public class AccountService implements UserDetailsService{
         return userDetails.getJwtKey();
     }
 
-    @Transactional
-    public Set<Permission> getAllPermission(String userID){
-        return userCredentialRepository.getOne(getUserEmail(userID)).getPermissions();
-    }
+    public UserInformation getUserInformation(String userID){ return userInformationRepository.getOne(userID);}
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         if (userCredentialRepository.existsById(email))
             return userCredentialRepository.getOne(email);
@@ -118,6 +111,7 @@ public class AccountService implements UserDetailsService{
             throw new UsernameNotFoundException("username " + email + " is not found");
     }
 
+    @Cacheable(value = "false")
     public boolean checkPassword(String email, String password){
         return passwordEncoder.matches(password, userCredentialRepository.getOne(email).getPassword());
     }
