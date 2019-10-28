@@ -38,9 +38,6 @@ public class UserTokenService {
     Integer accessTokenExpireTime;
 
     @Autowired
-    AccountService accountService;
-
-    @Autowired
     UserLoginTokenRepository userLoginTokenRepository;
 
 
@@ -50,18 +47,13 @@ public class UserTokenService {
         keyStorage = new HashMap<>();
     }
 
-    public TokenObject load(String token){
+    public TokenObject load(String token) throws NullPointerException,JWTDecodeException{
         TokenObject tokenObject = new TokenObject();
 
         if (token == null)
-            return null;
+            throw new NullPointerException("Token is empty");
 
-        DecodedJWT jwt = null;
-        try {
-            jwt = JWT.decode(token);
-        } catch (JWTDecodeException exception){
-            return null; //should give an exception not null NEED Fix
-        }
+        DecodedJWT jwt = JWT.decode(token);
 
         tokenObject.setToken(token);
         tokenObject.setUserID(jwt.getClaim("userID").asString());
@@ -69,9 +61,8 @@ public class UserTokenService {
         return tokenObject;
     }
 
-    public UserLoginToken creat(String email) {
+    public UserLoginToken creat(String email, UserCredential userCredential) {
         UserLoginToken token = new UserLoginToken();
-        UserCredential userCredential = (UserCredential) accountService.loadUserByUsername(email);
 
         token.setTokenID(UUID.randomUUID().toString());
         token.setRefreshKey(UUID.randomUUID().toString());
@@ -80,7 +71,7 @@ public class UserTokenService {
             keyStorage.put(userCredential.getUserID(), new HashMap<>());
         }
 
-        Algorithm algorithmHS = Algorithm.HMAC256(accountService.getJwtKey(userCredential.getEmail()));
+        Algorithm algorithmHS = Algorithm.HMAC256(userCredential.getJwtKey());
 
         token.setToken(JWT.create()
                 .withIssuer("CySchedule")
@@ -94,12 +85,11 @@ public class UserTokenService {
         userLoginTokenRepository.save(token);
         keyStorage.get(userCredential.getUserID()).put(token.getTokenID(),token);
 
-
         return token;
     }
 
-    public boolean verify(TokenObject tokenObject){
-        String password = accountService.getJwtKey(tokenObject.getUserID());
+    public boolean verify(TokenObject tokenObject,UserCredential userCredential){
+        String password = userCredential.getJwtKey();
 
         Algorithm algorithm = Algorithm.HMAC256(password);
         try {

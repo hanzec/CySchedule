@@ -36,7 +36,6 @@ public class RestApiExceptionHandler {
                         result
                                 .BadRequested("Not include Enough Information")
                                 .send(request.getRequestURI())
-                                .addResponse("Error Item",errorList)
-                                .Created()));
+                                .addResponse("Error Item",errorList)));
     }
 }

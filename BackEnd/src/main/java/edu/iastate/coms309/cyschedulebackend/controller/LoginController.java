@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
 import io.swagger.annotations.Api;
@@ -39,7 +40,7 @@ public class LoginController {
             return response.BadRequested("User is not existe").send(request.getRequestURI());
 
         if(accountService.checkPassword(loginRequest.getEmail(),loginRequest.getPassword()))
-            response.OK().addResponse("loginToken",userTokenService.creat(loginRequest.getEmail()));
+            response.OK().addResponse("loginToken",userTokenService.creat(loginRequest.getEmail(), (UserCredential) accountService.loadUserByUsername(loginRequest.getEmail())));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());

@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.EventRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserCredentialRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserInformationRepository;
@@ -23,12 +24,6 @@ public class EventService {
     @Autowired
     EventRepository eventRepository;
 
-    @Autowired
-    UserCredentialRepository userCredentialRepository;
-
-    @Autowired
-    UserInformationRepository userInformationRepository;
-
     @Transactional
     public Event updateEvent(EventRequest newEvent, String eventID){
         Event event = eventRepository.getOne(eventID);
@@ -46,22 +41,19 @@ public class EventService {
 
     @Async
     @Transactional
-    public void addEvent(EventRequest newEvent){
+    public void addEvent(EventRequest newEvent, UserInformation userInformation){
         Event event = new Event();
 
         //set event object
         event.setName(newEvent.getName());
+        event.setAdminUser(userInformation);
         event.setEndTime(newEvent.getEndTime());
         event.setLocation(newEvent.getLocation());
         event.setStartTime(newEvent.getStartTime());
         event.setDescription(newEvent.getDescription());
-        event.setAdminUser(userInformationRepository.getOne(newEvent.getUserID()));
 
         //set relation with user
         event.getAdminUser().getManagedEvent().add(event);
-
-        //submit object
-        userInformationRepository.save(event.getAdminUser());
     }
 
     @Transactional
@@ -100,6 +92,6 @@ public class EventService {
     }
 
     @Transactional
-    public Set<Event> getAllEvent(String userID){ return userInformationRepository.getOne(userID).getJoinedEvent(); }
+    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }
 
 }

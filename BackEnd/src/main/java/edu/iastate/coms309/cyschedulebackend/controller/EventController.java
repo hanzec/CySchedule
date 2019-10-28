@@ -1,8 +1,10 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
 
+import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.EventService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.EventRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.PackedColorModel;
 import java.security.Principal;
 
 
@@ -20,6 +23,9 @@ public class EventController {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    AccountService accountService;
 
     @GetMapping(value = "/all")
     @ApiOperation("Get All TimeBlock")
@@ -40,8 +46,9 @@ public class EventController {
     @ApiOperation("add new TimeBlock")
     public Response addNewEvent(Principal principal, HttpServletRequest request, EventRequest newEvent) {
         Response response = new Response();
+        UserInformation userInformation = accountService.getUserInformation(principal.getName());
         newEvent.setUserID(principal.getName());
-        eventService.addEvent(newEvent);
+        eventService.addEvent(newEvent,userInformation);
         return response.Created().send(request.getRequestURI());
     }
 
