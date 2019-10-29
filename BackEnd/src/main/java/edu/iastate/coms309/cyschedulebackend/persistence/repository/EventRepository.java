@@ -9,5 +9,5 @@ import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event,String> {
-    public Set<Event> getAllByAdminUser_UserID(String userId);
+//    public List<Event> getAllByAdminUser_UserID(String userId);
 }

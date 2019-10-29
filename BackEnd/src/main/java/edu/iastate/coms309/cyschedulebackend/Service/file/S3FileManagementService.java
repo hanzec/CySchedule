@@ -21,34 +21,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-public class S3FileManagementService implements FileManagementService {
+public class S3FileManagementService extends FileManagementService {
     /*
        Maybe a improve point
            - need to handle the exception
 
     */
 
-    @Value("${storage.region}")
-    private String region;
-
     @Value("${storage.bucketName}")
     private String bucketName;
-
-    @Value("${storage.accessKey}")
-    private String accessKey;
-
-    @Value("${storage.s3EndPoint}")
-    private String s3EndPoint;
-
-    @Value("${storage.accessSecret}")
-    private String accessSecret;
 
     private AmazonS3 bucket = null;
 
     @Autowired
     FileObjectRepository fileObjectRepository;
 
-    public S3FileManagementService(){
+    public S3FileManagementService(String region,String accessKey, String s3EndPoint, String accessSecret){
         AWSCredentialsProvider doCred = new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, accessSecret));
         bucket = AmazonS3ClientBuilder.standard()
                 .withCredentials(doCred)

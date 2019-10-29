@@ -18,7 +18,6 @@ public class Event {
     @Id
     @Column(name = "event_id")
     @GeneratedValue(generator = "uuid2")
-
     public String eventID;
 
     public String name;

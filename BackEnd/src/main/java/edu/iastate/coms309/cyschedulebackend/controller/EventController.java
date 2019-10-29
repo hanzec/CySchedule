@@ -27,20 +27,20 @@ public class EventController {
     @Autowired
     AccountService accountService;
 
-    @GetMapping(value = "/all")
-    @ApiOperation("Get All TimeBlock")
-    public Response getAllEventByUser(Principal principal, HttpServletRequest request) {
-        Response response = new Response();
-
-        eventService.getAllEvent(principal.getName()).forEach(V -> {
-            response.addResponse(V.getEventID(), V);
-        });
-
-        if (response.getResponseBody().isEmpty())
-            return response.NotFound().send(request.getRequestURI());
-        else
-            return response.OK().send(request.getRequestURI());
-    }
+//    @GetMapping(value = "/all")
+//    @ApiOperation("Get All TimeBlock")
+//    public Response getAllEventByUser(Principal principal, HttpServletRequest request) {
+//        Response response = new Response();
+//
+//        eventService.getAllEvent(principal.getName()).forEach(V -> {
+//            response.addResponse(V.getEventID(), V);
+//        });
+//
+//        if (response.getResponseBody().isEmpty())
+//            return response.NotFound().send(request.getRequestURI());
+//        else
+//            return response.OK().send(request.getRequestURI());
+//    }
 
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")

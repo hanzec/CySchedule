@@ -91,7 +91,7 @@ public class EventService {
         return eventRepository.getOne(eventID).getAdminUser().getUserID().equals(userID);
     }
 
-    @Transactional
-    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }
+//    @Transactional
+//    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }userID
 
 }
