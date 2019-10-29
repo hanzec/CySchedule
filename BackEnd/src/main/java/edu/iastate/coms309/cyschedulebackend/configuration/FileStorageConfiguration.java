@@ -5,6 +5,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementServi
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @Configuration
 public class FileStorageConfiguration {

@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import springfox.documentation.spring.web.json.Json;
 
-@EnableAsync
+//@EnableAsync
 @Configuration
 @EnableCaching
 public class SpringBootConfiguration {

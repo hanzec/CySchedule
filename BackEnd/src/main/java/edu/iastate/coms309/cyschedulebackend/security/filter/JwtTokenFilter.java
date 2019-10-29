@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.*;
@@ -21,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class JwtTokenFilter extends GenericFilterBean {
+public class JwtTokenFilter extends RequestHeaderAuthenticationFilter {
 
     @Autowired
     Gson gson;
@@ -47,6 +49,8 @@ public class JwtTokenFilter extends GenericFilterBean {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
         } catch (Exception ex) {
             Response response = new Response();
             SecurityContextHolder.clearContext();
@@ -56,9 +60,8 @@ public class JwtTokenFilter extends GenericFilterBean {
                                     .BadRequested("Token is Not Correct")
                                     .send(((HttpServletRequest) servletRequest).getRequestURI())
                                     .addResponse("item", ex.getMessage())));
+            servletResponse.getWriter().close();
             logger.error("Could not set user authentication in security context", ex);
         }
-
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
