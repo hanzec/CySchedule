@@ -7,11 +7,13 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.User;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserCredentialRepository;
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserLoginTokenRepository;
+import edu.iastate.coms309.cyschedulebackend.security.model.TokenObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -35,68 +37,59 @@ public class UserTokenService {
     @Value("${account.security.token.accesstoken.expiretime}")
     Integer accessTokenExpireTime;
 
-    @Autowired AccountService accountService;
+    @Autowired
+    UserLoginTokenRepository userLoginTokenRepository;
 
-    @Autowired PermissionService permissionService;
 
-
-    private HashMap<Long, HashMap<String,UserToken>> keyStorage;
+    private HashMap<String, HashMap<String, UserLoginToken>> keyStorage;
 
     public UserTokenService(){
         keyStorage = new HashMap<>();
     }
 
-    public UserToken load(String token){
-        UserToken tokenObject = new UserToken();
+    public TokenObject load(String token) throws NullPointerException,JWTDecodeException{
+        TokenObject tokenObject = new TokenObject();
 
         if (token == null)
-            return null;
+            throw new NullPointerException("Token is empty");
 
-        DecodedJWT jwt = null;
-        try {
-            jwt = JWT.decode(token);
-        } catch (JWTDecodeException exception){
-            return null; //should give an exception not null NEED Fix
-        }
+        DecodedJWT jwt = JWT.decode(token);
 
         tokenObject.setToken(token);
-        tokenObject.setUserID(jwt.getClaim("userID").asLong());
+        tokenObject.setUserID(jwt.getClaim("userID").asString());
         tokenObject.setTokenID(jwt.getClaim("tokenID").asString());
         return tokenObject;
     }
 
-    public UserToken creat(Long userID) {
-        UserToken token = new UserToken();
-        List<Integer> permissionList = new ArrayList<>();
-        String password = accountService.getJwtKey(userID);
-
-        if(!keyStorage.containsKey(userID)) {
-            keyStorage.put(userID, new HashMap<>());
-        }
-
-        accountService.getPermissions(userID).forEach(V -> {
-            permissionList.add(V.getRoleID());
-        });
+    public UserLoginToken creat(String email, UserCredential userCredential) {
+        UserLoginToken token = new UserLoginToken();
 
         token.setTokenID(UUID.randomUUID().toString());
         token.setRefreshKey(UUID.randomUUID().toString());
-        Algorithm algorithmHS = Algorithm.HMAC256(password);
+
+        if(!keyStorage.containsKey(userCredential.getUserID())) {
+            keyStorage.put(userCredential.getUserID(), new HashMap<>());
+        }
+
+        Algorithm algorithmHS = Algorithm.HMAC256(userCredential.getJwtKey());
 
         token.setToken(JWT.create()
                 .withIssuer("CySchedule")
                 .withJWTId(token.getTokenID())
-                .withClaim("userID",userID)
-                .withClaim("tokenID",token.getTokenID())
+                .withClaim("userID",userCredential.getUserID())
                 .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
-                .withArrayClaim("permission", permissionList.toArray(new Integer[0]))
                 .sign(algorithmHS));
 
-        keyStorage.get(userID).put(token.getTokenID(),token);
+
+        token.setOwner(userCredential);
+        userLoginTokenRepository.save(token);
+        keyStorage.get(userCredential.getUserID()).put(token.getTokenID(),token);
+
         return token;
     }
 
-    public boolean verify(UserToken tokenObject){
-        String password = accountService.getJwtKey(tokenObject.getUserID());
+    public boolean verify(TokenObject tokenObject,UserCredential userCredential){
+        String password = userCredential.getJwtKey();
 
         Algorithm algorithm = Algorithm.HMAC256(password);
         try {

@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "account.security.saltLength",
-      "type": "java.lang.String",
-      "description": "Description for account.security.saltLength."
-  }
-] }
