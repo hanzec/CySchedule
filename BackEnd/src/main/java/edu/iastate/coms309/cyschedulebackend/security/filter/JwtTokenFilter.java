@@ -37,7 +37,7 @@ public class JwtTokenFilter extends RequestHeaderAuthenticationFilter {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         try {

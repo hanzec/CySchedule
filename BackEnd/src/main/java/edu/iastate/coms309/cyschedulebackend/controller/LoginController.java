@@ -35,12 +35,13 @@ public class LoginController {
     @ApiOperation("Login API")
     public Response login(HttpServletRequest request, LoginRequest loginRequest){
         Response response = new Response();
+        UserCredential userCredential = (UserCredential) accountService.loadUserByUsername(loginRequest.getEmail());
 
         if(!accountService.existsByEmail(loginRequest.getEmail()))
             return response.BadRequested("User is not existe").send(request.getRequestURI());
 
         if(accountService.checkPassword(loginRequest.getEmail(),loginRequest.getPassword()))
-            response.OK().addResponse("loginToken",userTokenService.creat(loginRequest.getEmail(), (UserCredential) accountService.loadUserByUsername(loginRequest.getEmail())));
+            response.OK().addResponse("loginToken",userTokenService.creat(userCredential));
         else
             response.Forbidden();
         return response.send(request.getRequestURI());
