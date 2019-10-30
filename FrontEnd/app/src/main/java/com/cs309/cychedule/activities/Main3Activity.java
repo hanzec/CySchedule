@@ -23,11 +23,17 @@ import com.cs309.cychedule.R;
 public class Main3Activity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
+
+        sessionManager = new SessionManager(this);
+        sessionManager.checkLogin();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
