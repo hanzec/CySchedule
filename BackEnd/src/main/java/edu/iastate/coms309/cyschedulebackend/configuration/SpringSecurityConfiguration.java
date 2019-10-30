@@ -43,6 +43,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        //Provider for jwtToken Authention
+
+        //Provider for session Login
         authenticationManagerBuilder
                 .userDetailsService(accountService)
                 .passwordEncoder(passwordEncoder());
@@ -88,6 +91,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/swagger-ui.html");
 
          //Add our custom JWT security filter
-        http.addFilterBefore(new JwtTokenFilter(accountService,userTokenService), UsernamePasswordAuthenticationFilter.class).exceptionHandling();
+        http.addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class).exceptionHandling();
     }
 }

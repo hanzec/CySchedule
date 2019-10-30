@@ -49,6 +49,7 @@ public class UserTokenService {
                 .withIssuer("CySchedule")
                 .withJWTId(token.getTokenID())
                 .withSubject(userCredential.getUserID())
+                .withClaim("Permission")
                 .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
                 .sign(algorithmHS));
 

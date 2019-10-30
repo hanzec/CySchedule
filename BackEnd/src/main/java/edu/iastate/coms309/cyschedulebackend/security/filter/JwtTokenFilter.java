@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.security.filter;
 
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
+import edu.iastate.coms309.cyschedulebackend.security.model.JwtAuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.*;
@@ -21,34 +23,21 @@ public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected JwtTokenFilter(String defaultFilterProcessesUrl) {
-        super(defaultFilterProcessesUrl);
-    }
-
-    @Override
-    @Transactional
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-        try {
-            String token = ((HttpServletRequest) servletRequest).getHeader("jwttoken");
-            TokenObject userLoginToken = userTokenService.load(token);
-            UserDetails userDetails = accountService.loadUserByUsername(accountService.getUserEmail(userLoginToken.getUserID()));
-
-            if (userTokenService.verify(userLoginToken, (UserCredential) userDetails)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-        } catch (Exception ex) {
-            SecurityContextHolder.clearContext();
-        }
+    public JwtTokenFilter() {
+        super(new AntPathRequestMatcher("/**", "POST"));
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException {
-        return null;
+        String token = obtainToken(httpServletRequest);
+        JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
+        authRequest.setDetails(authenticationDetailsSource.buildDetails(httpServletRequest));
+
+        logger.debug("Receiving new Request With JWT Authentication Token with endpoint : " + "[" + httpServletRequest.getRequestURI() + "]");
+        return this.getAuthenticationManager().authenticate(authRequest);
+    }
+
+    protected String obtainToken(HttpServletRequest httpServletRequest){
+        return httpServletRequest.getHeader("jwtToken");
     }
 }

@@ -23,7 +23,6 @@ public class UserLoginToken {
     @Expose
     String refreshKey;
 
-
     @ManyToOne(
             optional = false,
             cascade = {CascadeType.MERGE,CascadeType.REFRESH}
@@ -32,8 +31,4 @@ public class UserLoginToken {
           name = "email"
     )
     UserCredential owner;
-
-    @OneToMany
-    List<Permission> permissions;
-
 }
