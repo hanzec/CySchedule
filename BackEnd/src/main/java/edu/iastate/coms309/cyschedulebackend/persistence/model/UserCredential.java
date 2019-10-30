@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Set;

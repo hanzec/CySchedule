@@ -14,11 +14,12 @@ import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserLoginTok
 import edu.iastate.coms309.cyschedulebackend.security.model.TokenObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@Service
 public class UserTokenService {
 
     /*
@@ -40,13 +41,6 @@ public class UserTokenService {
     @Autowired
     UserLoginTokenRepository userLoginTokenRepository;
 
-
-    private HashMap<String, HashMap<String, UserLoginToken>> keyStorage;
-
-    public UserTokenService(){
-        keyStorage = new HashMap<>();
-    }
-
     public TokenObject load(String token) throws NullPointerException,JWTDecodeException{
         TokenObject tokenObject = new TokenObject();
 
@@ -61,15 +55,11 @@ public class UserTokenService {
         return tokenObject;
     }
 
-    public UserLoginToken creat(String email, UserCredential userCredential) {
+    public UserLoginToken creat(UserCredential userCredential) {
         UserLoginToken token = new UserLoginToken();
 
         token.setTokenID(UUID.randomUUID().toString());
         token.setRefreshKey(UUID.randomUUID().toString());
-
-        if(!keyStorage.containsKey(userCredential.getUserID())) {
-            keyStorage.put(userCredential.getUserID(), new HashMap<>());
-        }
 
         Algorithm algorithmHS = Algorithm.HMAC256(userCredential.getJwtKey());
 
@@ -80,13 +70,14 @@ public class UserTokenService {
                 .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
                 .sign(algorithmHS));
 
-
         token.setOwner(userCredential);
-        userLoginTokenRepository.save(token);
-        keyStorage.get(userCredential.getUserID()).put(token.getTokenID(),token);
-
+        this.update(token);
         return token;
     }
+
+    @Async
+    @Transactional
+    void update(UserLoginToken userLoginToken){userLoginTokenRepository.save(userLoginToken);}
 
     public boolean verify(TokenObject tokenObject,UserCredential userCredential){
         String password = userCredential.getJwtKey();

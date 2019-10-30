@@ -83,6 +83,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/swagger-ui.html");
 
          //Add our custom JWT security filter
-        http.addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class).exceptionHandling();
     }
 }
