@@ -37,52 +37,44 @@ public class LoginActivity extends AppCompatActivity {
     private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
-    private static String EMAIL = null;
+//    private static String EMAIL = null;
 
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
 
-    private void initData() {
-        SharedPreferences sp = getSharedPreferences("loginToken", 0);
-        EMAIL = sp.getString("email", null);
-    }
+//    private void initData() {
+//        SharedPreferences sp = getSharedPreferences("loginToken", 0);
+//        EMAIL = sp.getString("email", null);
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if (EMAIL == null) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_login);
-            ButterKnife.bind(this);
-            sessionManager = new SessionManager(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+        sessionManager = new SessionManager(this);
 
-            _loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    login();
-                }
-            });
+        _loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login();
+            }
+        });
 
-            _signupLink.setOnClickListener(new View.OnClickListener() {
+        _signupLink.setOnClickListener(new View.OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // Start the Signup activity
-                    Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                    startActivityForResult(intent, REQUEST_SIGNUP);
-                    finish();
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                }
-            });
-        }
-        else {
-            Intent intent = new Intent(this, Main3Activity.class);
-            startActivity(intent);
-            finish();
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-        }
+            @Override
+            public void onClick(View v) {
+                // Start the Signup activity
+                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                startActivityForResult(intent, REQUEST_SIGNUP);
+                finish();
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+            }
+        });
     }
 
     public void login() {
@@ -116,12 +108,11 @@ public class LoginActivity extends AppCompatActivity {
                             if (status.equals("200"))
                             {
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
-                                SharedPreferences sp = getSharedPreferences("loginToken", 0);
-                                SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("email", email);
-                                editor.commit();
 
-//                                sessionManager.createSession(email);
+                                String token = loginToken.getString("token").trim();
+                                String tokenID = loginToken.getString("tokenID").trim();
+                                String refreshKey = loginToken.getString("refreshKey").trim();
+                                sessionManager.createSession(token, tokenID, refreshKey);
 
                                 onLoginSuccess();
                             }
