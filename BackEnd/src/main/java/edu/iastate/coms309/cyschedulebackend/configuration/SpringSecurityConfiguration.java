@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
+import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.handler.AccessDeniedHandler;
 import edu.iastate.coms309.cyschedulebackend.handler.RestApiExceptionHandler;
 import edu.iastate.coms309.cyschedulebackend.handler.LoginFailureHandler;
@@ -32,6 +33,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    UserTokenService userTokenService;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new Pbkdf2PasswordEncoder();
@@ -54,6 +58,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web){
         //ignoring static objects
         web.ignoring()
+                .antMatchers("/error")
                 .antMatchers("/api/v1/auth/**");
     }
 
@@ -83,6 +88,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/swagger-ui.html");
 
          //Add our custom JWT security filter
-        http.addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class).exceptionHandling();
+        http.addFilterBefore(new JwtTokenFilter(accountService,userTokenService), UsernamePasswordAuthenticationFilter.class).exceptionHandling();
     }
 }

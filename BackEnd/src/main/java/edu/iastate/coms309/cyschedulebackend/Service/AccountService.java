@@ -87,16 +87,19 @@ public class AccountService implements UserDetailsService{
     public void updateUserInformation(UserInformation userInformation){ userInformationRepository.save(userInformation); }
 
     @Cacheable(value = "email", key = "#userID + '_id'")
-    public String getUserEmail(String userID) { return userInformationRepository.getOne(userID).getUserCredential().getEmail(); }
+    public String getUserEmail(String userID) {
+        return userCredentialRepository.getUserEmailByUserID(userID); }
 
     public UserInformation getUserInformation(String userID){ return userInformationRepository.getOne(userID);}
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserCredential userCredential;
         if (userCredentialRepository.existsById(email))
-            return userCredentialRepository.getOne(email);
+            userCredential = userCredentialRepository.getOne(email);
         else
             throw new UsernameNotFoundException("username " + email + " is not found");
+        return userCredential;
     }
 
     @Cacheable(value = "false")

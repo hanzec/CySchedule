@@ -1,47 +1,38 @@
 package edu.iastate.coms309.cyschedulebackend.security.filter;
 
-import com.google.gson.Gson;
-import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
-import edu.iastate.coms309.cyschedulebackend.security.model.TokenObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class JwtTokenFilter extends RequestHeaderAuthenticationFilter {
-
-    @Autowired
-    Gson gson;
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    UserTokenService userTokenService;
+public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    protected JwtTokenFilter(String defaultFilterProcessesUrl) {
+        super(defaultFilterProcessesUrl);
+    }
+
     @Override
+    @Transactional
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         try {
-            TokenObject userLoginToken = userTokenService.load(httpServletRequest.getHeader("JwtToken"));
+            String token = ((HttpServletRequest) servletRequest).getHeader("jwttoken");
+            TokenObject userLoginToken = userTokenService.load(token);
             UserDetails userDetails = accountService.loadUserByUsername(accountService.getUserEmail(userLoginToken.getUserID()));
 
             if (userTokenService.verify(userLoginToken, (UserCredential) userDetails)) {
@@ -52,16 +43,12 @@ public class JwtTokenFilter extends RequestHeaderAuthenticationFilter {
 
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } catch (Exception ex) {
-            Response response = new Response();
             SecurityContextHolder.clearContext();
-            servletResponse.getWriter().write(
-                    gson.toJson(
-                            response
-                                    .BadRequested("Token is Not Correct")
-                                    .send(((HttpServletRequest) servletRequest).getRequestURI())
-                                    .addResponse("item", ex.getMessage())));
-            servletResponse.getWriter().close();
-            logger.error("Could not set user authentication in security context", ex);
         }
+    }
+
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException {
+        return null;
     }
 }

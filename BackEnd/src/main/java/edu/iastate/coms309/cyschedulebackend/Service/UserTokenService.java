@@ -3,19 +3,15 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
-import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserCredentialRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserLoginTokenRepository;
-import edu.iastate.coms309.cyschedulebackend.security.model.TokenObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -41,20 +37,6 @@ public class UserTokenService {
     @Autowired
     UserLoginTokenRepository userLoginTokenRepository;
 
-    public TokenObject load(String token) throws NullPointerException,JWTDecodeException{
-        TokenObject tokenObject = new TokenObject();
-
-        if (token == null)
-            throw new NullPointerException("Token is empty");
-
-        DecodedJWT jwt = JWT.decode(token);
-
-        tokenObject.setToken(token);
-        tokenObject.setUserID(jwt.getClaim("userID").asString());
-        tokenObject.setTokenID(jwt.getClaim("tokenID").asString());
-        return tokenObject;
-    }
-
     public UserLoginToken creat(UserCredential userCredential) {
         UserLoginToken token = new UserLoginToken();
 
@@ -66,7 +48,7 @@ public class UserTokenService {
         token.setToken(JWT.create()
                 .withIssuer("CySchedule")
                 .withJWTId(token.getTokenID())
-                .withClaim("userID",userCredential.getUserID())
+                .withSubject(userCredential.getUserID())
                 .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
                 .sign(algorithmHS));
 
