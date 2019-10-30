@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-@Service
+
 public class EventService {
     /*
     Maybe a improve point

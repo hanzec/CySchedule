@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.Set;
 import java.util.UUID;
 
-@Service
+
 public class AccountService implements UserDetailsService{
     /*
         Maybe a improve point
@@ -67,12 +67,13 @@ public class AccountService implements UserDetailsService{
         //Update User Credential
         userCredential.setEmail(user.getEmail());
         userCredential.setUserInformation(userInformation);
+        userCredential.setJwtKey(UUID.randomUUID().toString());
         userCredential.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //save to database
         userCredentialRepository.save(userCredential);
 
-        logger.info("New User with id :[" + userInformation.getUserID() + "] is created");
+        logger.info("New User with id :[" + userCredential.getUserID() + "] is created");
     }
 
     @Cacheable(
@@ -87,19 +88,6 @@ public class AccountService implements UserDetailsService{
 
     @Cacheable(value = "email", key = "#userID + '_id'")
     public String getUserEmail(String userID) { return userInformationRepository.getOne(userID).getUserCredential().getEmail(); }
-
-    @Transactional
-    @Cacheable(value = "jwt_key", key = "#userID + '_jwt_key'")
-    public String getJwtKey(String userID) {
-        UserCredential userDetails = userCredentialRepository.getOne(userID);
-
-        if(userDetails.getJwtKey() == null){
-            userDetails.setJwtKey(UUID.randomUUID().toString());
-            logger.info("New jwt Keys for [" + userID + "] is created");
-            userCredentialRepository.save(userDetails);
-        }
-        return userDetails.getJwtKey();
-    }
 
     public UserInformation getUserInformation(String userID){ return userInformationRepository.getOne(userID);}
 
