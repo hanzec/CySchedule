@@ -7,6 +7,7 @@ import org.hibernate.annotations.JoinColumnOrFormula;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -22,6 +23,14 @@ public class UserLoginToken {
 
     @Expose
     String refreshKey;
+
+    @Expose
+    @JoinTable(name = "user_permission")
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
+    private Set<Permission> permissions;
 
     @ManyToOne(
             optional = false,
