@@ -7,13 +7,14 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserLoginToken;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserLoginTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.util.*;
 
 public class UserTokenService {
@@ -37,45 +38,23 @@ public class UserTokenService {
     @Autowired
     UserLoginTokenRepository userLoginTokenRepository;
 
-    public UserLoginToken creat(UserCredential userCredential) {
-        UserLoginToken token = new UserLoginToken();
+    public UserToken creat(UserCredential userCredential) {
+        UserToken token = new UserToken();
 
+        token.setToken(UUID.randomUUID().toString());
         token.setTokenID(UUID.randomUUID().toString());
         token.setRefreshKey(UUID.randomUUID().toString());
-
-        Algorithm algorithmHS = Algorithm.HMAC256(userCredential.getJwtKey());
-
-        token.setToken(JWT.create()
-                .withIssuer("CySchedule")
-                .withJWTId(token.getTokenID())
-                .withSubject(userCredential.getUserID())
-                .withClaim("Permission")
-                .withExpiresAt(new Date(System.currentTimeMillis() + authTokenExpireTime))
-                .sign(algorithmHS));
+        token.setPermissions(userCredential.getPermissions());
+        token.setExpireTime(new Time(System.currentTimeMillis() + authTokenExpireTime));
 
         token.setOwner(userCredential);
         this.update(token);
         return token;
     }
 
+    public UserToken getTokenObject(String userID){return userLoginTokenRepository.getOne(userID);}
+
     @Async
     @Transactional
-    void update(UserLoginToken userLoginToken){userLoginTokenRepository.save(userLoginToken);}
-
-    public boolean verify(TokenObject tokenObject,UserCredential userCredential){
-        String password = userCredential.getJwtKey();
-
-        Algorithm algorithm = Algorithm.HMAC256(password);
-        try {
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("CySchedule")
-                    .acceptLeeway(1)   //1 sec for nbf and iat
-                    .acceptExpiresAt(5)   //5 secs for exp
-                    .build();
-            DecodedJWT jwt = verifier.verify(tokenObject.getToken());
-        } catch (JWTVerificationException exception) {
-            return false;
-        }
-        return true;
-    }
+    void update(UserToken userToken){userLoginTokenRepository.save(userToken);}
 }

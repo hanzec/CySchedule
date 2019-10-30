@@ -1,6 +1,7 @@
-package edu.iastate.coms309.cyschedulebackend.handler;
+package edu.iastate.coms309.cyschedulebackend.exception;
 
 import com.google.gson.Gson;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenAlreadyExpireException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.ObjectError;
@@ -11,17 +12,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
 @ControllerAdvice
-public class RestApiExceptionHandler {
+public class ExceptionHandlers {
 
     @Autowired
     Gson gson;
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({
+            TokenAlreadyExpireException.class,
+            MethodArgumentNotValidException.class
+    })
     public void MethodArgumentNotValidException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
         MethodArgumentNotValidException c = (MethodArgumentNotValidException) ex;
         List<ObjectError> errors =c.getBindingResult().getAllErrors();
@@ -34,7 +37,7 @@ public class RestApiExceptionHandler {
         response.getWriter().write(
                 gson.toJson(
                         result
-                                .BadRequested("Not include Enough Information")
+                                .BadRequested(ex.getMessage())
                                 .send(request.getRequestURI())
                                 .addResponse("Error Item",errorList)));
     }

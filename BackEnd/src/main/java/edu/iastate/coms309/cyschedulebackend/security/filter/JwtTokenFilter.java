@@ -1,20 +1,13 @@
 package edu.iastate.coms309.cyschedulebackend.security.filter;
 
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.security.model.JwtAuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

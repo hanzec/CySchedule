@@ -6,13 +6,14 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JoinColumnOrFormula;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.util.List;
 import java.util.Set;
 
 @Data
 @Entity
 @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-public class UserLoginToken {
+public class UserToken {
 
     @Expose
     String token;
@@ -20,6 +21,9 @@ public class UserLoginToken {
     @Id
     @Expose
     String tokenID;
+
+    @Expose
+    Time expireTime;
 
     @Expose
     String refreshKey;

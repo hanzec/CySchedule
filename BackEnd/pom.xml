@@ -84,12 +84,6 @@
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
         </dependency>
-        <!--jwt util-->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>3.8.2</version>
-        </dependency>
         <!-- Include GSON dependency -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
