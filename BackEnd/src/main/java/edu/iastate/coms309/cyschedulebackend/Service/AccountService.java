@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +27,8 @@ import java.io.File;
 import java.util.Set;
 import java.util.UUID;
 
-
+@Lazy
+@Service
 public class AccountService implements UserDetailsService{
     /*
         Maybe a improve point

@@ -24,21 +24,6 @@ import javax.servlet.http.PushBuilder;
 public class SpringBootConfiguration {
 
     @Bean
-    public EventService eventService(){return new EventService();}
-
-    @Bean
-    public AccountService accountService(){ return new AccountService(); }
-
-    @Bean
-    public UserTokenService userTokenService(){return new UserTokenService();}
-
-    @Bean
-    public PermissionService permissionService(){return new PermissionService();}
-
-    @Bean
-    public TokenAuthenticationProvider tokenAuthenticationProvider(){return new TokenAuthenticationProvider();}
-
-    @Bean
     public GsonHttpMessageConverter gsonHttpMessageConverter() {
         GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
         converter.setGson(gson());
