@@ -7,6 +7,7 @@ import edu.iastate.coms309.cyschedulebackend.Service.EventService;
 import edu.iastate.coms309.cyschedulebackend.Service.PermissionService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.Utils.SpringfoxJsonToGsonAdapter;
+import edu.iastate.coms309.cyschedulebackend.security.provider.TokenAuthenticationProvider;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,9 @@ public class SpringBootConfiguration {
 
     @Bean
     public PermissionService permissionService(){return new PermissionService();}
+
+    @Bean
+    public TokenAuthenticationProvider tokenAuthenticationProvider(){return new TokenAuthenticationProvider();}
 
     @Bean
     public GsonHttpMessageConverter gsonHttpMessageConverter() {

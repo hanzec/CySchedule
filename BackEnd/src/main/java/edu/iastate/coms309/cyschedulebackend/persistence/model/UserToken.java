@@ -3,7 +3,6 @@ package edu.iastate.coms309.cyschedulebackend.persistence.model;
 import com.google.gson.annotations.Expose;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JoinColumnOrFormula;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -15,12 +14,12 @@ import java.util.Set;
 @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
 public class UserToken {
 
-    @Expose
-    String token;
-
     @Id
     @Expose
     String tokenID;
+
+    @Expose
+    String secret;
 
     @Expose
     Time expireTime;
@@ -29,7 +28,7 @@ public class UserToken {
     String refreshKey;
 
     @Expose
-    @JoinTable(name = "user_permission")
+    @JoinTable(name = "token_permission")
     @ManyToMany(
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL

@@ -3,7 +3,8 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.handler.LoginFailureHandler;
-import edu.iastate.coms309.cyschedulebackend.security.filter.JwtTokenFilter;
+import edu.iastate.coms309.cyschedulebackend.security.filter.TokenFilter;
+import edu.iastate.coms309.cyschedulebackend.security.provider.TokenAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     UserTokenService userTokenService;
 
+    @Autowired
+    TokenAuthenticationProvider tokenAuthenticationProvider;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new Pbkdf2PasswordEncoder();
@@ -36,6 +40,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         //Provider for jwtToken Authention
+        authenticationManagerBuilder.authenticationProvider(tokenAuthenticationProvider);
 
         //Provider for session Login
         authenticationManagerBuilder
@@ -83,6 +88,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/swagger-ui.html");
 
          //Add our custom JWT security filter
-        http.addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class).exceptionHandling();
+        TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
+        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling();
     }
 }

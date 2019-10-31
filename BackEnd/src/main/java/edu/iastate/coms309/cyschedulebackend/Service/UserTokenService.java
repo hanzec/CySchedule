@@ -1,11 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserLoginTokenRepository;
@@ -41,8 +36,8 @@ public class UserTokenService {
     public UserToken creat(UserCredential userCredential) {
         UserToken token = new UserToken();
 
-        token.setToken(UUID.randomUUID().toString());
         token.setTokenID(UUID.randomUUID().toString());
+        token.setSecret(UUID.randomUUID().toString());
         token.setRefreshKey(UUID.randomUUID().toString());
         token.setPermissions(userCredential.getPermissions());
         token.setExpireTime(new Time(System.currentTimeMillis() + authTokenExpireTime));

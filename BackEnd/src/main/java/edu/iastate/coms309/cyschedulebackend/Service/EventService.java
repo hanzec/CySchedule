@@ -54,6 +54,8 @@ public class EventService {
 
         //set relation with user
         event.getAdminUser().getManagedEvent().add(event);
+
+        eventRepository.save(event);
     }
 
     @Transactional
