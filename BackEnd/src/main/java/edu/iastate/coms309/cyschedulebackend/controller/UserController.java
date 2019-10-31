@@ -4,6 +4,7 @@ import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -37,9 +40,10 @@ public class UserController{
         if(userInformation.getAvatar() == null)
             return response.NotFound().send(request.getRequestURI());
         else{
-            response.addResponse("FileName",userInformation.getAvatar().getFileName());
-            response.addResponse("FileDownloadLink",fileManagementService.getFile(userInformation.getAvatar()));
-
+            Map<String,String> map = new HashMap<>();
+            map.put("FileName",userInformation.getAvatar().getFileName());
+            map.put("FileDownloadLink",fileManagementService.getFile(userInformation.getAvatar()));
+            response.addResponse("avatar", map);
             return response.OK().send(request.getRequestURI());
         }
     }
@@ -64,5 +68,16 @@ public class UserController{
         return response.Created().send(request.getRequestURI());
     }
 
+    @GetMapping(value = "/token")
+    @ApiOperation("delete current login Token")
+    public Response logout(Principal principal, HttpServletRequest request){
+        Response response = new Response();
+        UserCredential userInformation = (UserCredential) accountService.loadUserByUsername(principal.getName());
+
+        userInformation.getUserLoginTokens().forEach(V -> {
+            response.getResponseBody().put(V.getTokenID(),V);
+        });
+        return response.OK().send(request.getRequestURI());
+    }
 
 }

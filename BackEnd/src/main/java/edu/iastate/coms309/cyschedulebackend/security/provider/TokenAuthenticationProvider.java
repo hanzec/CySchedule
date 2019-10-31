@@ -36,7 +36,6 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         if (token.getExpireTime().after(new Time(System.currentTimeMillis())))
             throw new TokenAlreadyExpireException();
 
-
         //Verify Token details
         if(!credential.getRequestUrl().equals(decodedJWT.getClaim("requestUrl").asString()))
             throw new TokenNotCorrectException();
