@@ -2,7 +2,6 @@ package com.cs309.cychedule.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,11 +24,15 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import com.cs309.cychedule.R;
+import com.cs309.cychedule.models.ServerResponse;
+import com.cs309.cychedule.models.UserToken;
+import com.cs309.cychedule.patterns.Singleton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.cs309.cychedule.R;
-import com.cs309.cychedule.patterns.Singleton;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -92,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
-        RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
+        final RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.start();
 
@@ -102,18 +105,23 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try
                         {
-                            JSONObject object = new JSONObject(response);
-                            String status = object.getString("status");
-                            JSONObject loginToken = object.getJSONObject("responseBody");
-                            if (status.equals("200"))
+//                            JSONObject object = new JSONObject(response);
+//                            String status = object.getString("status");
+//                            JSONObject loginToken = object.getJSONObject("responseBody");
+
+                            Gson gson = new Gson();
+                            ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+                            Map loginToken = (Map) serverResponse.getResponseBody().get("loginToken");
+                            if (serverResponse.isSuccess())
                             {
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
-
-                                String token = loginToken.getString("token").trim();
-                                String tokenID = loginToken.getString("tokenID").trim();
-                                String refreshKey = loginToken.getString("refreshKey").trim();
-                                sessionManager.createSession(token, tokenID, refreshKey);
-
+                                String secret = (String) loginToken.get("secret");
+                                String tokenID = (String) loginToken.get("tokenID");
+                                String refreshKey = (String) loginToken.get("refreshKey");
+//                                String token = loginToken.getString("token").trim();
+//                                String tokenID = loginToken.getString("tokenID").trim();
+//                                String refreshKey = loginToken.getString("refreshKey").trim();
+                                sessionManager.createSession(secret, tokenID, refreshKey);
                                 onLoginSuccess();
                             }
                             else
@@ -122,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                                 onLoginFailed();
                             }
                         }
-                        catch (JSONException e)
+                        catch (Exception e)
                         {
                             e.printStackTrace();
                             _loginButton.setVisibility(View.VISIBLE);

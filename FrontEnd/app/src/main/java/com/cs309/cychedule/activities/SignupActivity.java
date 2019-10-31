@@ -122,7 +122,7 @@ public class SignupActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 //        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL_SIGNUP, jsonObject,
-//                new Response.Listener<JSONObject>()
+//                new ServerResponse.Listener<JSONObject>()
 //                {
 //                    @Override
 //                    public void onResponse(JSONObject response)
@@ -143,7 +143,7 @@ public class SignupActivity extends AppCompatActivity {
 //                        }
 //                    }
 //                },
-//                new Response.ErrorListener()
+//                new ServerResponse.ErrorListener()
 //                {
 //                    @Override
 //                    public void onErrorResponse(VolleyError error)
