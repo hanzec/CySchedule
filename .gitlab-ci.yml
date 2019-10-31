@@ -75,6 +75,7 @@ build-server:
     - tags
   script: 
   - cd ./BackEnd
+  - mvn clean
   - mvn -Dmaven.test.skip=true package
   - mv target/cyschedule-server-*.jar target/cyschedule-server-new.jar 
   artifacts:
