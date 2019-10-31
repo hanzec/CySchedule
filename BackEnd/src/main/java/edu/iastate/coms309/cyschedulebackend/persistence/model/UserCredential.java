@@ -1,6 +1,5 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Set;
@@ -8,7 +7,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import javax.validation.constraints.Email;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
@@ -36,7 +34,7 @@ public class UserCredential implements org.springframework.security.core.userdet
 
     @JoinTable(name = "user_permission")
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private Set<Permission> permissions;
@@ -54,7 +52,7 @@ public class UserCredential implements org.springframework.security.core.userdet
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    private Set<UserLoginToken> userLoginTokens;
+    private Set<UserToken> userLoginTokens;
 
     @Override
     public String getUsername() { return email; }
