@@ -2,6 +2,7 @@ package edu.iastate.coms309.cyschedulebackend.exception;
 
 import com.google.gson.Gson;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenAlreadyExpireException;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenVerifyFaildException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.ObjectError;
@@ -22,10 +23,11 @@ public class ExceptionHandlers {
     Gson gson;
 
     @ExceptionHandler({
+            TokenVerifyFaildException.class,
             TokenAlreadyExpireException.class,
             MethodArgumentNotValidException.class
     })
-    public void MethodArgumentNotValidException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void GenericApiException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
         MethodArgumentNotValidException c = (MethodArgumentNotValidException) ex;
         List<ObjectError> errors =c.getBindingResult().getAllErrors();
 

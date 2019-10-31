@@ -2,6 +2,7 @@ package edu.iastate.coms309.cyschedulebackend.security.model;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import edu.iastate.coms309.cyschedulebackend.Utils.JwtTokenUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
@@ -18,7 +19,8 @@ public class AuthenticationToken extends PreAuthenticatedAuthenticationToken {
     @Getter
     private String requestUrl;
 
-    public AuthenticationToken(Object aPrincipal, Object aCredentials) {
+    public AuthenticationToken(Object aPrincipal, Object aCredentials,String requestUrl) {
         super(aPrincipal, aCredentials);
+        this.requestUrl = requestUrl;
     }
 }

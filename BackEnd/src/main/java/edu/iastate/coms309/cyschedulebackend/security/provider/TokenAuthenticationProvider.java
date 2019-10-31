@@ -7,22 +7,18 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenAlreadyExpireException;
-import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenNotCorrectUrlException;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenNotCorrectException;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenVerifyFaildException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import edu.iastate.coms309.cyschedulebackend.security.model.AuthenticationToken;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 
 @Component
@@ -33,17 +29,17 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        PreAuthenticatedAuthenticationToken credential = (PreAuthenticatedAuthenticationToken) authentication;
+        AuthenticationToken credential = (AuthenticationToken) authentication;
         DecodedJWT decodedJWT = (DecodedJWT) credential.getCredentials();
         UserToken token = userTokenService.getTokenObject((String) credential.getPrincipal());
 
         if (token.getExpireTime().after(new Time(System.currentTimeMillis())))
             throw new TokenAlreadyExpireException();
 
-//        String result = decodedJWT.getClaim("requestUrl").asString();
-//        //Verify Token details
-//        if(!credential.getRequestUrl().equals(decodedJWT.getClaim("requestUrl").asString()))
-//            throw new TokenNotCorrectUrlException();
+
+        //Verify Token details
+        if(!credential.getRequestUrl().equals(decodedJWT.getClaim("requestUrl").asString()))
+            throw new TokenNotCorrectException();
 
         //Verify Token changed or not
         Algorithm algorithm = Algorithm.HMAC256(token.getSecret());
