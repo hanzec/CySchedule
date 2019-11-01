@@ -28,6 +28,13 @@ public class UserToken {
     @Expose
     String refreshKey;
 
+    @Column(
+            name = "email",
+            updatable = false,
+            insertable = false
+    )
+    private String userEmail;
+
     @Expose
     @JoinTable(name = "token_permission")
     @ManyToMany(
