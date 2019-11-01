@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class JwtTokenUtils {
     public static void main(String[] args){
-        System.out.println(generateToken("/api/v1/event/add","aca95182-66ee-460e-a329-5e3a1e9e24e2","3e63e4d8-bfe7-4dbd-af9b-8a834d8a0a8d",20000000));
+        System.out.println(generateToken("/api/v1/user/token","d99513ca-feb6-4e16-a77e-396d7de60405","1e84f975-2ddb-4a94-8ae4-a9cb95bdbad0",20000000));
     }
 
     static String generateToken(String requestUrl, String tokenID, String password, Integer expireTime){

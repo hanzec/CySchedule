@@ -51,7 +51,9 @@ public class UserTokenService {
         return token;
     }
 
-    public UserToken getTokenObject(String userID){return userLoginTokenRepository.getOne(userID);}
+    public UserToken getTokenObject(String tokenID){return userLoginTokenRepository.getOne(tokenID);}
+
+    public List<UserToken> getAllTokenBelongToUser(String email){return userLoginTokenRepository.getAllByUserEmail(email);}
 
     @Async
     @Transactional

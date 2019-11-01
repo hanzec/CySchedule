@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +27,13 @@ public class UserToken {
 
     @Expose
     String refreshKey;
+
+    @Column(
+            name = "email",
+            updatable = false,
+            insertable = false
+    )
+    private String userEmail;
 
     @Expose
     @JoinTable(name = "token_permission")

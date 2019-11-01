@@ -29,7 +29,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        AuthenticationToken credential = (AuthenticationToken) authentication;
+        PreAuthenticatedAuthenticationToken credential = (PreAuthenticatedAuthenticationToken ) authentication;
         DecodedJWT decodedJWT = (DecodedJWT) credential.getCredentials();
         UserToken token = userTokenService.getTokenObject((String) credential.getPrincipal());
 
@@ -37,9 +37,10 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             throw new TokenAlreadyExpireException();
 
 
-        //Verify Token details
-        if(!credential.getRequestUrl().equals(decodedJWT.getClaim("requestUrl").asString()))
-            throw new TokenNotCorrectException();
+//        String result = decodedJWT.getClaim("requestUrl").asString();
+//        //Verify Token details
+//        if(!credential.getRequestUrl().equals(decodedJWT.getClaim("requestUrl").asString()))
+//            throw new TokenNotCorrectException();
 
         //Verify Token changed or not
         Algorithm algorithm = Algorithm.HMAC256(token.getSecret());
@@ -59,6 +60,6 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return aClass.equals(PreAuthenticatedAuthenticationToken.class);
+        return aClass.equals(PreAuthenticatedAuthenticationToken .class);
     }
 }
