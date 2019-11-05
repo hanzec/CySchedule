@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/drawer_profile"
+            android:title="@string/menu_profile" />
+        <item
+            android:id="@+id/nav_calendar"
+            android:icon="@drawable/drawer_calendar"
+            android:title="@string/menu_calendar" />
+        <item
+            android:id="@+id/nav_daysCounter"
+            android:icon="@drawable/drawer_countdowntimer"
+            android:title="@string/menu_daysCounter" />
+        <item
+            android:id="@+id/nav_timer"
+            android:icon="@drawable/drawer_timer"
+            android:title="@string/menu_alarm" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/menu_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/menu_send" />
+        </menu>
+    </item>
+
+</menu>
