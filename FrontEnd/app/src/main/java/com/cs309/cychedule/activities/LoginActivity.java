@@ -25,27 +25,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.services.ClientWebSocket;
+import com.cs309.cychedule.services.SocketService;
 import com.cs309.cychedule.models.ServerResponse;
-import com.cs309.cychedule.models.UserToken;
 import com.cs309.cychedule.patterns.Singleton;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
+    ClientWebSocket clientWebSocket;
     private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 //    private static String EMAIL = null;
-    
-    ProgressDialog progressDialog;
-        
-        
-        
+
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
@@ -88,14 +82,17 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Login");
 
         _loginButton.setEnabled(false);
-    progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_Dark_Dialog);
+
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
         final String email = _emailText.getText().toString();
         final String password = _passwordText.getText().toString();
-        
+
+        // TODO: Implement your own authentication logic here.
         final RequestQueue requestQueue = Singleton.getInstance(this.getApplicationContext()).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.start();
@@ -183,12 +180,13 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
         Intent intent = new Intent(this, Main3Activity.class);
         startActivity(intent);
+        Intent intent2 = new Intent(this, SocketService.class);
+        startService(intent2);
         finish();
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     public void onLoginFailed() {
-        progressDialog.cancel();
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }

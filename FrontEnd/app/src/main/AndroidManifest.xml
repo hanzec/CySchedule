@@ -13,7 +13,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme.Dark"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.SocketActivity"></activity>
+        <service android:name=".services.SocketService" />
+        <activity android:name=".activities.WebSocketActivity"></activity>
         <activity
             android:name=".activities.WelcomeActivity"
             android:label="@string/app_name"

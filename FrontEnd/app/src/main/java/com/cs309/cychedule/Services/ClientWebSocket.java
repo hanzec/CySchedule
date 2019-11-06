@@ -1,4 +1,6 @@
-package com.cs309.cychedule.Services;
+package com.cs309.cychedule.services;
+
+import com.google.gson.JsonObject;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
@@ -38,8 +40,13 @@ public class ClientWebSocket extends WebSocketClient {
         System.err.println("Exception:" + e.toString());
     }
 
+    public void sendJson(JsonObject jsonObject)
+    {
+        send(jsonObject.toString());
+    }
+
     public static void main(String[] args) throws URISyntaxException {
-        WebSocketClient client = new ClientWebSocket(new URI(""));
+        WebSocketClient client = new ClientWebSocket(new URI("https://dev.hanzec.com/api/v1/auth/WebSocketDemo/"));
         client.connect();
     }
 }
