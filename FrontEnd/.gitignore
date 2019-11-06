@@ -1,0 +1,14 @@
+# File Generate By android Studio
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+#File Generate By MacOS
+.DS_Store
+
+#idea
+.idea/
+.idea/workspace.xml
+
