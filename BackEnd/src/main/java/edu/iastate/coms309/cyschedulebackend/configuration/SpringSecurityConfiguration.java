@@ -59,7 +59,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //ignoring static objects
         web.ignoring()
                 .antMatchers("/error")
-                .antMatchers("/api/v1/auth/**");
+                .antMatchers("/api/v1/auth/**")
+                .antMatchers("/websocket/**");
     }
 
     @Override
@@ -88,7 +89,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/swagger-ui.html");
 
          //Add our custom JWT security filter
-        TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
-        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling();
+        //TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
+        //http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling();
     }
 }

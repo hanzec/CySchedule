@@ -14,10 +14,12 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
+import org.springframework.stereotype.Component;
 
 
-@ServerEndpoint(value="/websocketDemo/{userId}",configurator = SpringConfigurator.class)
+
+@ServerEndpoint(value="/websocket/{userId}")
+@Component
 public class WebsocketDemo {
     
     private Logger logger = LoggerFactory.getLogger(WebsocketDemo.class);
@@ -36,19 +38,11 @@ public class WebsocketDemo {
     public void onOpen(@PathParam("userId") String userId,Session session) throws IOException{
         this.session = session;
         this.userId = userId;
-        onlineCount++;
+        //onlineCount++;
         
-        if (userSocket.containsKey(this.userId)) {
-            logger.debug("User:{} login with mutiple device",this.userId);
-            userSocket.get(this.userId).add(this); //增加该用户set中的连接实例
-        }else {
-            logger.debug("User:{}login with first device",this.userId);
-            Set<WebsocketDemo> addUserSet = new HashSet<>();
-            addUserSet.add(this);
-            userSocket.put(Long.valueOf(this.userId), addUserSet);
-        }
-        logger.debug("User{}login with {} device",userId,userSocket.get(this.userId).size());
-        logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
+        logger.debug("new connection import");
+      
+        //logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
         
     }
 
@@ -56,19 +50,27 @@ public class WebsocketDemo {
     @OnClose
     public void onClose(){
         
-        if (userSocket.get(this.userId).size() == 0) {
+      /*if (userSocket.get(this.userId).size() == 0) {
             userSocket.remove(this.userId);
         }else{
             userSocket.get(this.userId).remove(this);
         }
         logger.debug("User{}login with {} device",this.userId,userSocket.get(this.userId).size());
         logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
+        */
+    	logger.debug("close connection from {}",this.userId);
     }
 
     
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.debug("receive message from User {}: {}",this.userId,message);
+        try {
+			session.getBasicRemote().sendText("Hello world "+userId);
+		} catch (IOException e) {
+			e.printStackTrace();
+            logger.debug("User {} message send error",userId);
+		}
         if(session ==null)  logger.debug("session null");
     }
 
@@ -80,13 +82,13 @@ public class WebsocketDemo {
     }
 
     
-    public Boolean sendMessageToUser(String userId,String message){
+/*    public Boolean sendMessageToUser(String userId,String message){
         if (userSocket.containsKey(userId)) {
-            logger.debug("send message to User {}: {}",userId,message);
+            logger.debug("send message to User {}: {}",userId,"Hello world"+userId);
             for (WebsocketDemo WS : userSocket.get(userId)) {
                 logger.debug("sessionId is:{}",WS.session.getId());
                 try {
-                    WS.session.getBasicRemote().sendText(message);
+                    WS.session.getBasicRemote().sendText("Hello world "+userId);
                 } catch (IOException e) {
                     e.printStackTrace();
                     logger.debug("User {} message send error",userId);
@@ -98,5 +100,6 @@ public class WebsocketDemo {
         logger.debug("User {} not exist",userId);
         return false;
     }
+    */
 
 }
