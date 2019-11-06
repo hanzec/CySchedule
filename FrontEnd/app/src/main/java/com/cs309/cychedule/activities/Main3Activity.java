@@ -1,5 +1,6 @@
 package com.cs309.cychedule.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.AlarmClock;
@@ -22,6 +23,8 @@ import com.cs309.cychedule.R;
 
 public class Main3Activity extends AppCompatActivity {
 
+    private Context mContext;
+
     private AppBarConfiguration mAppBarConfiguration;
     SessionManager sessionManager;
 
@@ -31,6 +34,7 @@ public class Main3Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
 
+        this.mContext = this;
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
@@ -73,5 +77,9 @@ public class Main3Activity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 }
