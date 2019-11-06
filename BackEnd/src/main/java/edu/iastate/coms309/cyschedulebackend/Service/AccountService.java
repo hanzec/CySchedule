@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.Set;
 import java.util.UUID;
 
-@Lazy
 @Service
 public class AccountService implements UserDetailsService{
     /*
