@@ -6,7 +6,10 @@ import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRe
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,7 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @ApiOperation("Login API")
-    public Response login(HttpServletRequest request, LoginRequest loginRequest){
+    public Response login(HttpServletRequest request, @RequestBody @Validated LoginRequest loginRequest){
         Response response = new Response();
         UserCredential userCredential = (UserCredential) accountService.loadUserByUsername(loginRequest.getEmail());
 
@@ -49,7 +52,7 @@ public class LoginController {
 
     @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    public Response register(HttpServletRequest request, RegisterRequest user){
+    public Response register(HttpServletRequest request,@RequestBody @Validated RegisterRequest user){
         Response response = new Response();
 
         //There should not register with same email address
