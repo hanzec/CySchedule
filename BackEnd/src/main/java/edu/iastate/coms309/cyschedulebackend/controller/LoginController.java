@@ -36,7 +36,7 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @ApiOperation("Login API")
-    public Response login(HttpServletRequest request, @RequestBody @Validated LoginRequest loginRequest){
+    public Response login(HttpServletRequest request, @Validated LoginRequest loginRequest){
         Response response = new Response();
         UserCredential userCredential = (UserCredential) accountService.loadUserByUsername(loginRequest.getEmail());
 
@@ -52,7 +52,7 @@ public class LoginController {
 
     @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
-    public Response register(HttpServletRequest request,@RequestBody @Validated RegisterRequest user){
+    public Response register(HttpServletRequest request,@Validated RegisterRequest user){
         Response response = new Response();
 
         //There should not register with same email address

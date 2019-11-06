@@ -45,7 +45,7 @@ public class EventController {
 
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
-    public Response addNewEvent(Principal principal, HttpServletRequest request, @RequestBody @Validated EventRequest newEvent) {
+    public Response addNewEvent(Principal principal, HttpServletRequest request, @Validated EventRequest newEvent) {
         Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
         newEvent.setUserID(principal.getName());
