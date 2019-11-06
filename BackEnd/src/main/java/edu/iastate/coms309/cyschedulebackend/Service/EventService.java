@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-@Lazy
 @Service
 public class EventService {
     /*

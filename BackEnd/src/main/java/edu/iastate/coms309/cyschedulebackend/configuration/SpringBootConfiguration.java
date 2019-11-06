@@ -18,7 +18,6 @@ import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.PushBuilder;
 
-@EnableAsync
 @Configuration
 @EnableCaching
 public class SpringBootConfiguration {
