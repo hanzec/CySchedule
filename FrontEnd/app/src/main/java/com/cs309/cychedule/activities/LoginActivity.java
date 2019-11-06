@@ -25,7 +25,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.services.ClientWebSocket;
 import com.cs309.cychedule.services.SocketService;
 import com.cs309.cychedule.models.ServerResponse;
 import com.cs309.cychedule.patterns.Singleton;
@@ -34,22 +33,15 @@ import com.google.gson.Gson;
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
-    ClientWebSocket clientWebSocket;
     private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
-//    private static String EMAIL = null;
     ProgressDialog progressDialog;
 
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
-
-//    private void initData() {
-//        SharedPreferences sp = getSharedPreferences("loginToken", 0);
-//        EMAIL = sp.getString("email", null);
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

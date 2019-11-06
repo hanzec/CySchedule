@@ -116,35 +116,31 @@ public class SocketService extends Service {
                 @Override
                 public void onOpen(ServerHandshake handshake) {
                     send("Connection Request");
-                    Log.d("OPEN: ", "WebSocket is connecting");
-                    System.out.println("New connection has opened.");
+                    Log.d("OPEN", "WebSocket is connecting");
                 }
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    Log.d("CLOSE: ", "onClose() returned: " + reason);
-                    System.out.println("Connection has closed because of: " + reason);
+                    Log.d("CLOSE", "onClose() returned: " + reason);
                 }
 
                 @Override
                 public void onMessage(String message) {
-                    Log.d("MESSAGE: ", "run() returned: " + message);
-                    System.out.println("Received message: " + message);
+                    Log.d("MESSAGE", "Server sent: " + message);
                     Looper.prepare();
-                    Toast.makeText(context, "Received message: " + message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
                     Looper.loop();
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Log.d("Exception: ", e.toString());
-                    System.err.println("Exception:" + e.toString());
+                    Log.d("Exception", e.toString());
                 }
             };
         }
-        catch (URISyntaxException e) {
-            Log.d("Exception:", e.getMessage().toString());
-            e.printStackTrace();
+        catch (URISyntaxException ue) {
+            Log.d("Exception:", ue.toString());
+            ue.printStackTrace();
         }
         client.connect();
         // If we get killed, after returning from here, restart
@@ -160,9 +156,5 @@ public class SocketService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
-    }
-
-    public void setMessage(String string){
-        Toast.makeText(this,string,Toast.LENGTH_LONG).show();
     }
 }
