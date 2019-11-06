@@ -58,6 +58,7 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         ButterKnife.bind(this);
+        
         notificationHandler(this, 1, "test", "1111111");
         
         _signupButton.setOnClickListener(new View.OnClickListener()
