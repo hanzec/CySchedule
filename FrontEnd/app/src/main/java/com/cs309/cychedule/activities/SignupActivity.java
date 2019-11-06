@@ -1,8 +1,11 @@
 package com.cs309.cychedule.activities;
 
+import com.cs309.cychedule.utilities.*;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
@@ -32,6 +35,8 @@ import com.cs309.cychedule.R;
 import com.cs309.cychedule.utilities.userUtil;
 import com.cs309.cychedule.patterns.Singleton;
 
+import static com.cs309.cychedule.utilities.userUtil.notificationHandler;
+
 public class SignupActivity extends AppCompatActivity {
 
     private static String URL_SIGNUP = "https://dev.hanzec.com/api/v1/auth/register";
@@ -46,13 +51,16 @@ public class SignupActivity extends AppCompatActivity {
     @BindView(R.id.btn_signup) Button _signupButton;
     @BindView(R.id.link_login) TextView _loginLink;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
         ButterKnife.bind(this);
-
+        
+        notificationHandler(this, 1, "test", "1111111");
+        
         _signupButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -79,7 +87,7 @@ public class SignupActivity extends AppCompatActivity {
 
     public void signup() throws JSONException {
         Log.d(TAG, "Signup");
-
+     
         if (!validate()) {
             onSignupFailed();
         }
