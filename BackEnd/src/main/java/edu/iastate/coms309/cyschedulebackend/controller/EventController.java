@@ -9,6 +9,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.EventReque
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +45,7 @@ public class EventController {
 
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
-    public Response addNewEvent(Principal principal, HttpServletRequest request, EventRequest newEvent) {
+    public Response addNewEvent(Principal principal, HttpServletRequest request, @Validated EventRequest newEvent) {
         Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
         newEvent.setUserID(principal.getName());
@@ -79,7 +80,7 @@ public class EventController {
 
     @ApiOperation("update timeBlock by id")
     @PutMapping(value = "/{eventID}")
-    public Response updateTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID, EventRequest newEvent) {
+    public Response updateTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID, @Validated EventRequest newEvent) {
         Response response = new Response();
 
         // check ownership

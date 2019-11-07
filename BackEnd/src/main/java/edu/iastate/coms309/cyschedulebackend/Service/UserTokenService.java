@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Time;
 import java.util.*;
 
-@Lazy
 @Service
 public class UserTokenService {
 
