@@ -1,6 +1,8 @@
 package com.cs309.cychedule.activities;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.AlarmClock;
@@ -9,7 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.view.MenuItem;
 import android.view.View;
-import com.cs309.cychedule.*;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,12 +23,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.services.SocketService;
-import com.cs309.cychedule.utilities.UserUtil;
 
 public class Main3Activity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
     
@@ -107,12 +107,14 @@ public class Main3Activity extends AppCompatActivity  implements NavigationView.
         int id = item.getItemId();
         
         //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Toast.makeText(this, "在写了在写了(抱头", Toast.LENGTH_LONG).show();
+        }
         if (id == R.id.action_logout) {
-            startActivity(new Intent(this,LoginActivity.class));
-            Toast.makeText(this, "Logged out!", Toast.LENGTH_LONG).show();
+            logoutDiag();
         }
         if (id == R.id.action_exit) {
-            android.os.Process.killProcess(android.os.Process.myPid());
+            alertDiag();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -126,4 +128,91 @@ public class Main3Activity extends AppCompatActivity  implements NavigationView.
             super.onBackPressed();
         }
     }
+    
+    private void logoutDiag() {
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setCancelable(false);//是否能背后退取消
+        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);// 设置水平样式
+        dialog.setTitle("Install multiple bugs onto your computer");
+        final StringBuilder msg = new StringBuilder("Loading~");
+        dialog.setMessage(msg.toString());
+        dialog.setMax(100);
+        dialog.setProgress(5);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Main3Activity.this, LoginActivity.class));
+                        Toast.makeText(Main3Activity.this, "Logged out!", Toast.LENGTH_LONG).show();
+                    }
+                });
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        dialog.show();
+    
+       
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                for (int j = 0; j <= 100; j++) {
+                   
+                    if(j>99){
+                        j-=3;
+                    }
+                    if(j<5){
+                        j++;
+                    }
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    if(j>=100){
+                        startActivity(new Intent(Main3Activity.this, LoginActivity.class));
+                        Toast.makeText(Main3Activity.this, "Logged out!", Toast.LENGTH_LONG).show();
+                    }
+                    dialog.setProgress(j);
+                    
+                    if(j>50) {
+                        if (msg.length() >= 15)
+                            msg.deleteCharAt((int) (Math.random()*10));
+                        msg.append((char) (int) (j*Math.random()*1000));
+                        dialog.setMessage(msg.toString());
+                    }
+                }
+            }
+        }).start();
+        
+    }
+    
+    private void alertDiag() {
+        AlertDialog.Builder dia =new AlertDialog.Builder(this);
+        dia.setTitle("FBI WARNING").setIcon(R.drawable.ic_accessible_black_24dp);
+        dia.setCancelable(false);
+        dia.setPositiveButton("Sure",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
+        dia.setNegativeButton("NO!",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        dia.show();
+    }
+    
 }
+
