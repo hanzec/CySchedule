@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.provider.AlarmClock;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-
+import com.cs309.cychedule.*;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.services.SocketService;
+import com.cs309.cychedule.utilities.UserUtil;
 
 public class Main3Activity extends AppCompatActivity {
 
@@ -32,6 +34,7 @@ public class Main3Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
 
+        
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
@@ -59,6 +62,7 @@ public class Main3Activity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+       
     }
 
     

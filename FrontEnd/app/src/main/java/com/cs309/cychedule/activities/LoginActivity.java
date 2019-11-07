@@ -69,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+        startService( new Intent(this, SocketService.class));
     }
 
     public void login() {
@@ -173,8 +174,7 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
         Intent intent = new Intent(this, Main3Activity.class);
         startActivity(intent);
-        Intent intent2 = new Intent(this, SocketService.class);
-        startService(intent2);
+        
         finish();
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }

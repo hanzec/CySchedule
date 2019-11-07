@@ -8,13 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
-
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.Main3Activity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class userUtil {
+public class UserUtil {
 	public static boolean isNumeric(String str){
 		Pattern pattern = Pattern.compile("[0-9]*");
 		Matcher isNum = pattern.matcher(str);
@@ -53,7 +53,7 @@ public class userUtil {
 
 		Intent resultIntent = new Intent(context, context.getClass());
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-		stackBuilder.addParentStack(context.getClass());
+		stackBuilder.addParentStack(Main3Activity.class);
 		stackBuilder.addNextIntent(resultIntent);
 		PendingIntent resultPendingIntent
 				= stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

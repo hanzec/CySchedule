@@ -12,19 +12,11 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.cs309.cychedule.activities.Main3Activity;
-import com.cs309.cychedule.activities.MainActivity;
-import com.cs309.cychedule.utilities.userUtil;
-import com.koushikdutta.async.ByteBufferList;
-import com.koushikdutta.async.DataEmitter;
-import com.koushikdutta.async.callback.DataCallback;
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.WebSocket;
+import com.cs309.cychedule.utilities.UserUtil;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-import java.net.ConnectException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -64,10 +56,14 @@ public class SocketService extends Service {
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
-
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
+        
+        Toast.makeText(context, "Service started!" , Toast.LENGTH_LONG).show();
+        UserUtil.notificationHandler(context, 1, "Received a server message:", "edexdeddededeed");
+    
+    
     }
 
     @Override
@@ -128,7 +124,8 @@ public class SocketService extends Service {
                 public void onMessage(String message) {
                     Log.d("MESSAGE", "Server sent: " + message);
                     Looper.prepare();
-                    Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
+                    // Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
+                    // UserUtil.notificationHandler(context, 1, "Received a server message:", message);
                     Looper.loop();
                 }
 

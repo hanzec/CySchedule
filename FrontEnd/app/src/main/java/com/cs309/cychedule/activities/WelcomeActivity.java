@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.services.SocketService;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,6 +39,7 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
 				toLogin();//这里写登录判断
 			}
 		}, recLen*1000);//延迟recLen秒后发送handler信息
+		startService(new Intent(this, SocketService.class));
 	}
 	
 

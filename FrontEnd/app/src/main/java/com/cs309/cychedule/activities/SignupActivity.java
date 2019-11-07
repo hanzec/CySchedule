@@ -29,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.utilities.userUtil;
+import com.cs309.cychedule.utilities.UserUtil;
 import com.cs309.cychedule.patterns.Singleton;
 
 public class SignupActivity extends AppCompatActivity {
@@ -265,11 +265,11 @@ public class SignupActivity extends AppCompatActivity {
             _userNameText.setError("Please enter a valid email address!");
             valid = false;
         }
-        else if ( userUtil.isNumeric(userName) && !Patterns.PHONE.matcher(userName).matches()) {
+        else if ( UserUtil.isNumeric(userName) && !Patterns.PHONE.matcher(userName).matches()) {
             _userNameText.setError("Please enter a valid phone number!");
             valid = false;
         }
-        else if ( userUtil.hasSpecialChar(userName)) {
+        else if ( UserUtil.hasSpecialChar(userName)) {
             _userNameText.setError("Please enter a valid email address or phone number!");
             valid = false;
         }
