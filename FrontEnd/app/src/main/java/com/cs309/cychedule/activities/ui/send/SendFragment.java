@@ -30,5 +30,6 @@ public class SendFragment extends Fragment {
             }
         });
         return root;
+        
     }
 }

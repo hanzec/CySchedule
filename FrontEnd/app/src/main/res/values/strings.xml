@@ -25,4 +25,6 @@
     <string name="fragment_home_alarm_list_title">Days Counter List</string>
     <string name="fragment_home_alarm_list_empty">Oops. Nothing here : (\nClick me to add a new days counter </string>
     <string name="fragment_home_empty">It\'s empty ...</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_exit">Exit!</string>
 </resources>

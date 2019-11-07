@@ -61,15 +61,12 @@ public class SocketService extends Service {
         serviceHandler = new ServiceHandler(serviceLooper);
         
         Toast.makeText(context, "Service started!" , Toast.LENGTH_LONG).show();
-        UserUtil.notificationHandler(context, 1, "Received a server message:", "edexdeddededeed");
-    
-    
     }
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
 
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
         Message msg = serviceHandler.obtainMessage();
@@ -125,7 +122,7 @@ public class SocketService extends Service {
                     Log.d("MESSAGE", "Server sent: " + message);
                     Looper.prepare();
                     // Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
-                    // UserUtil.notificationHandler(context, 1, "Received a server message:", message);
+                    UserUtil.notificationHandler(context, 1, "Received a server message:", message);
                     Looper.loop();
                 }
 

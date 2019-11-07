@@ -186,9 +186,12 @@ public class SignupActivity extends AppCompatActivity {
                         }
                         catch (JSONException e)
                         {
+                            Log.e("TAG", "");
                             e.printStackTrace();
                             _signupButton.setVisibility(View.VISIBLE);
                             Toast.makeText(SignupActivity.this, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                            Log.e("TAG1", e.toString());
+                            Log.e("TAG1", response);
                             onSignupFailed();
                         }
                     }
@@ -242,8 +245,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(getBaseContext(), "Sign up failed", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 
