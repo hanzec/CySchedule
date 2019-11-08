@@ -59,7 +59,6 @@ public class LoginController {
         if(accountService.existsByEmail(user.getEmail()))
             return response.BadRequested("Username is Already Used").send(request.getRequestURI());
 
-
         //Trying to Register new Account to Server
         accountService.createUser(user);
 
