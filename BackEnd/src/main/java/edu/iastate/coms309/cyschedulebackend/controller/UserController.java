@@ -83,7 +83,7 @@ public class UserController{
         return response.OK().send(request.getRequestURI());
     }
 
-    @DeleteMapping(value = "/{tokenID}")
+    @DeleteMapping(value = "/token/{tokenID}")
     @ApiOperation("delete current login Token")
     public Response revokeToken(Principal principal, HttpServletRequest request,@PathVariable String tokenID){
         Response response = new Response();
