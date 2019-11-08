@@ -37,12 +37,9 @@ public class VolleyRequest {
 
     boolean success = false;
 
-    UserToken userToken = null;
-
-    public VolleyRequest(Context context, UserToken userToken){
+    public VolleyRequest(Context context){
         gson = new Gson();
         this.context = context;
-        this.userToken = userToken;
     }
 
     public String getResult(){return result;}
@@ -50,10 +47,10 @@ public class VolleyRequest {
     public boolean isSuccess(){return success;}
 
     public void sendObject(Object object, String url,Context context, int method){
-        sendObject(object,url,context,method,null);
+        sendObject(object,url,context,method,new UserToken());
     }
 
-    public void sendObject(final Object object, final String url, Context context, int method, String token){
+    public void sendObject(final Object object, final String url, Context context, int method, final UserToken userToken){
         final RequestQueue requestQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(method,url,
                 new Response.Listener<String>() {
