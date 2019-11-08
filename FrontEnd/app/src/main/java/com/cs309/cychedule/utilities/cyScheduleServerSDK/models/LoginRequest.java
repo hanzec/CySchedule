@@ -1,4 +1,4 @@
-package edu.iastate.coms309.cyschedulebackend.persistence.requestModel;
+package com.cs309.cychedule.utilities.cyScheduleServerSDK.models;
 
 import lombok.Data;
 import javax.validation.constraints.NotBlank;

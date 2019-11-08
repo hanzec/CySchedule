@@ -1,4 +1,4 @@
-package com.cs309.cychedule.models;
+package com.cs309.cychedule.utilities.cyScheduleServerSDK.models;
 
 import lombok.Data;
 import lombok.Getter;

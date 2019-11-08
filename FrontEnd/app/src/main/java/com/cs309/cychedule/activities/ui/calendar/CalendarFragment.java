@@ -30,10 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.activities.LoginActivity;
-import com.cs309.cychedule.models.ServerResponse;
 import com.cs309.cychedule.patterns.Singleton;
-import com.google.gson.Gson;
 
 import org.json.JSONObject;
 

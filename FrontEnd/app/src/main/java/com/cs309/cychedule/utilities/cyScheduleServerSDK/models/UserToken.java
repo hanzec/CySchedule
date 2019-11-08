@@ -1,5 +1,6 @@
-package com.cs309.cychedule.models;
+package com.cs309.cychedule.utilities.cyScheduleServerSDK.models;
 
+import com.cs309.cychedule.models.Permission;
 import com.google.gson.annotations.Expose;
 import lombok.Data;
 import java.sql.Time;
