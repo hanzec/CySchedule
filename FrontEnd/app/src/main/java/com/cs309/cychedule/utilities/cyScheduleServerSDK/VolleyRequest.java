@@ -1,6 +1,7 @@
-package com.cs309.cychedule.utilities;
+package com.cs309.cychedule.utilities.cyScheduleServerSDK;
 
 import android.content.Context;
+import android.os.RemoteException;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -8,8 +9,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.cs309.cychedule.models.ServerResponse;
-import com.cs309.cychedule.models.UserToken;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.UserToken;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Field;
@@ -24,28 +25,25 @@ import io.jsonwebtoken.security.Keys;
 
 public class VolleyRequest {
 
-    private Gson gson;
-
     private Context context;
 
     private Integer expireTime = 0;
 
-    private ResponseHandler responseHandler;
 
-    public VolleyRequest(Context context, ResponseHandler responseHandler){
-        this(context,responseHandler,200000);
+
+    public VolleyRequest(Context context){
+        this(context,200000);
     }
 
-    public VolleyRequest(Context context, ResponseHandler responseHandler,Integer expireTime){
-        this.gson = new Gson();
+    public VolleyRequest(Context context,Integer expireTime){
         this.context = context;
         this.expireTime = expireTime;
     }
-    public void sendObject(final Object object, String url,Context context, int method){
-        sendObject(object,url,context,method,new UserToken());
+    public void sendObject(final Object object, String url, int method,ResponseHandler responseHandler){
+        sendObject(object,url,method,new UserToken(),responseHandler);
     }
 
-    public void sendObject(final Object object, final String url, Context context, int method, final UserToken userToken){
+    public void sendObject(final Object object, final String url, int method, final UserToken userToken, final ResponseHandler responseHandler){
         final RequestQueue requestQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(method,url,
                 new Response.Listener<String>() {
@@ -64,7 +62,7 @@ public class VolleyRequest {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
                 if(!userToken.getTokenID().isEmpty())
-                    params.put("Authorization", generateToken(url,userToken.getTokenID(),userToken.getSecret(),20000000));
+                    params.put("Authorization", generateToken(url,userToken.getTokenID(),userToken.getSecret()));
                 return params;
             }
 
@@ -89,7 +87,7 @@ public class VolleyRequest {
         requestQueue.add(stringRequest);
     }
 
-    private String generateToken(String requestUrl, String tokenID, String password, Integer expireTime){
+    private String generateToken(String requestUrl, String tokenID, String password){
         Key key = Keys.hmacShaKeyFor(password.getBytes());
         return Jwts.builder()
                 .signWith(key)
@@ -100,7 +98,8 @@ public class VolleyRequest {
                 .compact();
     }
 
-    public abstract class ResponseHandler {
+    public abstract static class ResponseHandler {
+        private Gson gson = new Gson();
         abstract void faildHandler(VolleyError volleyError);
         abstract void succeessHandler(ServerResponse serverResponse);
 

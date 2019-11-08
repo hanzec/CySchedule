@@ -25,8 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.services.SocketService;
-import com.cs309.cychedule.models.ServerResponse;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
 import com.cs309.cychedule.patterns.Singleton;
 import com.google.gson.Gson;
 

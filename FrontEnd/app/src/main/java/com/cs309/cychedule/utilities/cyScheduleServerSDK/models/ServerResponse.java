@@ -1,4 +1,4 @@
-package com.cs309.cychedule.models;
+package com.cs309.cychedule.utilities.cyScheduleServerSDK.models;
 
 import lombok.Data;
 
@@ -19,6 +19,8 @@ public class ServerResponse {
     String timestamp;
 
     private Map<String,Object> responseBody;
+
+    public String getMessage(){return message;}
 
     public boolean isSuccess(){return success;}
 }
