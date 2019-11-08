@@ -10,19 +10,19 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class EventRequest {
 
-    @NotBlank(message = "Event should contains a name")
+    @NotBlank(message = Event should contains a name)
     public String name;
 
-    @NotBlank(message = "Event should contains a endTime")
+    @NotBlank(message = Event should contains a endTime)
     public String endTime;
 
-    @NotBlank(message = "Event should contains a startTime")
+    @NotBlank(message = Event should contains a startTime)
     public String startTime;
 
-    @NotBlank(message = "Event should contains a Location")
+    @NotBlank(message = Event should contains a Location)
     public String location;
 
-    @NotBlank(message = "Event should contains a description")
+    @NotBlank(message = Event should contains a description)
     public String description;
 
     public String userID;

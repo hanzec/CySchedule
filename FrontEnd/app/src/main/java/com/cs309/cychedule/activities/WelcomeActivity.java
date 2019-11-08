@@ -1,5 +1,6 @@
 package com.cs309.cychedule.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,25 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
 				toLogin();//这里写登录判断
 			}
 		}, recLen*1000);//延迟recLen秒后发送handler信息
+		// String brand,model,androidversion,romname,romversion,sign,sdk;
+		// String device,product,cpu,board,display,id,version_codes_base,maker,user,tags;
+		// String hardware,host,unknown,type,time,radio,serial,cpu2;
+		// product = "产品 : " + android.os.Build.PRODUCT;
+		// cpu= " CPU_ABI : " + android.os.Build.CPU_ABI;
+		// model= " 型号 : " + android.os.Build.MODEL;
+		// androidversion= " Android 版本 : " + android.os.Build.VERSION.RELEASE;
+		// device= " 驱动 : " + android.os.Build.DEVICE;
+		// board= " 基板 : " + android.os.Build.BOARD;
+		// sign= " 设备标识 : " + android.os.Build.FINGERPRINT;
+		// maker= " 制造商 : " + android.os.Build.MANUFACTURER;
+		// user= " 用户 : " + android.os.Build.USER;
+		// cpu2=" CPU_ABI2 : "+android.os.Build.CPU_ABI2;
+		// hardware=" 硬件 : "+ android.os.Build.HARDWARE;
+		// time =" 时间 : "+String.valueOf(android.os.Build.TIME);
+		// serial=" 序列号 : "+android.os.Build.SERIAL;
+		// new AlertDialog.Builder(this).setTitle("Info").setMessage(
+		// 		""+sign).show();
+		
 	}
 	
 
