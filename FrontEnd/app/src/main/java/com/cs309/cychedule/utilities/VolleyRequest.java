@@ -1,15 +1,14 @@
 package com.cs309.cychedule.utilities;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.cs309.cychedule.models.ServerResponse;
 import com.cs309.cychedule.models.UserToken;
 import com.google.gson.Gson;
 
@@ -25,28 +24,24 @@ import io.jsonwebtoken.security.Keys;
 
 public class VolleyRequest {
 
-    /**
-     * May failed since volley is request by async method
-     */
+    private Gson gson;
 
-    Gson gson;
+    private Context context;
 
-    Context context;
+    private Integer expireTime = 0;
 
-    String result = null;
+    private ResponseHandler responseHandler;
 
-    boolean success = false;
-
-    public VolleyRequest(Context context){
-        gson = new Gson();
-        this.context = context;
+    public VolleyRequest(Context context, ResponseHandler responseHandler){
+        this(context,responseHandler,200000);
     }
 
-    public String getResult(){return result;}
-
-    public boolean isSuccess(){return success;}
-
-    public void sendObject(Object object, String url,Context context, int method){
+    public VolleyRequest(Context context, ResponseHandler responseHandler,Integer expireTime){
+        this.gson = new Gson();
+        this.context = context;
+        this.expireTime = expireTime;
+    }
+    public void sendObject(final Object object, String url,Context context, int method){
         sendObject(object,url,context,method,new UserToken());
     }
 
@@ -56,21 +51,20 @@ public class VolleyRequest {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
-                        result = s;
-                        success = true;
+                      responseHandler.handle(s);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                success = false;
-                result = volleyError.toString();
+                responseHandler.faildHandler(volleyError);
             }
         }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("Authorization", generateToken(url,userToken.getTokenID(),userToken.getSecret(),20000000));
+                if(!userToken.getTokenID().isEmpty())
+                    params.put("Authorization", generateToken(url,userToken.getTokenID(),userToken.getSecret(),20000000));
                 return params;
             }
 
@@ -104,5 +98,14 @@ public class VolleyRequest {
                 .claim("requestUrl",requestUrl)
                 .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .compact();
+    }
+
+    public abstract class ResponseHandler {
+        abstract void faildHandler(VolleyError volleyError);
+        abstract void succeessHandler(ServerResponse serverResponse);
+
+        public void handle(String s){
+            succeessHandler(gson.fromJson(s,ServerResponse.class));
+        }
     }
 }
