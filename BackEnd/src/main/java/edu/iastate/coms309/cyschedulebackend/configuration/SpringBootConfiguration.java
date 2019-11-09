@@ -2,21 +2,12 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
-import edu.iastate.coms309.cyschedulebackend.Service.EventService;
-import edu.iastate.coms309.cyschedulebackend.Service.PermissionService;
-import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.Utils.SpringfoxJsonToGsonAdapter;
-import edu.iastate.coms309.cyschedulebackend.security.provider.TokenAuthenticationProvider;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import springfox.documentation.spring.web.json.Json;
-
-import javax.servlet.http.PushBuilder;
 
 @Configuration
 @EnableCaching

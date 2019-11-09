@@ -6,6 +6,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.PermissionRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserCredentialRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserInformationRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
@@ -44,12 +45,58 @@ public class AccountService implements UserDetailsService{
     PasswordEncoder passwordEncoder;
 
     @Autowired
+    PermissionRepository permissionRepository;
+
+    @Autowired
     UserCredentialRepository userCredentialRepository;
 
     @Autowired
     UserInformationRepository userInformationRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public AccountService(){
+        //initialized user role information
+        if(!permissionRepository.existsById("ROLE_USER")){
+            Permission permission = new Permission();
+            permission.setRoleName("ROLE_USER");
+            permission.setDescription("Default Role for new User Role");
+            permissionRepository.save(permission);
+        }
+        if(!permissionRepository.existsById("ROLE_ADMIN")){
+            Permission permission = new Permission();
+            permission.setRoleName("ROLE_ADMIN");
+            permission.setDescription("Default Role for new admin Role");
+            permissionRepository.save(permission);
+        }
+
+        //Set up admin account if there is not
+        if(userCredentialRepository
+                .getUserCredentialByPermissionsContains(
+                        permissionRepository.getOne("ROLE_ADMIN")).size() < 1){
+            UserCredential userCredential = new UserCredential();
+            UserInformation userInformation = new UserInformation();
+
+            //update User Details
+            userInformation.setUsername("admin");
+            userInformation.setLastName("admin");
+            userInformation.setFirstName("admin");
+            userInformation.setUserCredential(userCredential);
+            userInformation.setRegisterTime(System.currentTimeMillis()/1000L);
+
+            //Update User Credential
+            userCredential.setEmail("admin@example.com");
+            userCredential.setUserInformation(userInformation);
+            userCredential.setJwtKey(UUID.randomUUID().toString());
+            userCredential.setPassword(passwordEncoder.encode("admin"));
+            userCredential.getPermissions().add(permissionRepository.getOne("ROLE_ADMIN"));
+
+            //save to database
+            userCredentialRepository.save(userCredential);
+
+            logger.info("New Admin with id :[" + userCredential.getUserID() + "] is created");
+        }
+    }
 
     @Async
     @Transactional
@@ -70,6 +117,7 @@ public class AccountService implements UserDetailsService{
         userCredential.setUserInformation(userInformation);
         userCredential.setJwtKey(UUID.randomUUID().toString());
         userCredential.setPassword(passwordEncoder.encode(user.getPassword()));
+        userCredential.getPermissions().add(permissionRepository.getOne("ROLE_USER"));
 
         //save to database
         userCredentialRepository.save(userCredential);
