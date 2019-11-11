@@ -59,10 +59,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //ignoring static objects
         web.ignoring()
                 .antMatchers("/error")
-                .antMatchers("/index.html")
+                .antMatchers("/resources/**")
                 .antMatchers("/websocket/**")
                 .antMatchers("/api/v1/auth/**")
-                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**","/swagger-ui.html");
+                .antMatchers("/swagger-resources/**", "/swagger-ui.html", "/v2/api-docs", "/webjars/**");
     }
 
     @Override
@@ -87,11 +87,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //login page configuration
         http
                 .formLogin()
-                .failureHandler(new LoginFailureHandler())
-                .defaultSuccessUrl("/swagger-ui.html");
+                .failureHandler(new LoginFailureHandler());
 
          //Add our custom JWT security filter
-        //TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
-        //http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling();
+//        TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
+//        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling();
     }
 }

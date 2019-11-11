@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class WebPageController {
 
+
+    @RequestMapping("/index")
+    String index() { return "index.html"; }
+
     @RequestMapping("/test")
     String test(String request){
         return request;

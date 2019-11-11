@@ -42,10 +42,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
@@ -90,7 +86,6 @@
             <artifactId>java-jwt</artifactId>
             <version>3.8.2</version>
         </dependency>
-
         <!-- Include GSON dependency -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -129,13 +124,12 @@
             <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-s3</artifactId>
                 <version>1.11.632</version>
-            </dependency>
+        </dependency>
         <!-- Springframework for websocket -->
-        
-			<dependency>
+        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
-			</dependency>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
