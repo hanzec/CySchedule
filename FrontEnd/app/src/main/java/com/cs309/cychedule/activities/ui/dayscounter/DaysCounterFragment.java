@@ -2,6 +2,7 @@ package com.cs309.cychedule.activities.ui.dayscounter;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +17,37 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.SignupActivity;
 import com.cs309.cychedule.activities.ui.calendar.CalendarFragment;
+import com.cs309.cychedule.patterns.Singleton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.Key;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 public class DaysCounterFragment extends Fragment {
 
+    private static String URL_EVENT = "https://dev.hanzec.com/api/v1/event/add";
     private DaysCounterViewModel daysCounterViewModel;
     private Button btnAdd, btnRemvoe;
     private DatePicker datepicker;
@@ -83,7 +103,7 @@ public class DaysCounterFragment extends Fragment {
                     emptyInputWarning.show();
                 }
                 else {
-                    Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
+                    final Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");// 输入日期的格式
                     String yearStr = year+"";
                     String monthStr = month+"";
@@ -108,6 +128,66 @@ public class DaysCounterFragment extends Fragment {
     
                     //提交year,month,day, daysleft无所谓, 主界面展示的话复制上面的实现方法就行
                     //这里实现volley
+                    final Date endDate = date;
+                    //sign token as header
+                    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+                    final String token = Jwts.builder().setSubject("CySchedule").signWith(key).compact();
+
+                    final RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
+                    //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                    requestQueue.start();
+
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EVENT,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try
+                                    {
+                                        JSONObject object = new JSONObject(response);
+                                        String status = object.getString("status");
+                                        JSONObject loginToken = object.getJSONObject("responseBody");
+
+                                        Log.e("TAG", response);
+                                        Log.e("TAG", object.toString());
+                                        Log.e("TAG", status);
+                                        Log.e("TAG", loginToken.toString());
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace(); Log.e("TAG", e.toString());
+                                        Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("TAG", error.toString());
+                                    Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            })
+                    {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("name", "Days Counter");
+                            params.put("startTime", curDate.toString());
+                            params.put("endTime", endDate.toString());
+                            params.put("location", null);
+                            params.put("description", secretText);
+                            return params;
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("Authorization",token);
+                            return params;
+                        }
+                    };
+                    //requestQueue.add(stringRequest);
+                    Singleton.getInstance(root.getContext()).addToRequestQueue(stringRequest);
                 }
             }
         });
