@@ -8,13 +8,12 @@ import org.springframework.web.bind.annotation.*;
 public class WebPageController {
 
 
-    @GetMapping("/index")
+    @GetMapping("/")
 
     public String index() {
-
-        return "/index.html";
-
+        return "index.html";
     }
+
     @RequestMapping("/test")
     String test(String request){
         return request;
