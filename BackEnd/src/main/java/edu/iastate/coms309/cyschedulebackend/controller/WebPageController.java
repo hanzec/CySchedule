@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 public class WebPageController {
 
 
-    @GetMapping("/html")
+    @GetMapping("/index")
 
-    public String html() {
+    public String index() {
 
         return "/index.html";
 
