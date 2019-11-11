@@ -60,6 +60,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers("/index")
                 .antMatchers("/error")
+                .antMatchers("/*.html")
                 .antMatchers("/websocket/**")
                 .antMatchers("/api/v1/auth/**")
                 .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**","/swagger-ui.html");
