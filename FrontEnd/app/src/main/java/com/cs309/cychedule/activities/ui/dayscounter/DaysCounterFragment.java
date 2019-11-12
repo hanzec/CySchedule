@@ -24,9 +24,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.LoginActivity;
+import com.cs309.cychedule.activities.SessionManager;
 import com.cs309.cychedule.activities.SignupActivity;
 import com.cs309.cychedule.activities.ui.calendar.CalendarFragment;
 import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.RestAPIService;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,13 +56,15 @@ import io.jsonwebtoken.security.Keys;
  */
 public class DaysCounterFragment extends Fragment {
 
-    private static String URL_EVENT = "https://dev.hanzec.com/api/v1/event/add";
+    private static String URL_EVENT = "https://dev.hanzec.com/api/v1/event";
     private DaysCounterViewModel daysCounterViewModel;
     private Button btnAdd, btnRemvoe;
     private DatePicker datepicker;
     int year, month, day;
     int daysleft;
     String secretText;
+    RestAPIService restAPIService;
+    SessionManager sessionManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         daysCounterViewModel = ViewModelProviders.of(this).get(DaysCounterViewModel.class);
@@ -71,6 +78,8 @@ public class DaysCounterFragment extends Fragment {
         //     }
         // });
 
+
+        sessionManager = new SessionManager(root.getContext());
 
         final EditText secretInput = root.findViewById(R.id.et_material_design);
 
@@ -129,7 +138,8 @@ public class DaysCounterFragment extends Fragment {
                     Snackbar.make(root,  year + "." + month + "." + day+" to "+yearStr + "." + monthStr + "." + dayStr+" lefts "+dayCount
                             +"\nSecret: " + secretText, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-    
+
+
                     //提交year,month,day, daysleft无所谓, 主界面展示的话复制上面的实现方法就行
                     //这里实现volley
                     final Date endDate = date;
@@ -146,28 +156,31 @@ public class DaysCounterFragment extends Fragment {
                                 public void onResponse(String response) {
                                     try
                                     {
-                                        JSONObject object = new JSONObject(response);
-                                        String status = object.getString("status");
-                                        JSONObject loginToken = object.getJSONObject("responseBody");
-
-                                        Log.e("TAG", response);
-                                        Log.e("TAG", object.toString());
-                                        Log.e("TAG", status);
-                                        Log.e("TAG", loginToken.toString());
+                                        Gson gson = new Gson();
+                                        ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+                                        Map loginToken = (Map) serverResponse.getResponseBody().get("loginToken");
+                                        if (serverResponse.isSuccess())
+                                        {
+                                            Toast.makeText(root.getContext(), "Add Event Success!", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(root.getContext(), "Add Event Failed.", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                     catch (Exception e)
                                     {
-                                        e.printStackTrace(); Log.e("TAG", e.toString());
-                                        Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                        btnAdd.setVisibility(View.VISIBLE);
+                                        Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Log.e("TAG", error.toString());
-                                    Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_SHORT).show();
-
+                                    btnAdd.setVisibility(View.VISIBLE);
+                                    Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             })
                     {
@@ -177,9 +190,17 @@ public class DaysCounterFragment extends Fragment {
                             params.put("name", name);
                             params.put("startTime", curDate.toString());
                             params.put("endTime", endDate.toString());
-                            params.put("location", location);
+                            params.put("location", curDate.toString());
                             params.put("description", secretText);
+                            Toast.makeText(root.getContext(), "Add Event Error: " + name , Toast.LENGTH_LONG).show();
+
                             return params;
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> loginToken = sessionManager.getLoginToken();
+                            return loginToken;
                         }
                     };
                     //requestQueue.add(stringRequest);
