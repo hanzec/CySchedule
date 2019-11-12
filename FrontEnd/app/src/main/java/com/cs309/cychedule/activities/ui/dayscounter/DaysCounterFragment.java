@@ -56,7 +56,7 @@ import io.jsonwebtoken.security.Keys;
  */
 public class DaysCounterFragment extends Fragment {
 
-    private static String URL_EVENT = "https://dev.hanzec.com/api/v1/event";
+    private static String URL_EVENT = "https://dev.hanzec.com/api/v1/event/add";
     private DaysCounterViewModel daysCounterViewModel;
     private Button btnAdd, btnRemvoe;
     private DatePicker datepicker;
@@ -156,10 +156,9 @@ public class DaysCounterFragment extends Fragment {
                                 public void onResponse(String response) {
                                     try
                                     {
-                                        Gson gson = new Gson();
-                                        ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
-                                        Map loginToken = (Map) serverResponse.getResponseBody().get("loginToken");
-                                        if (serverResponse.isSuccess())
+                                        JSONObject object = new JSONObject(response);
+                                        String status = object.getString("status");
+                                        if (status.equals("201"))
                                         {
                                             Toast.makeText(root.getContext(), "Add Event Success!", Toast.LENGTH_SHORT).show();
                                         }
