@@ -8,6 +8,7 @@ import edu.iastate.coms309.cyschedulebackend.security.provider.TokenAuthenticati
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,8 +18,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Order(1)
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -75,7 +79,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable();
 
-
         //RememberMe configuration
         http
                 .rememberMe().userDetailsService(userDetailsService());
@@ -90,7 +93,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureHandler(new LoginFailureHandler());
 
          //Add our custom JWT security filter
-//        TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
-//        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling();
+        TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
+        http.addFilterBefore(new ExceptionTranslationFilter(new Http403ForbiddenEntryPoint()), tokenFilter.getClass());
     }
 }
