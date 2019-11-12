@@ -45,7 +45,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/edittext_layer_background_drawable"
             android:hint="Secret"
-            android:inputType="textPassword"
+            android:inputType="textShortMessage"
             android:textColor="#000000"
             android:textColorHint="#000000" />
 

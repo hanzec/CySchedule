@@ -133,9 +133,8 @@ public class DaysCounterFragment extends Fragment {
                     //提交year,month,day, daysleft无所谓, 主界面展示的话复制上面的实现方法就行
                     //这里实现volley
                     final Date endDate = date;
-                    //sign token as header
-                    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-                    final String token = Jwts.builder().setSubject("CySchedule").signWith(key).compact();
+                    final String location = "No Location";
+                    final String name = "Days Counter";
 
                     final RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
                     //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -175,18 +174,11 @@ public class DaysCounterFragment extends Fragment {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
-                            params.put("name", "Days Counter");
+                            params.put("name", name);
                             params.put("startTime", curDate.toString());
                             params.put("endTime", endDate.toString());
-                            params.put("location", "No Location");
+                            params.put("location", location);
                             params.put("description", secretText);
-                            return params;
-                        }
-
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<>();
-                            params.put("Authorization",token);
                             return params;
                         }
                     };
