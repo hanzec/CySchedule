@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class TokenFilter extends GenericFilterBean implements ApplicationEventPublisherAware {
-    private String authenticatedPrincipal = null;
+    private DecodedJWT authenticatedCredential = null;
     private ApplicationEventPublisher eventPublisher = null;
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
     private AuthenticationManager authenticationManager = null;
@@ -55,20 +55,15 @@ public class TokenFilter extends GenericFilterBean implements ApplicationEventPu
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (((HttpServletRequest) request).getHeader("Authorization") == null)
-            chain.doFilter(request, response);
-        else
-            this.authenticatedPrincipal = JWT.decode(((HttpServletRequest) request).getHeader("Authorization")).getId();
-
-        if (this.requiresAuthentication((HttpServletRequest)request)) {
+        if (((HttpServletRequest) request).getHeader("Authorization") != null){
+            this.authenticatedCredential = JWT.decode(((HttpServletRequest) request).getHeader("Authorization"));
             this.doAuthenticate((HttpServletRequest)request, (HttpServletResponse)response);
         }
-
-
+        chain.doFilter(request,response);
     }
 
     protected boolean principalChanged(HttpServletRequest request, Authentication currentAuthentication) {
-        Object principal = this.authenticatedPrincipal;
+        Object principal = this.authenticatedCredential.getId();
 
         if (principal != null && currentAuthentication.getName().equals(principal)) {
             return false;
@@ -84,9 +79,7 @@ public class TokenFilter extends GenericFilterBean implements ApplicationEventPu
     }
 
     private void doAuthenticate(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Object principal = this.authenticatedPrincipal;
-        Object credentials = request.getHeader("Authorization");
-
+        Object principal = this.authenticatedCredential.getId();
         if (principal == null) {
             if (this.logger.isDebugEnabled()) {
                 this.logger.debug("No pre-authenticated principal found in request");
@@ -98,7 +91,7 @@ public class TokenFilter extends GenericFilterBean implements ApplicationEventPu
             }
 
             try {
-                AuthenticationToken authRequest = new AuthenticationToken(principal, credentials, request.getRequestURI());
+                AuthenticationToken authRequest = new AuthenticationToken(principal, this.authenticatedCredential, request.getRequestURI());
                 authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
                 Authentication authResult = this.authenticationManager.authenticate(authRequest);
                 this.successfulAuthentication(request, response, authResult);
@@ -109,30 +102,6 @@ public class TokenFilter extends GenericFilterBean implements ApplicationEventPu
                 }
             }
 
-        }
-    }
-
-    private boolean requiresAuthentication(HttpServletRequest request) {
-        Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
-        if (currentUser == null) {
-            return true;
-        } else if (!this.checkForPrincipalChanges) {
-            return false;
-        } else if (!this.principalChanged(request, currentUser)) {
-            return false;
-        } else {
-            this.logger.debug("Pre-authenticated principal has changed and will be reauthenticated");
-            if (this.invalidateSessionOnPrincipalChange) {
-                SecurityContextHolder.clearContext();
-                HttpSession session = request.getSession(false);
-                if (session != null) {
-                    this.logger.debug("Invalidating existing session");
-                    session.invalidate();
-                    request.getSession();
-                }
-            }
-
-            return true;
         }
     }
 
