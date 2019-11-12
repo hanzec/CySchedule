@@ -143,8 +143,8 @@ public class DaysCounterFragment extends Fragment {
                     //提交year,month,day, daysleft无所谓, 主界面展示的话复制上面的实现方法就行
                     //这里实现volley
                     final Date endDate = date;
-                    final String location = "No Location";
-                    final String name = "Days Counter";
+                    final String location = "No_Location";
+                    final String name = "Days_Counter";
 
                     final RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
                     //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -189,17 +189,21 @@ public class DaysCounterFragment extends Fragment {
                             params.put("name", name);
                             params.put("startTime", curDate.toString());
                             params.put("endTime", endDate.toString());
-                            params.put("location", curDate.toString());
+                            params.put("location", location);
                             params.put("description", secretText);
-                            Toast.makeText(root.getContext(), "Add Event Error: " + name , Toast.LENGTH_LONG).show();
-
                             return params;
                         }
 
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> loginToken = sessionManager.getLoginToken();
-                            return loginToken;
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("Content-Type", "application/json; charset=UTF-8");
+                            if(sessionManager.getLoginToken().get("tokenID") != null)
+                                params.put("Authorization", generateToken(
+                                        "I don't know",
+                                        sessionManager.getLoginToken().get("tokenID"),
+                                        sessionManager.getLoginToken().get("secret")));
+                            return params;
                         }
                     };
                     //requestQueue.add(stringRequest);
@@ -208,5 +212,16 @@ public class DaysCounterFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private String generateToken(String requestUrl, String tokenID, String password){
+        Key key = Keys.hmacShaKeyFor(password.getBytes());
+        return Jwts.builder()
+                .signWith(key)
+                .setId(tokenID)
+                .setIssuer("CySchedule")
+                .claim("requestUrl",requestUrl)
+                .setExpiration(new Date(System.currentTimeMillis() + 20000))
+                .compact();
     }
 }
