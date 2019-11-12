@@ -55,7 +55,7 @@ public class TokenFilter extends GenericFilterBean implements ApplicationEventPu
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (((HttpServletRequest) request).getHeader("Authorization").isEmpty())
+        if (((HttpServletRequest) request).getHeader("Authorization") != null)
             chain.doFilter(request, response);
         else
             this.authenticatedPrincipal = JWT.decode(((HttpServletRequest) request).getHeader("Authorization")).getId();
