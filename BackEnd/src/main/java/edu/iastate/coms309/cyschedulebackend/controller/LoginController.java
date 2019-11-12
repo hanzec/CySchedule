@@ -1,5 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
+import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
@@ -7,6 +9,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,34 +39,32 @@ public class LoginController {
     @Autowired
     UserTokenService userTokenService;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @PostMapping(value = "/login")
     @ApiOperation("Login API")
-    public Response login(HttpServletRequest request, @Validated LoginRequest loginRequest){
-        Response response = new Response();
+    public Response login(HttpServletRequest request, @Validated LoginRequest loginRequest) throws PasswordNotMatchException {
         UserCredential userCredential = (UserCredential) accountService.loadUserByUsername(loginRequest.getEmail());
 
-        if(!accountService.existsByEmail(loginRequest.getEmail()))
-            return response.BadRequested("User is not existe").send(request.getRequestURI());
+        if(!accountService.checkPassword(loginRequest.getEmail(),loginRequest.getPassword()))
+            throw new PasswordNotMatchException(loginRequest.getEmail());
 
-        if(accountService.checkPassword(loginRequest.getEmail(),loginRequest.getPassword()))
-            response.OK().addResponse("loginToken",userTokenService.creat(userCredential));
-        else
-            response.Forbidden();
-        return response.send(request.getRequestURI());
+        logger.debug("User [ " + loginRequest.getEmail() + " ] is permit to login");
+        return new Response()
+                .OK()
+                .addResponse("loginToken",userTokenService.creat(userCredential))
+                .send(request.getRequestURI());
     }
 
     @PostMapping(value = "/register")
     @ApiOperation("Used for register new account")
     public Response register(HttpServletRequest request,@Validated RegisterRequest user){
-        Response response = new Response();
-
-        //There should not register with same email address
-        if(accountService.existsByEmail(user.getEmail()))
-            return response.BadRequested("Username is Already Used").send(request.getRequestURI());
 
         //Trying to Register new Account to Server
         accountService.createUser(user);
 
-        return response.send(request.getRequestURI()).Created();
+        logger.debug("User [ " + user.getEmail() + " ] is success registered");
+
+        return new Response().send(request.getRequestURI()).Created();
     }
 }

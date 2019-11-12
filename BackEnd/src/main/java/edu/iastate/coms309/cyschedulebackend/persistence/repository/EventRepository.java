@@ -10,6 +10,9 @@ import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event,String> {
-//    @Query("SELECT Event from event a where a.user_id = ?1 OR ")
+
+//    @Query("SELECT * FROM event e WHERE e. ", nativeQuery = true)
 //    public List<Event> getAllByAdminUser_UserID(String userId);
+//
+//    public boolean
 }

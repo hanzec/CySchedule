@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
+import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.EventRepository;
@@ -13,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Set;
 
 @Service
@@ -60,16 +62,19 @@ public class EventService {
     }
 
     @Transactional
-    public EventRequest getEvent(String id){
+    public EventRequest getEvent(String id) throws EventNotFoundException {
         Event event = eventRepository.getOne(id);
         EventRequest eventRequest = new EventRequest();
 
-
-        eventRequest.setName(event.getName());
-        eventRequest.setEndTime(event. getEndTime());
-        eventRequest.setLocation(event.getLocation());
-        eventRequest.setStartTime(event.getStartTime());
-        eventRequest.setDescription(event.getDescription());
+        try {
+            eventRequest.setName(event.getName());
+            eventRequest.setEndTime(event. getEndTime());
+            eventRequest.setLocation(event.getLocation());
+            eventRequest.setStartTime(event.getStartTime());
+            eventRequest.setDescription(event.getDescription());
+        }catch (EntityNotFoundException e){
+            throw new EventNotFoundException(id);
+        }
 
         return eventRequest;
     }
@@ -94,6 +99,8 @@ public class EventService {
         return eventRepository.getOne(eventID).getAdminUser().getUserID().equals(userID);
     }
 
+
+    public boolean haveAccessRight(String userID, String)
 //    @Transactional
 //    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }userID
 

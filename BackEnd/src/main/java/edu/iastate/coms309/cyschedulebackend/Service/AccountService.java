@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
 
+import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
@@ -53,7 +54,11 @@ public class AccountService implements UserDetailsService{
 
     @Async
     @Transactional
-    public void createUser(RegisterRequest user) {
+    public void createUser(RegisterRequest user) throws EmailAlreadyExistException{
+
+        //There should not register with same email address
+        if(this.existsByEmail(user.getEmail()))
+            throw new EmailAlreadyExistException(user.getEmail());
 
         UserCredential userCredential = new UserCredential();
         UserInformation userInformation = new UserInformation();
