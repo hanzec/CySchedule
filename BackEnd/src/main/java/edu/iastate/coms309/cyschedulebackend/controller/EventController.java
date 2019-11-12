@@ -3,6 +3,7 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.EventService;
+import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.EventRequest;
@@ -76,14 +77,11 @@ public class EventController {
 
     @ApiOperation("load timeBlock by id")
     @GetMapping(value = "/{eventID}")
-    public Response loadTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID) {
-        Response response = new Response();
-        response.addResponse("TimeBlock", eventService.getEvent(eventID));
-
-        if (response.getResponseBody().isEmpty())
-            return response.NotFound().send(request.getRequestURI());
-        else
-            return response.OK().send(request.getRequestURI());
+    public Response loadTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID) throws EventNotFoundException {
+        return new Response()
+                .OK()
+                .addResponse("TimeBlock", eventService.getEvent(eventID))
+                .send(request.getRequestURI());
     }
 
     @ApiOperation("update timeBlock by id")

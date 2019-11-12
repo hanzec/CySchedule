@@ -8,6 +8,8 @@ import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenVerifyFaildExce
 import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.exception.event.NotPrimitiveException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +31,8 @@ public class ExceptionHandlers {
     @Autowired
     Gson gson;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @ExceptionHandler({
             TokenVerifyFaildException.class,
             EmailAlreadyExistException.class,
@@ -37,6 +41,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void GenericBadRequestException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
         sendMessage(ex,request,response);
+        logger.debug("Bad Request because " + ex.getClass().getName() + " for endpoint [ " + request.getRequestURI() + "]" );
     }
 
     @ExceptionHandler({
@@ -45,6 +50,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void GenericNotFoundException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
         sendMessage(ex,request,response);
+        logger.debug("Page not found because " + ex.getClass().getName() + " for endpoint [ " + request.getRequestURI() + "]" );
     }
 
     @ExceptionHandler({
@@ -53,6 +59,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public void GenericForbiddenException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
         sendMessage(ex,request,response);
+        logger.debug("Request forbidden because " + ex.getClass().getName() + " for endpoint [ " + request.getRequestURI() + "]" );
     }
 
     private void sendMessage(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {

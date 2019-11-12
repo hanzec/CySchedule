@@ -21,7 +21,7 @@ import java.util.Set;
 public class EventService {
     /*
     Maybe a improve point
-            - Token never revoke
+        - need to check ownership before get object
      */
 
     @Autowired
@@ -100,7 +100,7 @@ public class EventService {
     }
 
 
-    public boolean haveAccessRight(String userID, String)
+//    public boolean haveAccessRight(String userID, String)
 //    @Transactional
 //    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }userID
 
