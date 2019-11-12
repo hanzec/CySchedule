@@ -21,9 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class TokenFilter extends AbstractPreAuthenticatedProcessingFilter {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public TokenFilter(AuthenticationManager authenticationManager){
         super();
         this.setAuthenticationManager(authenticationManager);
@@ -31,7 +28,7 @@ public class TokenFilter extends AbstractPreAuthenticatedProcessingFilter {
 
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest httpServletRequest) {
-        return ((DecodedJWT)JWT.decode(httpServletRequest.getHeader("Authorization"))).getId();
+        return JWT.decode(httpServletRequest.getHeader("Authorization")).getId();
     }
 
     @Override

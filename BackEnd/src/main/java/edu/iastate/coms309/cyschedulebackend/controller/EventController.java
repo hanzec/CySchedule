@@ -8,6 +8,8 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.EventRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,8 @@ public class EventController {
 
     @Autowired
     AccountService accountService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 //    @GetMapping(value = "/all")
 //    @ApiOperation("Get All TimeBlock")
@@ -50,6 +54,8 @@ public class EventController {
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
         newEvent.setUserID(principal.getName());
         eventService.addEvent(newEvent,userInformation);
+
+        logger.debug("A new event for user [" + principal.getName() + "] is success created");
         return response.Created().send(request.getRequestURI());
     }
 
@@ -63,6 +69,7 @@ public class EventController {
             return response.Forbidden().send(request.getRequestURI()).Created();
 
         eventService.deleteEvent(eventID);
+        logger.debug("A new event for user [" + principal.getName() + "] is success deleted");
         return response.noContent().send(request.getRequestURI()).Created();
     }
 
@@ -92,6 +99,7 @@ public class EventController {
             return response.NotFound().send(request.getRequestURI());
 
         eventService.updateEvent(newEvent, eventID);
+        logger.debug("A updated event for user [" + principal.getName() + "] is success updated");
         return response.OK().send(request.getRequestURI());
     }
 }

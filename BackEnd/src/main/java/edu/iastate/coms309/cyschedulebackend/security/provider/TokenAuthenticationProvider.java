@@ -11,6 +11,8 @@ import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenNotCorrectExcep
 import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenVerifyFaildException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import edu.iastate.coms309.cyschedulebackend.security.model.AuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +28,8 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     UserTokenService userTokenService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -55,6 +59,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             throw new TokenVerifyFaildException();
         }
 
+        logger.debug("A new Request for user [" + token.getOwner().getUserID() + "] is success authenticated");
         return new UsernamePasswordAuthenticationToken(token.getOwner().getUserID(),null,token.getPermissions());
     }
 
