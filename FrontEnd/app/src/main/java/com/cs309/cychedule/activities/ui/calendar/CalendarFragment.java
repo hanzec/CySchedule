@@ -2,6 +2,7 @@ package com.cs309.cychedule.activities.ui.calendar;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -31,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.RestAPIService;
 
 import org.json.JSONObject;
 
@@ -44,6 +46,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * CalendarFragment is a tab to contain our calendar tool.
+ * We achieve the calendar function here.
+ */
 public class CalendarFragment extends Fragment {
     
     private CalendarViewModel calendarViewModel;
@@ -59,6 +65,7 @@ public class CalendarFragment extends Fragment {
     
     private static String URL_ADDEVENT = "https://dev.hanzec.com/api/v1/event/add";
     String token = "";
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         calendarViewModel = ViewModelProviders.of(this).get(CalendarViewModel.class);

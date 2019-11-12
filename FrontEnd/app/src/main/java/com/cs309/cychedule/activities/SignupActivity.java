@@ -32,6 +32,10 @@ import com.cs309.cychedule.R;
 import com.cs309.cychedule.utilities.UserUtil;
 import com.cs309.cychedule.patterns.Singleton;
 
+/**
+ * SignupActivity is the activity of the register page
+ * We put all the register logic here
+ */
 public class SignupActivity extends AppCompatActivity {
 
     private static String URL_SIGNUP = "https://dev.hanzec.com/api/v1/auth/register";

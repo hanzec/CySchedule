@@ -28,6 +28,10 @@ import android.widget.Toast;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.services.SocketService;
 
+/**
+ * Main3Activity is the activity of our app's home page
+ * It contains all our functions' fragments
+ */
 public class Main3Activity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
     
     private AppBarConfiguration mAppBarConfiguration;

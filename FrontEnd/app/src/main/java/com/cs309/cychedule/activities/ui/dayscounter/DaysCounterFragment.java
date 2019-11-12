@@ -45,6 +45,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * DaysCounterFragment is a tab to contain our days count down tool.
+ * We achieve the count down function here.
+ */
 public class DaysCounterFragment extends Fragment {
 
     private static String URL_EVENT = "https://dev.hanzec.com/api/v1/event/add";
@@ -174,7 +178,7 @@ public class DaysCounterFragment extends Fragment {
                             params.put("name", "Days Counter");
                             params.put("startTime", curDate.toString());
                             params.put("endTime", endDate.toString());
-                            params.put("location", null);
+                            params.put("location", "No Location");
                             params.put("description", secretText);
                             return params;
                         }

@@ -11,6 +11,9 @@ import com.cs309.cychedule.R;
 
 import java.util.ArrayList;
 
+/**
+ * This class is to show the events in current week with recycle view
+ */
 public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThisWeekRecyclerAdapter.EventThisWeekBasicViewHolder> {
 
     private ArrayList<Event> mockEvents;

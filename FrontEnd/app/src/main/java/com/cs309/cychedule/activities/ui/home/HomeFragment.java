@@ -22,6 +22,10 @@ import com.cs309.cychedule.R;
 
 import java.util.ArrayList;
 
+/**
+ * HomeFragment is the home page of our app
+ * It has the main functions and the ways to them
+ */
 public class HomeFragment extends Fragment {
 	
 	private HomeViewModel homeViewModel;
