@@ -3,8 +3,10 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.TokenRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +28,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 @RestController
 @RequestMapping("/api/v1/auth")
 @Api(tags = "RestAPI Related to Authentication")
-public class LoginController {
+public class AuthController {
     /*
     Maybe a improve point
         - /getChallenge api may leak user information whatever user exist or not should generate same information
@@ -67,4 +69,18 @@ public class LoginController {
 
         return new Response().send(request.getRequestURI()).Created();
     }
+
+//    @PostMapping(value = "/refresh")
+//    @ApiOperation("Used for refresh Token")
+//    public Response register(HttpServletRequest request, @Validated TokenRequest tokenRequest){
+//        UserToken userToken = userTokenService.getTokenObject(tokenRequest.getTokenID());
+//
+//        if(userToken.)
+//        //Trying to Register new Account to Server
+//        accountService.createUser(user);
+//
+//        logger.debug("User [ " + user.getEmail() + " ] is success registered");
+//
+//        return new Response().send(request.getRequestURI()).Created();
+//    }
 }

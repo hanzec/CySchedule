@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -100,8 +102,18 @@ public class EventService {
     }
 
 
-//    public boolean haveAccessRight(String userID, String)
-//    @Transactional
-//    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }userID
+    @Transactional
+    public List<Event> getAllManagedEvent(String userID){
+        return eventRepository.getManagedEvent(userID);
+    }
+
+    @Transactional
+    public List<Event> getAllEvent(String userID) {
+        List<Event> events = new ArrayList<>();
+
+        events.addAll(eventRepository.getJoinedEvent(userID));
+        events.addAll(eventRepository.getManagedEvent(userID));
+        return events;
+    }
 
 }

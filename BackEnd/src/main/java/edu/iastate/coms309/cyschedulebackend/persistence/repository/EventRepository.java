@@ -11,8 +11,9 @@ import java.util.Set;
 @Repository
 public interface EventRepository extends JpaRepository<Event,String> {
 
-//    @Query("SELECT * FROM event e WHERE e. ", nativeQuery = true)
-//    public List<Event> getAllByAdminUser_UserID(String userId);
-//
-//    public boolean
+    @Query("From Event e WHERE e.adminUserID = ?1")
+    public List<Event> getManagedEvent(String userId);
+
+    @Query("FROM Event e INNER JOIN e.relatedUser user WHERE user.UserID = ?1")
+    public List<Event> getJoinedEvent(String userID);
 }

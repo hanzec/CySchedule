@@ -34,24 +34,33 @@ public class EventController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-//    @GetMapping(value = "/all")
-//    @ApiOperation("Get All TimeBlock")
-//    public Response getAllEventByUser(Principal principal, HttpServletRequest request) {
-//        Response response = new Response();
-//
-//        eventService.getAllEvent(principal.getName()).forEach(V -> {
-//            response.addResponse(V.getEventID(), V);
-//        });
-//
-//        if (response.getResponseBody().isEmpty())
-//            return response.NotFound().send(request.getRequestURI());
-//        else
-//            return response.OK().send(request.getRequestURI());
-//    }
+    @GetMapping(value = "/all")
+    @ApiOperation("Get All TimeBlock")
+    public Response getAllEventByUserID(Principal principal, HttpServletRequest request) {
+        Response response = new Response();
+
+        eventService.getAllEvent(principal.getName()).forEach(V -> {
+            response.addResponse(V.getEventID(), V);
+        });
+
+        return response.OK().send(request.getRequestURI());
+    }
+
+    @GetMapping(value = "/managed")
+    @ApiOperation("Get All TimeBlock")
+    public Response getManagedEventByUserID(Principal principal, HttpServletRequest request) {
+        Response response = new Response();
+
+        eventService.getAllManagedEvent(principal.getName()).forEach(V -> {
+            response.addResponse(V.getEventID(), V);
+        });
+
+        return response.OK().send(request.getRequestURI());
+    }
 
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
-    public Response addNewEvent(Principal principal, HttpServletRequest request, @Validated EventRequest newEvent) {
+    public Response addNewEvent(Principal principal, HttpServletRequest request, EventRequest newEvent) {
         Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
         newEvent.setUserID(principal.getName());
