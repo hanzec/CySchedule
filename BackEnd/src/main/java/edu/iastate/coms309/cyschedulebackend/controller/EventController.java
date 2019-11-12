@@ -47,7 +47,7 @@ public class EventController {
 //            return response.OK().send(request.getRequestURI());
 //    }
 
-    @PostMapping(value = "/")
+    @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
     public Response addNewEvent(Principal principal, HttpServletRequest request, @Validated EventRequest newEvent) {
         Response response = new Response();

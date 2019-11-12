@@ -94,6 +94,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
          //Add our custom JWT security filter
         TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
-        http.addFilterBefore(new ExceptionTranslationFilter(new Http403ForbiddenEntryPoint()), tokenFilter.getClass());
+        http.addFilterBefore(tokenFilter,UsernamePasswordAuthenticationFilter.class);
     }
 }
