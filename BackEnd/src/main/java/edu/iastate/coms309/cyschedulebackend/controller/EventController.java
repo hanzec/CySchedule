@@ -60,7 +60,7 @@ public class EventController {
 
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
-    public Response addNewEvent(Principal principal, HttpServletRequest request, EventRequest newEvent) {
+    public Response addNewEvent(Principal principal, HttpServletRequest request,  @Validated EventRequest newEvent) {
         Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
         newEvent.setUserID(principal.getName());
@@ -86,7 +86,7 @@ public class EventController {
 
     @ApiOperation("load timeBlock by id")
     @GetMapping(value = "/{eventID}")
-    public Response loadTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID) throws EventNotFoundException {
+    public Response loadTimeBlock(HttpServletRequest request, @PathVariable String eventID) throws EventNotFoundException {
         return new Response()
                 .OK()
                 .addResponse("TimeBlock", eventService.getEvent(eventID))
