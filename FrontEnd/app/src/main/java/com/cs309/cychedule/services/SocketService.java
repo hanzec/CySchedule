@@ -129,7 +129,7 @@ public class SocketService extends Service {
                     HomeFragment.getEvents(message);
                     Looper.prepare();
                     //Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
-                    UserUtil.notificationHandler(context, 1, "Received a server message:", message);
+                    //UserUtil.notificationHandler(context, 1, "Received a server message:", message);
                     Looper.loop();
                 }
 
