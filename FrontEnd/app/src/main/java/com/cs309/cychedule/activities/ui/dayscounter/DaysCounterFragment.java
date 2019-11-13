@@ -44,6 +44,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import io.jsonwebtoken.Jwts;
@@ -63,7 +64,6 @@ public class DaysCounterFragment extends Fragment {
     int year, month, day;
     int daysleft;
     String secretText;
-    RestAPIService restAPIService;
     SessionManager sessionManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -143,10 +143,8 @@ public class DaysCounterFragment extends Fragment {
                     //提交year,month,day, daysleft无所谓, 主界面展示的话复制上面的实现方法就行
                     //这里实现volley
                     final Date endDate = date;
-                    final String location = "No_Location";
-                    final String name = "Days_Counter";
 
-                    final RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
+                    RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
                     //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     requestQueue.start();
 
@@ -186,24 +184,24 @@ public class DaysCounterFragment extends Fragment {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
-                            params.put("name", name);
+                            params.put("name", "Days Counter");
                             params.put("startTime", curDate.toString());
                             params.put("endTime", endDate.toString());
-                            params.put("location", location);
+                            params.put("location", "No location");
                             params.put("description", secretText);
                             return params;
                         }
 
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("Content-Type", "application/json; charset=UTF-8");
+                            Map<String, String> header = new HashMap<String, String>();
+                            header.put("Content-Type", "application/json; charset=UTF-8");
                             if(sessionManager.getLoginToken().get("tokenID") != null)
-                                params.put("Authorization", generateToken(
+                                header.put("Authorization", generateToken(
                                         "I don't know",
                                         sessionManager.getLoginToken().get("tokenID"),
                                         sessionManager.getLoginToken().get("secret")));
-                            return params;
+                            return header;
                         }
                     };
                     //requestQueue.add(stringRequest);
