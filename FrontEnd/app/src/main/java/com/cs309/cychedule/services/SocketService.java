@@ -110,7 +110,7 @@ public class SocketService extends Service {
         try {
             Log.d("Socket:", "Trying socket");
             client = new WebSocketClient(new URI(
-                    "wss://dev.hanzec.com/websocket/1")) {
+                    "wss://dev.hanzec.com/websocket")) {
 
                 @Override
                 public void onOpen(ServerHandshake handshake) {
@@ -128,8 +128,8 @@ public class SocketService extends Service {
                     Log.d("MESSAGE", "Server sent: " + message);
                     HomeFragment.getEvents(message);
                     Looper.prepare();
-                    // Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
-                    UserUtil.notificationHandler(context, 1, "Received a server message:", message);
+                    Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
+                    //UserUtil.notificationHandler(context, 1, "Received a server message:", message);
                     Looper.loop();
                 }
 
