@@ -16,10 +16,10 @@ public class EventRequest {
     public String name;
 
     @NotNull(message = "Event should contains a endTime")
-    public Date endTime;
+    public String endTime;
 
     @NotNull(message = "Event should contains a startTime")
-    public Date startTime;
+    public String startTime;
 
     @NotBlank(message = "Event should contains a Location")
     public String location;
