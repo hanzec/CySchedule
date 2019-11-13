@@ -19,7 +19,7 @@ import java.util.TimerTask;
  * It is a welcome animation and will show up immediately when we open the app
  */
 public class WelcomeActivity extends BaseActivity implements View.OnClickListener {
-	private int recLen = 4;//倒计时秒数
+	private int recLen = 1;//倒计时秒数
 	private TextView skip;
 	Timer timer = new Timer();
 	private Handler handler;

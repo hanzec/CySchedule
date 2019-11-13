@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
+import java.sql.*;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -342,7 +342,8 @@ public class CalendarFragment extends Fragment {
                     locationText = locationInput.getText().toString();
                     startStr = startDateInput.getText() + " " + startTimeInput.getText();
                     endStr = endDateInput.getText() + " " + endTimeInput.getText();
-                    
+                    startCalendar = Calendar.getInstance();
+                    endCalendar = Calendar.getInstance();
                     startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
                     endCalendar.set(endYear, endMonth, endDay, endHour, endMinute);
                     
@@ -366,8 +367,7 @@ public class CalendarFragment extends Fragment {
                                 , Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }else
-                        {
-                        Snackbar.make(root,  "From "+startStr +" to " + endStr
+                        { Snackbar.make(root,  "From "+startStr +" to " + endStr
                                         +"\nEvent: " + eventText + " @" + locationText
                                 , Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
@@ -413,8 +413,10 @@ public class CalendarFragment extends Fragment {
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
                             params.put("name", "NULL");
-                            params.put("startTime", java.sql.Date(startCalendar.getTime());
-                            params.put("endTime", endCalendar.toString());
+                            params.put("startTime", new Date(startCalendar.getTimeInMillis()).toString());
+                            Log.e("TIME", new Date(startCalendar.getTimeInMillis()).toString());
+                            params.put("endTime",  new Date(endCalendar.getTimeInMillis()).toString());
+                            Log.e("TIME", new Date(endCalendar.getTimeInMillis()).toString());
                             params.put("location", locationText);
                             params.put("description", eventText);
                             return params;
@@ -423,7 +425,6 @@ public class CalendarFragment extends Fragment {
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             Map<String, String> header = new HashMap<String, String>();
-                            header.put("Content-Type", "application/json; charset=UTF-8");
                             if(sessionManager.getLoginToken().get("tokenID") != null)
                                 header.put("Authorization", generateToken(
                                         "I don't know",

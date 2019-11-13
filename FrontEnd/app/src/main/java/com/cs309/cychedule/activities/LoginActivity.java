@@ -71,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+        _emailText.setText("auuokay@gmail.com");
+        _passwordText.setText("123321");
     }
 
     public void login() {

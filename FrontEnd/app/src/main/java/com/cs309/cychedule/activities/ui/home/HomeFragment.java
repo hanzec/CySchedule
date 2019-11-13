@@ -46,6 +46,7 @@ public class HomeFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
+		
 		return root;
 	}
 	
