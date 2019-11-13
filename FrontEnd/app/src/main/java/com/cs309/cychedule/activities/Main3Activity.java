@@ -23,6 +23,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cs309.cychedule.R;
@@ -59,20 +61,44 @@ public class Main3Activity extends AppCompatActivity  implements NavigationView.
             }
         });
         
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        
+       
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_profile, R.id.nav_calendar, R.id.nav_daysCounter,
-                R.id.nav_timer, R.id.nav_share, R.id.nav_send)
+                R.id.nav_timer, R.id.nav_share, R.id.nav_send,
+                R.id.nav_avator,R.id.nav_userName,R.id.nav_abstract)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         startService(new Intent(this, SocketService.class));
+       
+        View headerView = navigationView.getHeaderView(0);
+        TextView _userNmae = headerView.findViewById(R.id.nav_userName);
+        TextView _abstract = headerView.findViewById(R.id.nav_abstract);
+        ImageView _avator = headerView.findViewById(R.id.nav_avator);
+        _userNmae.setText("UserA");
+        _abstract.setText("UserA_abs");
+        _avator.setImageResource(R.drawable.gitcat2);
+        _avator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText( getBaseContext(), "This is avator", Toast.LENGTH_LONG).show();
+            }
+        });
+        _userNmae.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText( getBaseContext(), "This is userName", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     
@@ -98,6 +124,9 @@ public class Main3Activity extends AppCompatActivity  implements NavigationView.
             startActivity(intent);
             this.finish();
         }
+        if (id == R.id.nav_avator) {
+            Toast.makeText(this, "在写了在写了(抱头", Toast.LENGTH_LONG).show();
+        }
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -109,7 +138,9 @@ public class Main3Activity extends AppCompatActivity  implements NavigationView.
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        
+        if (id == R.id.nav_avator) {
+            Toast.makeText(this, "在写了在写了(抱头", Toast.LENGTH_LONG).show();
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Toast.makeText(this, "在写了在写了(抱头", Toast.LENGTH_LONG).show();
