@@ -31,6 +31,8 @@ public class HomeFragment extends Fragment {
 	private HomeViewModel homeViewModel;
 	private RecyclerView recyclerView;
 	private boolean isLoading = false;
+
+	private static String events;
 	
 	private HomeRecyclerAdapter adapter;
 	
@@ -192,7 +194,7 @@ public class HomeFragment extends Fragment {
 		list.add(new HomeRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
 		return list;
 	}
-	
+
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateHomeData() {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
@@ -207,5 +209,9 @@ public class HomeFragment extends Fragment {
 			list.add(event);
 		}
 		return list;
+	}
+
+	public static void getEvents(String s) {
+		events = s;
 	}
 }

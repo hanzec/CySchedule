@@ -32,6 +32,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
 
     private OnEmptyViewClickListener mListener;
 
+
     HomeRecyclerAdapter(ArrayList<HomeData> homeData) {
         this.mockHomeData = homeData;
         // no alarm items
