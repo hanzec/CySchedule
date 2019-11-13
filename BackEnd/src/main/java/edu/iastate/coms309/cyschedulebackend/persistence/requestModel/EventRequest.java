@@ -2,6 +2,7 @@ package edu.iastate.coms309.cyschedulebackend.persistence.requestModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -15,10 +16,12 @@ public class EventRequest {
     public String name;
 
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
     @NotNull(message = "Event should contains a endTime")
     public Date endTime;
 
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
     @NotNull(message = "Event should contains a startTime")
     public Date startTime;
 
