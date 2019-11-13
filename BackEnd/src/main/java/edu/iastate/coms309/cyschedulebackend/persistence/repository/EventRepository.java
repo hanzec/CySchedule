@@ -10,7 +10,6 @@ import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event,String> {
-
     @Query("From Event e WHERE e.adminUserID = ?1")
     public List<Event> getManagedEvent(String userId);
 

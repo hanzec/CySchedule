@@ -63,7 +63,6 @@ public class EventController {
     public Response addNewEvent(Principal principal, HttpServletRequest request,  @Validated EventRequest newEvent) {
         Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
-        newEvent.setUserID(principal.getName());
         eventService.addEvent(newEvent,userInformation);
 
         logger.debug("A new event for user [" + principal.getName() + "] is success created");

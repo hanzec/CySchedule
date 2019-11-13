@@ -151,7 +151,7 @@ public class WebsocketDemo {
     		
     		Date st = null;
     		try {
-				st = sdf.parse(e.startTime);
+				st = sdf.parse(e.startTime.toString());
 			} catch (ParseException e1) {
 				
 			}
@@ -163,13 +163,13 @@ public class WebsocketDemo {
     	r= list.get(0);
     	Date CT = null;
     	try {
-			CT = sdf.parse(r.startTime);
+			CT = sdf.parse(r.startTime.toString());
 		} catch (ParseException e1) {
 		}
     	for(Event e:list) {
     		Date TT = null;
     		try {
-				TT =sdf.parse(r.startTime);
+				TT =sdf.parse(r.startTime.toString());
 			} catch (ParseException e1) {
 				
 			}
@@ -189,8 +189,8 @@ public class WebsocketDemo {
     	e1.setName("asd");
     	e1.setDescription("test");
     	e1.setLocation("123123123");
-    	e1.setStartTime("2019-10-22 15:39:45");
-    	e1.setEndTime("2019-10-22 15:39:45");
+    	e1.setStartTime(new java.sql.Date(System.currentTimeMillis()));
+    	e1.setEndTime(new java.sql.Date(System.currentTimeMillis()));
     	e1.setEventID("95b6231f-efe3-4333-81de-0869d1312510");
     	//e1.setAdminUser(user);
     	p.add(e1);
@@ -198,8 +198,8 @@ public class WebsocketDemo {
     	e2.setName("asd");
     	e2.setDescription("test");
     	e2.setLocation("123123123");
-    	e2.setStartTime("2019-10-22 15:39:45");
-    	e2.setEndTime("2019-10-22 15:39:45");
+    	e2.setStartTime(new java.sql.Date(System.currentTimeMillis()));
+    	e2.setEndTime(new java.sql.Date(System.currentTimeMillis()));
     	e2.setEventID("a2762515-7e61-4336-be74-89468c10b1b9");
     	//e2.setAdminUser(user);
     	p.add(e2);
@@ -207,8 +207,8 @@ public class WebsocketDemo {
     	e3.setName("asd");
     	e3.setDescription("test");
     	e3.setLocation("123123123");
-    	e3.setStartTime("2019-10-22 15:39:45");
-    	e3.setEndTime("2019-10-22 15:39:45");
+    	e3.setStartTime(new java.sql.Date(System.currentTimeMillis()));
+    	e3.setEndTime(new java.sql.Date(System.currentTimeMillis()));
     	e3.setEventID("b2cd26d0-710c-49fd-ba8d-1e507411b183");
     	//e3.setAdminUser(user);
     	p.add(e3);
@@ -216,8 +216,8 @@ public class WebsocketDemo {
     	e4.setName("asd");
     	e4.setDescription("test");
     	e4.setLocation("123123123");
-    	e4.setStartTime("2019-10-22 15:39:45");
-    	e4.setEndTime("2019-10-22 15:39:45");
+    	e4.setStartTime(new java.sql.Date(System.currentTimeMillis()));
+    	e4.setEndTime(new java.sql.Date(System.currentTimeMillis()));
     	e4.setEventID("598e7f33-9bc7-4f85-a59d-4584af78652a");
     	//e4.setAdminUser(user);
     	p.add(e4);

@@ -7,6 +7,8 @@ import org.apache.catalina.User;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 @Setter
@@ -22,9 +24,9 @@ public class Event {
 
     public String name;
 
-    public String endTime;
+    public Date endTime;
 
-    public String startTime;
+    public Date startTime;
 
     public String location;
 
