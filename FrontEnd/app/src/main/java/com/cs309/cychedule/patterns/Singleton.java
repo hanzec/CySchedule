@@ -8,6 +8,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * The singleton pattern that we use during the volley request
+ */
 public class Singleton
 {
     private static Singleton instance;

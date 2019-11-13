@@ -12,6 +12,8 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cs309.cychedule.activities.ui.home.HomeFragment;
+import com.cs309.cychedule.activities.ui.home.HomeRecyclerAdapter;
 import com.cs309.cychedule.utilities.UserUtil;
 
 import org.java_websocket.client.WebSocketClient;
@@ -20,6 +22,10 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * SocketService is the service of the WebSocket
+ * We build our WebSocket in a service way
+ */
 public class SocketService extends Service {
     Context context = this;
     WebSocketClient client;
@@ -104,7 +110,7 @@ public class SocketService extends Service {
         try {
             Log.d("Socket:", "Trying socket");
             client = new WebSocketClient(new URI(
-                    "wss://dev.hanzec.com/websocket/1")) {
+                    "wss://dev.hanzec.com/websocket")) {
 
                 @Override
                 public void onOpen(ServerHandshake handshake) {
@@ -120,9 +126,10 @@ public class SocketService extends Service {
                 @Override
                 public void onMessage(String message) {
                     Log.d("MESSAGE", "Server sent: " + message);
+                    HomeFragment.getEvents(message);
                     Looper.prepare();
-                    // Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
-                    UserUtil.notificationHandler(context, 1, "Received a server message:", message);
+                    //Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
+                    //UserUtil.notificationHandler(context, 1, "Received a server message:", message);
                     Looper.loop();
                 }
 

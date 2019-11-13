@@ -25,10 +25,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.services.SocketService;
 import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
 import com.cs309.cychedule.patterns.Singleton;
 import com.google.gson.Gson;
 
+/**
+ * LoginActivity is the activity of the login page
+ * We put all the login logic here
+ */
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
@@ -145,6 +150,12 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("password", password);
                 return params;
             }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> loginToken = sessionManager.getLoginToken();
+                return loginToken;
+            }
         };
         //requestQueue.add(stringRequest);
         Singleton.getInstance(this).addToRequestQueue(stringRequest);
@@ -171,6 +182,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         startActivity(new Intent(this, Main3Activity.class));
+        Intent intent = new Intent(this, SocketService.class);
+        startService(intent);
         finish();
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }

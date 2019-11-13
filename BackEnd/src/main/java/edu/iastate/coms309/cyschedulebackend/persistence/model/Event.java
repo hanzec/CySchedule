@@ -32,6 +32,13 @@ public class Event {
 
     public String description;
 
+    @Column(
+            name = "user_id",
+            updatable = false,
+            insertable = false
+    )
+    private String adminUserID;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     public UserInformation adminUser;

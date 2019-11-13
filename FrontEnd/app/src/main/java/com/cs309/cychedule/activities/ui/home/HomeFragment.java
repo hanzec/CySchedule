@@ -3,6 +3,7 @@ package com.cs309.cychedule.activities.ui.home;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,19 +15,28 @@ import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.Main3Activity;
+import com.cs309.cychedule.utilities.UserUtil;
 
 import java.util.ArrayList;
 
+/**
+ * HomeFragment is the home page of our app
+ * It has the main functions and the ways to them
+ */
 public class HomeFragment extends Fragment {
 	
 	private HomeViewModel homeViewModel;
 	private RecyclerView recyclerView;
 	private boolean isLoading = false;
+
+	private static String events;
 	
 	private HomeRecyclerAdapter adapter;
 	
@@ -188,7 +198,7 @@ public class HomeFragment extends Fragment {
 		list.add(new HomeRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
 		return list;
 	}
-	
+
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateHomeData() {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
@@ -203,5 +213,9 @@ public class HomeFragment extends Fragment {
 			list.add(event);
 		}
 		return list;
+	}
+
+	public static void getEvents(String s) {
+		events = s;
 	}
 }

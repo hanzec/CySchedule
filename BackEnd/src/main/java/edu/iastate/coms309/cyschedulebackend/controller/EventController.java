@@ -3,6 +3,7 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.EventService;
+import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.EventRequest;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,24 +34,33 @@ public class EventController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-//    @GetMapping(value = "/all")
-//    @ApiOperation("Get All TimeBlock")
-//    public Response getAllEventByUser(Principal principal, HttpServletRequest request) {
-//        Response response = new Response();
-//
-//        eventService.getAllEvent(principal.getName()).forEach(V -> {
-//            response.addResponse(V.getEventID(), V);
-//        });
-//
-//        if (response.getResponseBody().isEmpty())
-//            return response.NotFound().send(request.getRequestURI());
-//        else
-//            return response.OK().send(request.getRequestURI());
-//    }
+    @GetMapping(value = "/all")
+    @ApiOperation("Get All TimeBlock")
+    public Response getAllEventByUserID(Principal principal, HttpServletRequest request) {
+        Response response = new Response();
+
+        eventService.getAllEvent(principal.getName()).forEach(V -> {
+            response.addResponse(V.getEventID(), V);
+        });
+
+        return response.OK().send(request.getRequestURI());
+    }
+
+    @GetMapping(value = "/managed")
+    @ApiOperation("Get All TimeBlock")
+    public Response getManagedEventByUserID(Principal principal, HttpServletRequest request) {
+        Response response = new Response();
+
+        eventService.getAllManagedEvent(principal.getName()).forEach(V -> {
+            response.addResponse(V.getEventID(), V);
+        });
+
+        return response.OK().send(request.getRequestURI());
+    }
 
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
-    public Response addNewEvent(Principal principal, HttpServletRequest request, @Validated EventRequest newEvent) {
+    public Response addNewEvent(Principal principal, HttpServletRequest request,  @Validated EventRequest newEvent) {
         Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
         eventService.addEvent(newEvent,userInformation);
@@ -74,14 +85,11 @@ public class EventController {
 
     @ApiOperation("load timeBlock by id")
     @GetMapping(value = "/{eventID}")
-    public Response loadTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID) {
-        Response response = new Response();
-        response.addResponse("TimeBlock", eventService.getEvent(eventID));
-
-        if (response.getResponseBody().isEmpty())
-            return response.NotFound().send(request.getRequestURI());
-        else
-            return response.OK().send(request.getRequestURI());
+    public Response loadTimeBlock(HttpServletRequest request, @PathVariable String eventID) throws EventNotFoundException {
+        return new Response()
+                .OK()
+                .addResponse("TimeBlock", eventService.getEvent(eventID))
+                .send(request.getRequestURI());
     }
 
     @ApiOperation("update timeBlock by id")

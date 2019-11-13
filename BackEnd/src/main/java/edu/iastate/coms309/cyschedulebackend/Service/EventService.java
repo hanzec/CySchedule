@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
+import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.EventRepository;
@@ -13,13 +14,16 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
 public class EventService {
     /*
     Maybe a improve point
-            - Token never revoke
+        - need to check ownership before get object
      */
 
     @Autowired
@@ -60,16 +64,19 @@ public class EventService {
     }
 
     @Transactional
-    public EventRequest getEvent(String id){
+    public EventRequest getEvent(String id) throws EventNotFoundException {
         Event event = eventRepository.getOne(id);
         EventRequest eventRequest = new EventRequest();
 
-
-        eventRequest.setName(event.getName());
-        eventRequest.setEndTime(event. getEndTime());
-        eventRequest.setLocation(event.getLocation());
-        eventRequest.setStartTime(event.getStartTime());
-        eventRequest.setDescription(event.getDescription());
+        try {
+            eventRequest.setName(event.getName());
+            eventRequest.setEndTime(event. getEndTime());
+            eventRequest.setLocation(event.getLocation());
+            eventRequest.setStartTime(event.getStartTime());
+            eventRequest.setDescription(event.getDescription());
+        }catch (EntityNotFoundException e){
+            throw new EventNotFoundException(id);
+        }
 
         return eventRequest;
     }
@@ -94,7 +101,19 @@ public class EventService {
         return eventRepository.getOne(eventID).getAdminUser().getUserID().equals(userID);
     }
 
-//    @Transactional
-//    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }userID
+
+    @Transactional
+    public List<Event> getAllManagedEvent(String userID){
+        return eventRepository.getManagedEvent(userID);
+    }
+
+    @Transactional
+    public List<Event> getAllEvent(String userID) {
+        List<Event> events = new ArrayList<>();
+
+        events.addAll(eventRepository.getJoinedEvent(userID));
+        events.addAll(eventRepository.getManagedEvent(userID));
+        return events;
+    }
 
 }
