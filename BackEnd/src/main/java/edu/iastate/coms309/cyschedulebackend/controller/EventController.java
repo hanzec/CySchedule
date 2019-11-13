@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.PackedColorModel;
 import java.security.Principal;
+import java.text.ParseException;
 
 
 @RestController
@@ -60,7 +61,7 @@ public class EventController {
 
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
-    public Response addNewEvent(Principal principal, HttpServletRequest request,  @Validated EventRequest newEvent) {
+    public Response addNewEvent(Principal principal, HttpServletRequest request,  @Validated EventRequest newEvent) throws ParseException {
         Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
         eventService.addEvent(newEvent,userInformation);
@@ -94,7 +95,7 @@ public class EventController {
 
     @ApiOperation("update timeBlock by id")
     @PutMapping(value = "/{eventID}")
-    public Response updateTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID, @Validated EventRequest newEvent) {
+    public Response updateTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID, @Validated EventRequest newEvent) throws ParseException {
         Response response = new Response();
 
         // check ownership

@@ -3,13 +3,11 @@ package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.catalina.User;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
+import javax.persistence.*;
+import java.time.ZonedDateTime;
 
 @Setter
 @Getter
@@ -24,9 +22,11 @@ public class Event {
 
     public String name;
 
-    public Date endTime;
+    @Column
+    public ZonedDateTime endTime;
 
-    public Date startTime;
+    @Column
+    public ZonedDateTime startTime;
 
     public String location;
 
