@@ -31,6 +31,7 @@ public class SocketService extends Service {
     WebSocketClient client;
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
+    Message msg;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -75,7 +76,7 @@ public class SocketService extends Service {
         // Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
-        Message msg = serviceHandler.obtainMessage();
+        msg = serviceHandler.obtainMessage();
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
 
@@ -157,5 +158,6 @@ public class SocketService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+        stopSelf(msg.arg1);
     }
 }
