@@ -14,6 +14,9 @@ import com.cs309.cychedule.activities.Main3Activity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The UserUtil contains the utility functions that we will use in this app
+ */
 public class UserUtil {
 	public static boolean isNumeric(String str){
 		Pattern pattern = Pattern.compile("[0-9]*");

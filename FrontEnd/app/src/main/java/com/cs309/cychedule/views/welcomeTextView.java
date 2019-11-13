@@ -8,7 +8,9 @@ import android.graphics.Paint;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 
-
+/**
+ * welcomeTextView is to build the animation of welcome page
+ */
 public class welcomeTextView extends android.support.v7.widget.AppCompatTextView {
 	
 	private LinearGradient mLinearGradient;

@@ -3,6 +3,9 @@ package com.cs309.cychedule.models;
 
 import lombok.Data;
 
+/**
+ * This is the server permission model
+ */
 @Data
 public class Permission{
 

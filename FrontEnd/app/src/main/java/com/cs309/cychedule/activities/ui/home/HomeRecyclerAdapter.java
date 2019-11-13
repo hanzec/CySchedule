@@ -15,6 +15,9 @@ import com.cs309.cychedule.utilities.NestedRecyclerView;
 
 import java.util.ArrayList;
 
+/**
+ * Another recycle view for the home page
+ */
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.HomeBasicViewHolder> {
 
     private final int VIEW_TYPE_TODAY = 0;

@@ -20,6 +20,10 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * SocketService is the service of the WebSocket
+ * We build our WebSocket in a service way
+ */
 public class SocketService extends Service {
     Context context = this;
     WebSocketClient client;

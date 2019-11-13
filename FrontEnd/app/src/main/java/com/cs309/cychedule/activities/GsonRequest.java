@@ -1,6 +1,5 @@
 package com.cs309.cychedule.activities;
 
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -12,6 +11,10 @@ import com.google.gson.JsonSyntaxException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+/**
+ * GsonRequest is to build a custom request with Gson
+ * @param <T>
+ */
 public class GsonRequest<T> extends Request<T> {
     private final Gson gson = new Gson();
     private final Class<T> clazz;

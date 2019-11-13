@@ -2,6 +2,7 @@ package com.cs309.cychedule.activities.ui.calendar;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -30,12 +31,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.SessionManager;
 import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.RestAPIService;
 
 import org.json.JSONObject;
 
 import java.security.Key;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +48,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * CalendarFragment is a tab to contain our calendar tool.
+ * We achieve the calendar function here.
+ */
 public class CalendarFragment extends Fragment {
     
     private CalendarViewModel calendarViewModel;
@@ -56,9 +64,11 @@ public class CalendarFragment extends Fragment {
     String startStr, endStr;
     String eventText, locationText;
     private Calendar calendar;
+    SessionManager sessionManager;
     
     private static String URL_ADDEVENT = "https://dev.hanzec.com/api/v1/event/add";
     String token = "";
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         calendarViewModel = ViewModelProviders.of(this).get(CalendarViewModel.class);
@@ -71,7 +81,9 @@ public class CalendarFragment extends Fragment {
         // 		textView.setText(s);
         // 	}
         // });
-        
+
+        sessionManager = new SessionManager(root.getContext());
+
         final ImageView logo = root.findViewById(R.id.cal_logo);
         
         calendar = Calendar.getInstance();
@@ -344,15 +356,11 @@ public class CalendarFragment extends Fragment {
                                 , Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
-                    
-                    //sign token as header
-                    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-                    final String token = Jwts.builder().setSubject("CySchedule").signWith(key).compact();
-                    
-                    final RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
+
+                    RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
                     //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     requestQueue.start();
-                    
+
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_ADDEVENT,
                             new Response.Listener<String>() {
                                 @Override
@@ -361,31 +369,31 @@ public class CalendarFragment extends Fragment {
                                     {
                                         JSONObject object = new JSONObject(response);
                                         String status = object.getString("status");
-                                        JSONObject loginToken = object.getJSONObject("responseBody");
-                                        
-                                        
-                                        Log.e("TAG", response);
-                                        Log.e("TAG", object.toString());
-                                        Log.e("TAG", status.toString());
-                                        Log.e("TAG", loginToken.toString());
+                                        if (status.equals("201"))
+                                        {
+                                            Toast.makeText(root.getContext(), "Add Event Success!", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(root.getContext(), "Add Event Failed.", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                     catch (Exception e)
                                     {
-                                        e.printStackTrace(); Log.e("TAG", e.toString());
-                                        Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                        btnAdd.setVisibility(View.VISIBLE);
+                                        Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Log.e("TAG", error.toString());
-                                    Toast.makeText(root.getContext(), "Login Error: " + error.toString(), Toast.LENGTH_SHORT).show();
-                                    
+                                    btnAdd.setVisibility(View.VISIBLE);
+                                    Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             })
                     {
-                        @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
                             params.put("name", "NULL");
@@ -395,22 +403,36 @@ public class CalendarFragment extends Fragment {
                             params.put("description", eventText);
                             return params;
                         }
-                        
+
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<>();
-                            params.put("Authorization",token);
-                            return params;
+                            Map<String, String> header = new HashMap<String, String>();
+                            header.put("Content-Type", "application/json; charset=UTF-8");
+                            if(sessionManager.getLoginToken().get("tokenID") != null)
+                                header.put("Authorization", generateToken(
+                                        "I don't know",
+                                        sessionManager.getLoginToken().get("tokenID"),
+                                        sessionManager.getLoginToken().get("secret")));
+                            return header;
                         }
                     };
                     //requestQueue.add(stringRequest);
                     Singleton.getInstance(root.getContext()).addToRequestQueue(stringRequest);
-                    
                     //这里实现volley
                 }
             }
         });
         return root;
     }
-    
+
+    private String generateToken(String requestUrl, String tokenID, String password){
+        Key key = Keys.hmacShaKeyFor(password.getBytes());
+        return Jwts.builder()
+                .signWith(key)
+                .setId(tokenID)
+                .setIssuer("CySchedule")
+                .claim("requestUrl",requestUrl)
+                .setExpiration(new Date(System.currentTimeMillis() + 20000))
+                .compact();
+    }
 }

@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 
 import java.util.HashMap;
 
+/**
+ * SessionManager is used to store the token
+ * It also has the function to check login status, return the login token and logout
+ */
 public class SessionManager
 {
     SharedPreferences sharedPreferences;
