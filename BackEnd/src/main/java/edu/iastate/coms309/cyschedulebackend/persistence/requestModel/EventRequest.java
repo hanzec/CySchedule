@@ -15,13 +15,9 @@ public class EventRequest {
     @NotBlank(message = "Event should contains a name")
     public String name;
 
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
     @NotNull(message = "Event should contains a endTime")
     public Date endTime;
 
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
     @NotNull(message = "Event should contains a startTime")
     public Date startTime;
 
