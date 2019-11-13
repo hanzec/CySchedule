@@ -36,6 +36,8 @@ import com.cs309.cychedule.patterns.Singleton;
 import org.json.JSONObject;
 
 import java.security.Key;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -347,7 +349,7 @@ public class CalendarFragment extends Fragment {
                 if(cbox_justThisDay.isChecked()){
                     endStr = startDateInput.getText().toString()+" 23:59";
                     startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
-                    endCalendar.set(startYear, startYear, startYear, 23, 59);
+                    endCalendar.set(startYear, startMonth, startDay, 23, 59);
                 }
                 
                 if (startCalendar.compareTo(endCalendar)>=0){
@@ -362,7 +364,6 @@ public class CalendarFragment extends Fragment {
                     locationText = locationInput.getText().toString();
                     startStr = startDateInput.getText() + " " + startTimeInput.getText();
                     endStr = endDateInput.getText() + " " + endTimeInput.getText();
-                    
                     
                     //提交这些变量startStr,endStr,eventText,locationText, and Token
                     if(cbox_justThisDay.isChecked()){
