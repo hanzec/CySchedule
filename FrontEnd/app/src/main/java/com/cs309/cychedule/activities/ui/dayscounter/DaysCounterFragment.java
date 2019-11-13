@@ -183,25 +183,24 @@ public class DaysCounterFragment extends Fragment {
                     {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<>();
-                            params.put("name", "Days Counter");
-                            params.put("startTime", curDate.toString());
-                            params.put("endTime", endDate.toString());
-                            params.put("location", "No location");
-                            params.put("description", secretText);
-                            return params;
+                            Map<String, String> requestMap = new HashMap<>();
+                            requestMap.put("name", "Days Counter");
+                            requestMap.put("startTime", curDate.toString());
+                            requestMap.put("endTime", endDate.toString());
+                            requestMap.put("location", "No location");
+                            requestMap.put("description", secretText);
+                            return requestMap;
                         }
 
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> header = new HashMap<String, String>();
-                            header.put("Content-Type", "application/json; charset=UTF-8");
+                            Map<String, String> requestHeader = new HashMap<String, String>();
                             if(sessionManager.getLoginToken().get("tokenID") != null)
-                                header.put("Authorization", generateToken(
+                                requestHeader.put("Authorization", generateToken(
                                         "I don't know",
                                         sessionManager.getLoginToken().get("tokenID"),
                                         sessionManager.getLoginToken().get("secret")));
-                            return header;
+                            return requestHeader;
                         }
                     };
                     //requestQueue.add(stringRequest);
