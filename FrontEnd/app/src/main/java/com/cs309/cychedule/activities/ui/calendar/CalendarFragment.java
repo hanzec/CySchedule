@@ -331,34 +331,38 @@ public class CalendarFragment extends Fragment {
                 }
                 long startLong = Long.parseLong(startIntTemp);
                 long endLong = Long.parseLong(endIntTemp);
-                if (startLong>=endLong && !cbox_justThisDay.isChecked()){
+    
+                startCalendar = Calendar.getInstance();
+                endCalendar = Calendar.getInstance();
+                startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
+                endCalendar.set(endYear, endMonth, endDay, endHour, endMinute);
+    
+                if(cbox_allDayAct.isChecked()){
+                    startStr = startDateInput.getText().toString()+" 00:00";
+                    endStr = endDateInput.getText().toString()+" 23:59";
+                    startCalendar.set(startYear, startMonth, startDay, 0, 0);
+                    endCalendar.set(endYear, endMonth, endDay, 23, 59);
+                }
+    
+                if(cbox_justThisDay.isChecked()){
+                    endStr = startDateInput.getText().toString()+" 23:59";
+                    startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
+                    endCalendar.set(startYear, startYear, startYear, 23, 59);
+                }
+                
+                if (startCalendar.compareTo(endCalendar)>=0){
                     Log.e("TAG", startLong+" "+endLong);
                     Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter a valid end date", Toast.LENGTH_SHORT);
                     emptyInputWarning.show();
                     error = true;
                 }
+                
                 if(!error){
                     logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat2));
                     locationText = locationInput.getText().toString();
                     startStr = startDateInput.getText() + " " + startTimeInput.getText();
                     endStr = endDateInput.getText() + " " + endTimeInput.getText();
-                    startCalendar = Calendar.getInstance();
-                    endCalendar = Calendar.getInstance();
-                    startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
-                    endCalendar.set(endYear, endMonth, endDay, endHour, endMinute);
                     
-                    if(cbox_allDayAct.isChecked()){
-                        startStr = startDateInput.getText().toString()+" 00:00";
-                        endStr = endDateInput.getText().toString()+" 23:59";
-                        startCalendar.set(startYear, startMonth, startDay, 0, 0);
-                        endCalendar.set(endYear, endMonth, endDay, 23, 59);
-                    }
-    
-                    if(cbox_justThisDay.isChecked()){
-                        endStr = startDateInput.getText().toString()+" 23:59";
-                        startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
-                        endCalendar.set(startYear, startYear, startYear, 23, 59);
-                    }
                     
                     //提交这些变量startStr,endStr,eventText,locationText, and Token
                     if(cbox_justThisDay.isChecked()){
