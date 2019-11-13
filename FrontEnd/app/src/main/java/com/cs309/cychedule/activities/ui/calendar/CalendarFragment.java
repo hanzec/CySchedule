@@ -2,11 +2,13 @@ package com.cs309.cychedule.activities.ui.calendar;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +19,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.arch.lifecycle.ViewModelProviders;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -33,7 +32,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.activities.SessionManager;
 import com.cs309.cychedule.patterns.Singleton;
-import com.cs309.cychedule.utilities.cyScheduleServerSDK.RestAPIService;
 
 import org.json.JSONObject;
 
@@ -45,7 +43,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 /**
@@ -343,19 +340,29 @@ public class CalendarFragment extends Fragment {
                     locationText = locationInput.getText().toString();
                     startStr = startDateInput.getText() + " " + startTimeInput.getText();
                     endStr = endDateInput.getText() + " " + endTimeInput.getText();
+    
+                    if(cbox_allDayAct.isChecked()){
+                        startStr = startDateInput.getText().toString()+" 00:00";
+                        endStr = endDateInput.getText().toString()+" 23:59";
+                    }
+    
+                    if(cbox_justThisDay.isChecked()){
+                        endStr = startDateInput.getText().toString()+" 23:59";
+                    }
                     
                     //提交这些变量startStr,endStr,eventText,locationText, and Token
-                    if(cbox_justThisDay.isChecked()){
-                        Snackbar.make(root,  startStr
-                                        +":\nEvent: " + eventText + " @" + locationText
-                                , Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }else {
-                        Snackbar.make(root,  "From"+startStr +"to" + endStr
+                    // if(cbox_justThisDay.isChecked()){
+                    //     Snackbar.make(root,  startStr
+                    //                     +":\nEvent: " + eventText + " @" + locationText
+                    //             , Snackbar.LENGTH_LONG)
+                    //             .setAction("Action", null).show();
+                    // }else
+                    //     {
+                        Snackbar.make(root,  "From "+startStr +" to " + endStr
                                         +"\nEvent: " + eventText + " @" + locationText
                                 , Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
-                    }
+                    // }
 
                     RequestQueue requestQueue = Singleton.getInstance(root.getContext()).getRequestQueue();
                     //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -382,7 +389,7 @@ public class CalendarFragment extends Fragment {
                                     {
                                         e.printStackTrace();
                                         btnAdd.setVisibility(View.VISIBLE);
-                                        Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                                        // Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             },
@@ -390,7 +397,7 @@ public class CalendarFragment extends Fragment {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     btnAdd.setVisibility(View.VISIBLE);
-                                    Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
+                                    // Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             })
                     {

@@ -17,17 +17,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.cs309.cychedule.R;
+import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import com.cs309.cychedule.R;
-import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
-import com.cs309.cychedule.patterns.Singleton;
-import com.google.gson.Gson;
 
 /**
  * LoginActivity is the activity of the login page
