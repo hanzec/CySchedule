@@ -40,6 +40,7 @@ public class UserInformation implements Serializable{
     private FileObject avatar;
 
     @ManyToMany
+    @OrderBy("start_time ASC")
     @JoinTable(
             name = "user_event",
             joinColumns = @JoinColumn(
@@ -53,6 +54,7 @@ public class UserInformation implements Serializable{
     )
     private Set<Event> joinedEvent;
 
+    @OrderBy("start_time ASC")
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "adminUser",

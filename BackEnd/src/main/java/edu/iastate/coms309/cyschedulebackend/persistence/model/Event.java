@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.time.ZonedDateTime;
 
 @Setter
