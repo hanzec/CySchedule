@@ -23,6 +23,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cs309.cychedule.R;
@@ -73,6 +75,27 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         startService(new Intent(this, SocketService.class));
+    
+        View headerView = navigationView.getHeaderView(0);
+        ImageView _avator = headerView.findViewById(R.id.nav_header_avatar);
+        final TextView _name = headerView.findViewById(R.id.nav_header_name);
+        TextView _email = headerView.findViewById(R.id.nav_header_email);
+        _name.setText(sessionManager.getUserInfo("NAME"));
+        _email.setText(sessionManager.getUserInfo("EMAIL"));
+        _avator.setImageResource(R.drawable.gitcat2);
+        _avator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText( getBaseContext(), "Updating avator", Toast.LENGTH_LONG).show();
+            }
+        });
+        _name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText( getBaseContext(), "Hello, "+_name.getText(), Toast.LENGTH_LONG).show();
+            }
+        });
+    
     }
 
     

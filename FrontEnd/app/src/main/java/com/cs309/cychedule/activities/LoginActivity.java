@@ -73,6 +73,8 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+        _emailText.setText("user@example.com" );
+        _passwordText.setText("password" );
     }
 
     public void login() {
@@ -116,7 +118,11 @@ public class LoginActivity extends AppCompatActivity {
 //                                String token = loginToken.getString("token").trim();
 //                                String tokenID = loginToken.getString("tokenID").trim();
 //                                String refreshKey = loginToken.getString("refreshKey").trim();
+                                String name = (String) loginToken.get("firstName") + (String) loginToken.get("lastName");
+                                String email = (String) loginToken.get("email");
                                 sessionManager.createSession(secret, tokenID, refreshKey);
+                                sessionManager.setUseriInfo("NAME",name);
+                                sessionManager.setUseriInfo("EMAIL",email);
                                 onLoginSuccess();
                             }
                             else
