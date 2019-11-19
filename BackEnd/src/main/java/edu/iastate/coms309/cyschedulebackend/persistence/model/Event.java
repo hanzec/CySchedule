@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 
+import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,20 +18,26 @@ import java.time.ZonedDateTime;
 public class Event {
 
     @Id
+    @Expose
     @Column(name = "event_id")
     @GeneratedValue(generator = "uuid2")
     public String eventID;
 
+    @Expose
     public String name;
 
     @Column
+    @Expose
     public ZonedDateTime endTime;
 
     @Column
+    @Expose
     public ZonedDateTime startTime;
 
+    @Expose
     public String location;
 
+    @Expose
     public String description;
 
     @Column(
