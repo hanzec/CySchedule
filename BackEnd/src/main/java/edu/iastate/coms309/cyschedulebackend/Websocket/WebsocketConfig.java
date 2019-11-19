@@ -13,13 +13,19 @@ import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 @Configuration
 //@ServerEndpoint(value="/websocketDemo/{userId}",configurator = SpringConfigurator.class)
 public class WebsocketConfig{
-	//@Autowired
-	//AccountService accountservice;
+	@Autowired
+	AccountService accountservice;
 	
 	@Bean
 	public ServerEndpointExporter serverEndpointExporter(){
 		//WebsocketDemo.setAccountService(accountservice);
 		return new ServerEndpointExporter();
+	}
+
+	@Bean
+	public WebsocketDemo websocketDemo(){
+		WebsocketDemo.setAccountService(accountservice);
+		return new WebsocketDemo();
 	}
 	//public class tomcatConfig i
 

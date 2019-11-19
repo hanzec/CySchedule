@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
@@ -38,10 +39,9 @@ import com.google.gson.Gson;
 //import org.springframework.web.socket.server.standard.SpringConfigurator;
 //import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
-@Component
 @ServerEndpoint(value="/websocket")
 public class WebsocketDemo {
-    
+
     private Logger logger = LoggerFactory.getLogger(WebsocketDemo.class);
     //private static ApplicationContext applicationContext;
     
@@ -51,18 +51,17 @@ public class WebsocketDemo {
     private Session session;
     private String userId;
     private UserInformation user;
-    //private static AccountService accountService;
+    private static AccountService accountService;
     private Set<Event> r;
     
-    //public static void setAccountService(AccountService as) {
-    //	WebsocketDemo.accountService = as;
-    //}
+    public static void setAccountService(AccountService as) {
+    	WebsocketDemo.accountService = as;
+    }
     
     @OnOpen
     public void onOpen(Session session) throws IOException{
         this.session = session;
-        this.userId = "1b38a87a-06cc-4776-b184-37654e6487f6";
-        //user = (UserInformation)accountService.loadUserByUsername(userId);
+        user = accountService.getUserInformation(session.getUserPrincipal().getName());
         onlineCount++;
         logger.debug("new connection import");
         
