@@ -10,4 +10,7 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
 
     @Query("SELECT email FROM UserCredential a WHERE a.userID = ?1")
     String getUserEmailByUserID(String id);
+
+    @Query("SELECT UserCredential FROM UserCredential a WHERE a.userID = ?1")
+    UserCredential getByUserID(String userID);
 }

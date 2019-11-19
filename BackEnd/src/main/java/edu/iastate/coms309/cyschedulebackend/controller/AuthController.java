@@ -66,8 +66,9 @@ public class AuthController {
         accountService.createUser(user);
 
         logger.debug("User [ " + user.getEmail() + " ] is success registered");
-
-        return new Response().send(request.getRequestURI()).Created();
+        return new Response()
+                .Created()
+                .send(request.getRequestURI());
     }
 
 //    @PostMapping(value = "/refresh")
