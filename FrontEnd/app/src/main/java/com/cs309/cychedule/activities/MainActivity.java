@@ -134,67 +134,67 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     }
     
     private void logoutDiag() {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setCancelable(false);//是否能背后退取消
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);// 设置水平样式
-        dialog.setTitle("Install multiple bugs onto your computer");
-        final StringBuilder msg = new StringBuilder("Loading~");
-        dialog.setMessage(msg.toString());
-        dialog.setMax(100);
-        dialog.setProgress(5);
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                        Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_LONG).show();
-                    }
-                });
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        dialog.show();
-    
-       
-        
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                for (int j = 0; j <= 100; j++) {
-                   
-                    if(j>99){
-                        j-=3;
-                    }
-                    if(j<5){
-                        j++;
-                    }
-                    try {
-                        Thread.sleep(30);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    if(j>=100){
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                        Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_LONG).show();
-                    }
-                    dialog.setProgress(j);
-                    
-                    if(j>50) {
-                        if (msg.length() >= 15)
-                            msg.deleteCharAt((int) (Math.random()*10));
-                        msg.append((char) (int) (j*Math.random()*1000));
-                        dialog.setMessage(msg.toString());
-                    }
-                }
-            }
-        }).start();
-        
+//        final ProgressDialog dialog = new ProgressDialog(this);
+//        dialog.setCancelable(false);//是否能背后退取消
+//        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);// 设置水平样式
+//        dialog.setTitle("Install multiple bugs onto your computer");
+//        final StringBuilder msg = new StringBuilder("Loading~");
+//        dialog.setMessage(msg.toString());
+//        dialog.setMax(100);
+//        dialog.setProgress(5);
+//        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//                        Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//        dialog.show();
+//
+//
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                // TODO Auto-generated method stub
+//                for (int j = 0; j <= 100; j++) {
+//
+//                    if(j>99){
+//                        j-=3;
+//                    }
+//                    if(j<5){
+//                        j++;
+//                    }
+//                    try {
+//                        Thread.sleep(30);
+//                    } catch (InterruptedException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                    if(j>=100){
+//                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//                        Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_LONG).show();
+//                    }
+//                    dialog.setProgress(j);
+//
+//                    if(j>50) {
+//                        if (msg.length() >= 15)
+//                            msg.deleteCharAt((int) (Math.random()*10));
+//                        msg.append((char) (int) (j*Math.random()*1000));
+//                        dialog.setMessage(msg.toString());
+//                    }
+//                }
+//            }
+//        }).start();
+        sessionManager.logout();
     }
     
     private void alertDiag() {
