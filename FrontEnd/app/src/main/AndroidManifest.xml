@@ -33,7 +33,7 @@
             android:name=".activities.SignupActivity"
             android:theme="@style/AppTheme.Dark" />
         <activity
-            android:name=".activities.Main3Activity"
+            android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.Dark"
             android:windowSoftInputMode="adjustPan" />
 

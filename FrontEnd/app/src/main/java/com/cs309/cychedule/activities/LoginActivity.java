@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        startActivity(new Intent(this, Main3Activity.class));
+        startActivity(new Intent(this, MainActivity.class));
         Intent intent = new Intent(this, SocketService.class);
         startService(intent);
         finish();

@@ -3,7 +3,6 @@ package com.cs309.cychedule.activities.ui.home;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,14 +14,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
-import android.widget.Toast;
+import android.widget.ScrollView;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.activities.Main3Activity;
-import com.cs309.cychedule.utilities.UserUtil;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
 
 import java.util.ArrayList;
 
@@ -39,7 +40,7 @@ public class HomeFragment extends Fragment {
 	private static String events;
 	
 	private HomeRecyclerAdapter adapter;
-	
+
 	public View onCreateView(@NonNull LayoutInflater inflater,
 	                         ViewGroup container, Bundle savedInstanceState) {
 		homeViewModel =
@@ -86,13 +87,29 @@ public class HomeFragment extends Fragment {
 		renderHomeView(homeData, activity);
 		//如果你想关闭下拉刷新的话
 		initScrollListener();
+
+
+		//refresh layout
+		RefreshLayout refreshLayout = activity.findViewById(R.id.refreshLayout);
+		refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh(RefreshLayout refreshlayout) {
+				refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+			}
+		});
+		refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+			@Override
+			public void onLoadMore(RefreshLayout refreshlayout) {
+				refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+			}
+		});
 	}
 	
 	private void renderHomeView(ArrayList<HomeRecyclerAdapter.HomeData> homeData, final Activity activity) {
-		
+
 		ConstraintLayout emptyView = activity.findViewById(R.id.fragment_home_empty_container);
 		NestedScrollView nonEmptyView = activity.findViewById(R.id.fragment_home_non_empty_container);
-		
+
 		if (homeData.size() == 0) {
 			emptyView.setVisibility(View.VISIBLE);
 			nonEmptyView.setVisibility(View.GONE);
@@ -100,9 +117,9 @@ public class HomeFragment extends Fragment {
 		else {
 			emptyView.setVisibility(View.GONE);
 			nonEmptyView.setVisibility(View.VISIBLE);
-			
+
 			adapter = new HomeRecyclerAdapter(homeData);
-			
+
 			adapter.setOnEmptyViewClickListener(new HomeRecyclerAdapter.OnEmptyViewClickListener() {
 				@Override
 				public void onEmptyViewClick() {
@@ -110,7 +127,7 @@ public class HomeFragment extends Fragment {
 					navController.navigate(R.id.nav_daysCounter);
 				}
 			});
-			
+
 			recyclerView.setAdapter(adapter);
 		}
 	}

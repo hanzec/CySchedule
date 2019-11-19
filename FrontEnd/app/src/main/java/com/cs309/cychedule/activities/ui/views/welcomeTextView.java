@@ -1,4 +1,4 @@
-package com.cs309.cychedule.views;
+package com.cs309.cychedule.activities.ui.views;
 
 import android.content.Context;
 import android.graphics.Canvas;

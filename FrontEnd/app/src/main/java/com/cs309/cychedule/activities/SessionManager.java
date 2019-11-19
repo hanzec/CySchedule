@@ -52,7 +52,7 @@ public class SessionManager
         {
             Intent i = new Intent(context, LoginActivity.class);
             context.startActivity(i);
-            ((Main3Activity) context).finish();
+            ((MainActivity) context).finish();
         }
     }
 
@@ -71,6 +71,6 @@ public class SessionManager
         editor.commit();
         Intent i = new Intent(context, LoginActivity.class);
         context.startActivity(i);
-        ((Main3Activity) context).finish();
+        ((MainActivity) context).finish();
     }
 }
