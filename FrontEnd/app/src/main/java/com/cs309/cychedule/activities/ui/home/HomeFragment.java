@@ -48,7 +48,7 @@ import java.util.Map;
 public class HomeFragment extends Fragment {
 
 	SessionManager sessionManager;
-	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/auth/login";
+	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
 
 	private HomeViewModel homeViewModel;
 	private RecyclerView recyclerView;
