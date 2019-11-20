@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.services.SocketService;
 import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
 import com.google.gson.Gson;
 

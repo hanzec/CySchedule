@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment {
 								try
 								{
 									events = response;
-									//Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
+									Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
 								}
 								catch (Exception e)
 								{

@@ -66,9 +66,9 @@ public class UserUtil {
 	
 	public static void noti_invite(Context context, int NotificationID, String title, String text){
 		
-		Intent intent = new Intent(context, Main3Activity.class);
+		Intent intent = new Intent(context, MainActivity.class);
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-		stackBuilder.addParentStack(Main3Activity.class);
+		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(intent);
 		PendingIntent resultPendingIntent =
 				stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

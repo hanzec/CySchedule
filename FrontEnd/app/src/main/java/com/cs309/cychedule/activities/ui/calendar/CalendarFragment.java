@@ -430,13 +430,12 @@ public class CalendarFragment extends Fragment {
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             Map<String, String> header = new HashMap<String, String>();
-                            header.put("Content-Type", "application/json; charset=UTF-8");
                             if(sessionManager.getLoginToken().get("tokenID") != null)
-                                requestHeader.put("Authorization", generateToken(
+                                header.put("Authorization", generateToken(
                                         "I don't know",
                                         sessionManager.getLoginToken().get("tokenID"),
                                         sessionManager.getLoginToken().get("secret")));
-                            return requestHeader;
+                            return header;
                         }
                     };
                     //requestQueue.add(stringRequest);
