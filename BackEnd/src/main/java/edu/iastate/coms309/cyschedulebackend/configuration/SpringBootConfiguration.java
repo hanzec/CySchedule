@@ -1,12 +1,12 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import edu.iastate.coms309.cyschedulebackend.Utils.SpringfoxJsonToGsonAdapter;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -16,6 +16,10 @@ import springfox.documentation.spring.web.json.Json;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.lang.reflect.Type;
+import java.time.ZonedDateTime;
+
+@EnableAsync
 @Configuration
 @EnableCaching
 @EnableSwagger2
@@ -24,7 +28,15 @@ public class SpringBootConfiguration {
     @Bean
     public GsonHttpMessageConverter gsonHttpMessageConverter() {
         GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
-        converter.setGson(gson());
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
+            @Override
+            public ZonedDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString());
+            }
+        }).create();
+        converter.setGson(gson);
+
         return converter;
     }
 
