@@ -2,11 +2,13 @@ package com.cs309.cychedule.activities.ui.calendar;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +19,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.arch.lifecycle.ViewModelProviders;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -33,19 +32,20 @@ import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.activities.SessionManager;
 import com.cs309.cychedule.patterns.Singleton;
-import com.cs309.cychedule.utilities.cyScheduleServerSDK.RestAPIService;
 
 import org.json.JSONObject;
 
 import java.security.Key;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.sql.*;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 /**
@@ -60,7 +60,7 @@ public class CalendarFragment extends Fragment {
     String startDateStr, startTimeStr;
     int endYear, endMonth, endDay, endHour, endMinute;
     String endDateStr, endTimeStr;
-    
+    Calendar startCalendar, endCalendar;
     String startStr, endStr;
     String eventText, locationText;
     private Calendar calendar;
@@ -106,11 +106,12 @@ public class CalendarFragment extends Fragment {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 startYear = year;
-                                startMonth = monthOfYear;
+                                startMonth = monthOfYear+1;
                                 startDay = dayOfMonth;
                                 startDateStr = String.valueOf(year) + "." + String.valueOf(monthOfYear + 1) + "." + Integer.toString(dayOfMonth);
                                 startDateInput.setText(startDateStr);
-                            }}, startYear, startMonth, startDay);
+                            }
+                        }, startYear, startMonth, startDay);
                 datePickerDialog.show();
                 // datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
                 Objects.requireNonNull(datePickerDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -144,7 +145,7 @@ public class CalendarFragment extends Fragment {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 endYear = year;
-                                endMonth = monthOfYear;
+                                endMonth = monthOfYear+1;
                                 endDay = dayOfMonth;
                                 endDateStr = String.valueOf(year) + "." + String.valueOf(monthOfYear + 1) + "." + Integer.toString(dayOfMonth);
                                 endDateInput.setText(endDateStr);
@@ -332,12 +333,32 @@ public class CalendarFragment extends Fragment {
                 }
                 long startLong = Long.parseLong(startIntTemp);
                 long endLong = Long.parseLong(endIntTemp);
-                if (startLong>=endLong && !cbox_justThisDay.isChecked()){
+
+                startCalendar = Calendar.getInstance();
+                endCalendar = Calendar.getInstance();
+                startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
+                endCalendar.set(endYear, endMonth, endDay, endHour, endMinute);
+
+                if(cbox_allDayAct.isChecked()){
+                    startStr = startDateInput.getText().toString()+" 00:00";
+                    endStr = endDateInput.getText().toString()+" 23:59";
+                    startCalendar.set(startYear, startMonth, startDay, 0, 0);
+                    endCalendar.set(endYear, endMonth, endDay, 23, 59);
+                }
+
+                if(cbox_justThisDay.isChecked()){
+                    endStr = startDateInput.getText().toString()+" 23:59";
+                    startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
+                    endCalendar.set(startYear, startMonth, startDay, 23, 59);
+                }
+
+                if (startCalendar.compareTo(endCalendar)>=0){
                     Log.e("TAG", startLong+" "+endLong);
                     Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter a valid end date", Toast.LENGTH_SHORT);
                     emptyInputWarning.show();
                     error = true;
                 }
+
                 if(!error){
                     logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat2));
                     locationText = locationInput.getText().toString();
@@ -350,8 +371,8 @@ public class CalendarFragment extends Fragment {
                                         +":\nEvent: " + eventText + " @" + locationText
                                 , Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
-                    }else {
-                        Snackbar.make(root,  "From"+startStr +"to" + endStr
+                    }else
+                        { Snackbar.make(root,  "From "+startStr +" to " + endStr
                                         +"\nEvent: " + eventText + " @" + locationText
                                 , Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
@@ -382,7 +403,7 @@ public class CalendarFragment extends Fragment {
                                     {
                                         e.printStackTrace();
                                         btnAdd.setVisibility(View.VISIBLE);
-                                        Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                                        // Toast.makeText(root.getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             },
@@ -390,15 +411,17 @@ public class CalendarFragment extends Fragment {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     btnAdd.setVisibility(View.VISIBLE);
-                                    Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
+                                    // Toast.makeText(root.getContext(), "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             })
                     {
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
-                            params.put("name", "Calendar");
-                            params.put("startTime", startStr);
-                            params.put("endTime", endStr);
+                            params.put("name", "NULL");
+                            params.put("startTime", new Date(startCalendar.getTimeInMillis()).toString());
+                            Log.e("TIME", new Date(startCalendar.getTimeInMillis()).toString());
+                            params.put("endTime",  new Date(endCalendar.getTimeInMillis()).toString());
+                            Log.e("TIME", new Date(endCalendar.getTimeInMillis()).toString());
                             params.put("location", locationText);
                             params.put("description", eventText);
                             return params;
@@ -406,7 +429,8 @@ public class CalendarFragment extends Fragment {
 
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> requestHeader = new HashMap<String, String>();
+                            Map<String, String> header = new HashMap<String, String>();
+                            header.put("Content-Type", "application/json; charset=UTF-8");
                             if(sessionManager.getLoginToken().get("tokenID") != null)
                                 requestHeader.put("Authorization", generateToken(
                                         "I don't know",

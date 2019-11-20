@@ -17,6 +17,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.cs309.cychedule.R;
+import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +29,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.services.SocketService;
 import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
 import com.cs309.cychedule.patterns.Singleton;
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 /**
  * LoginActivity is the activity of the login page
@@ -75,16 +76,8 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
-        _emailText.setText("user@example.com" );
-        _passwordText.setText("password" );
     }
-    
-    @Override
-    protected  void onDestroy() {
-        progressDialog.dismiss();
-        super.onDestroy();
-    }
-    
+
     public void login() {
         Log.d(TAG, "Login");
 
@@ -126,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // Log.e(TAG,response_value);
                                 // Log.e(TAG,response_map.toString());
                                 Log.e(TAG,response);
-                                
+
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                 String secret = (String) loginToken.get("secret");
                                 String tokenID = (String) loginToken.get("tokenID");

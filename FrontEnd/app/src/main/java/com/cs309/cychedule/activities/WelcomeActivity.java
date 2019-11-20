@@ -17,7 +17,7 @@ import java.util.TimerTask;
  * WelcomeActivity is the activity of the welcome page
  * It is a welcome animation and will show up immediately when we open the app
  */
-public class WelcomeActivity extends Activity implements View.OnClickListener {
+public class WelcomeActivity extends BaseActivity implements View.OnClickListener {
 	private int recLen = 4;//倒计时秒数
 	private TextView skip;
 	Timer timer = new Timer();
@@ -63,7 +63,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 		// 		""+sign).show();
 		
 	}
-	
+
 	/**
 	 * 跳转到LoginActivity
 	 */
