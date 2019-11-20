@@ -63,7 +63,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 		// 		""+sign).show();
 		
 	}
-	
+
 	/**
 	 * 跳转到LoginActivity
 	 */
