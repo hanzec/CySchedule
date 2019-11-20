@@ -37,9 +37,14 @@ import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * HomeFragment is the home page of our app
@@ -117,14 +122,14 @@ public class HomeFragment extends Fragment {
 				//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 				requestQueue.start();
 
-				StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_GETALL,
+				StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
 						new Response.Listener<String>() {
 							@Override
 							public void onResponse(String response) {
 								try
 								{
 									events = response;
-									Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
+									//Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
 								}
 								catch (Exception e)
 								{
@@ -142,8 +147,13 @@ public class HomeFragment extends Fragment {
 				{
 					@Override
 					public Map<String, String> getHeaders() throws AuthFailureError {
-						Map<String, String> loginToken = sessionManager.getLoginToken();
-						return loginToken;
+						Map<String, String> requestHeader = new HashMap<String, String>();
+						if(sessionManager.getLoginToken().get("tokenID") != null)
+							requestHeader.put("Authorization", generateToken(
+									"I don't know",
+									sessionManager.getLoginToken().get("tokenID"),
+									sessionManager.getLoginToken().get("secret")));
+						return requestHeader;
 					}
 				};
 				//requestQueue.add(stringRequest);
@@ -157,6 +167,17 @@ public class HomeFragment extends Fragment {
 				refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
 			}
 		});
+	}
+
+	private String generateToken(String requestUrl, String tokenID, String password){
+		Key key = Keys.hmacShaKeyFor(password.getBytes());
+		return Jwts.builder()
+				.signWith(key)
+				.setId(tokenID)
+				.setIssuer("CySchedule")
+				.claim("requestUrl",requestUrl)
+				.setExpiration(new Date(System.currentTimeMillis() + 20000))
+				.compact();
 	}
 
 	private void renderHomeView(ArrayList<HomeRecyclerAdapter.HomeData> homeData, final Activity activity) {
