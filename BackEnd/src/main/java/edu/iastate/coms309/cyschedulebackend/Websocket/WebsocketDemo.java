@@ -110,13 +110,7 @@ public class WebsocketDemo {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.debug("receive message from User {}: {}",this.userId,message);
-        try {
-			session.getBasicRemote().sendText("Message Received");
-		} catch (IOException e) {
-			e.printStackTrace();
-            logger.debug("User {} message send error",userId);
-		}
-        if(session ==null)  logger.debug("session null");
+        this.sendToUser(message);
     }
     
     public void sendToUser(String message) {
