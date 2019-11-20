@@ -19,6 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
 
+@EnableAsync
 @Configuration
 @EnableCaching
 @EnableSwagger2
@@ -27,15 +28,7 @@ public class SpringBootConfiguration {
     @Bean
     public GsonHttpMessageConverter gsonHttpMessageConverter() {
         GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
-
-        Gson gson = new GsonBuilder().registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
-            @Override
-            public ZonedDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                return ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString());
-            }
-        }).create();
-        converter.setGson(gson);
-
+        converter.setGson(gson());
         return converter;
     }
 
@@ -59,7 +52,17 @@ public class SpringBootConfiguration {
     }
 
     private Gson gson() {
-        final GsonBuilder builder = new GsonBuilder();
+        //Seriliazer for Zoned Time
+        JsonSerializer<ZonedDateTime> ser = new JsonSerializer<ZonedDateTime>() {
+            @Override
+            public JsonElement serialize(ZonedDateTime src, Type typeOfSrc, JsonSerializationContext
+                    context) {
+                return src == null ? null : new JsonPrimitive(src.toString());
+            }
+        };
+
+        final GsonBuilder builder = new GsonBuilder()
+                .registerTypeAdapter(ZonedDateTime.class,ser);
         builder.registerTypeAdapter(Json.class, new SpringfoxJsonToGsonAdapter());
         return builder.excludeFieldsWithoutExposeAnnotation().create();
     }
