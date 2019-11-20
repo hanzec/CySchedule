@@ -54,7 +54,9 @@ public class AuthController {
         logger.debug("User [ " + loginRequest.getEmail() + " ] is permit to login");
         return new Response()
                 .OK()
+                .addResponse("email",loginRequest.getEmail())
                 .addResponse("loginToken",userTokenService.creat(userCredential))
+                .addResponse("userName", userCredential.getUserInformation().getUsername())
                 .send(request.getRequestURI());
     }
 
