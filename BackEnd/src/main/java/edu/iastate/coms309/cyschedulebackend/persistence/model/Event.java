@@ -27,6 +27,9 @@ public class Event {
     public String name;
 
     @Column
+    public Long startTimeUnix;
+
+    @Column
     @Expose
     public ZonedDateTime endTime;
 
