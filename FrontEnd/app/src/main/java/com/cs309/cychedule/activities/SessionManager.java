@@ -25,6 +25,8 @@ public class SessionManager
     public static final String SECRET = "secret";
     public static final String TOKEN_ID = "tokenID";
     public static final String REFRESH_KEY = "refreshKey";
+    private static final String USER_NAME = "userName";
+    private static final String EMAIL = "email";
 
 
     public SessionManager(Context context) {
@@ -41,12 +43,11 @@ public class SessionManager
         editor.apply();
     }
     
-    public void setUseriInfo(String KEY, String VALUE) {
-        editor.putString(KEY, VALUE);
-    }
-    
-    public String getUserInfo(String KEY) {
-        return sharedPreferences.getString(KEY,null);
+    public void storeUserInfo(String userName, String email) {
+        editor.putBoolean(LOGIN, true);
+        editor.putString(USER_NAME, userName);
+        editor.putString(EMAIL, email);
+        editor.apply();
     }
     
     public boolean isLogin()
@@ -66,10 +67,18 @@ public class SessionManager
 
     public HashMap<String, String> getLoginToken()
     {
+        HashMap<String, String> loginToken = new HashMap<>();
+        loginToken.put(SECRET, sharedPreferences.getString(SECRET, null));
+        loginToken.put(TOKEN_ID, sharedPreferences.getString(TOKEN_ID, null));
+        loginToken.put(REFRESH_KEY, sharedPreferences.getString(REFRESH_KEY, null));
+        return loginToken;
+    }
+
+    public HashMap<String, String> getUserInfo()
+    {
         HashMap<String, String> user = new HashMap<>();
-        user.put(SECRET, sharedPreferences.getString(SECRET, null));
-        user.put(TOKEN_ID, sharedPreferences.getString(TOKEN_ID, null));
-        user.put(REFRESH_KEY, sharedPreferences.getString(REFRESH_KEY, null));
+        user.put(USER_NAME, sharedPreferences.getString(USER_NAME, null));
+        user.put(EMAIL, sharedPreferences.getString(EMAIL, null));
         return user;
     }
 

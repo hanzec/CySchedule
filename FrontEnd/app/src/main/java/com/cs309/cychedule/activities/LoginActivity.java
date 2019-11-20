@@ -41,7 +41,7 @@ import com.google.gson.Gson;
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
-    private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
+    private static String URL_LOGIN = "http://coms-309-yt-4.misc.iastate.edu/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
     ProgressDialog progressDialog;
@@ -112,27 +112,21 @@ public class LoginActivity extends AppCompatActivity {
                             // String response_value = jsonObj.getString("response");
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
-                            Map loginToken = (Map) serverResponse.getResponseBody().get("loginToken");
-                            Map body = serverResponse.getResponseBody();
+                            Map sr = serverResponse.getResponseBody();
+                            Map loginToken = (Map) sr.get("loginToken");
                             if (serverResponse.isSuccess())
                             {
-                                Log.e(TAG,body.toString());
-                                // Log.e(TAG,response_value);
-                                // Log.e(TAG,response_map.toString());
-                                Log.e(TAG,response);
-
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                 String secret = (String) loginToken.get("secret");
                                 String tokenID = (String) loginToken.get("tokenID");
                                 String refreshKey = (String) loginToken.get("refreshKey");
+                                String userName = (String) sr.get("username");
+                                String email = (String) sr.get("email");
 //                                String token = loginToken.getString("token").trim();
 //                                String tokenID = loginToken.getString("tokenID").trim();
 //                                String refreshKey = loginToken.getString("refreshKey").trim();
-                                String name = (String) body.get("firstName") + (String) body.get("lastName");
-                                String email = (String) body.get("email");
                                 sessionManager.createSession(secret, tokenID, refreshKey);
-                                sessionManager.setUseriInfo("NAME",name);
-                                sessionManager.setUseriInfo("EMAIL",email);
+                                sessionManager.storeUserInfo(userName, email);
                                 onLoginSuccess();
                             }
                             else
@@ -165,12 +159,6 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("email", email);
                 params.put("password", password);
                 return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> loginToken = sessionManager.getLoginToken();
-                return loginToken;
             }
         };
         //requestQueue.add(stringRequest);

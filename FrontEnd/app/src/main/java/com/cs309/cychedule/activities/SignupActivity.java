@@ -38,7 +38,7 @@ import com.cs309.cychedule.patterns.Singleton;
  */
 public class SignupActivity extends AppCompatActivity {
 
-    private static String URL_SIGNUP = "https://dev.hanzec.com/api/v1/auth/register";
+    private static String URL_SIGNUP = "http://coms-309-yt-4.misc.iastate.edu/api/v1/auth/register";
     private static final String TAG = "SignupActivity";
 
     @BindView(R.id.input_userName) EditText _userNameText;

@@ -95,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ImageView _avator = headerView.findViewById(R.id.nav_header_avatar);
         final TextView _name = headerView.findViewById(R.id.nav_header_name);
         TextView _email = headerView.findViewById(R.id.nav_header_email);
-        _name.setText(sessionManager.getUserInfo("NAME"));
-        _email.setText(sessionManager.getUserInfo("EMAIL"));
+        _name.setText(sessionManager.getUserInfo().get("userName"));
+        _email.setText(sessionManager.getUserInfo().get("email"));
         _avator.setImageResource(R.drawable.gitcat2);
         _avator.setOnClickListener(new View.OnClickListener() {
             @Override

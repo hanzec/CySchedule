@@ -57,7 +57,7 @@ import io.jsonwebtoken.security.Keys;
  */
 public class DaysCounterFragment extends Fragment {
 
-    private static String URL_EVENT = "https://dev.hanzec.com/api/v1/event/add";
+    private static String URL_EVENT = "http://coms-309-yt-4.misc.iastate.edu/api/v1/event/add";
     private DaysCounterViewModel daysCounterViewModel;
     private Button btnAdd, btnRemvoe;
     private DatePicker datepicker;
