@@ -2,19 +2,15 @@ package edu.iastate.coms309.cyschedulebackend.Websocket;
 
 
 import java.io.IOException;
-import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
@@ -24,16 +20,9 @@ import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
-import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
 import com.google.gson.Gson;
 //import org.springframework.web.socket.server.standard.SpringConfigurator;
@@ -51,7 +40,7 @@ public class WebsocketDemo {
     private static ConcurrentHashMap<String, WebsocketDemo> webSocketSet = new ConcurrentHashMap<String, WebsocketDemo>();
     private static int onlineCount = 0;
     private Session session;
-    private String userId;
+    private String userEmail;
     private UserInformation user;
     private static AccountService accountService;
     private Set<Event> r;
@@ -64,13 +53,13 @@ public class WebsocketDemo {
     public void onOpen(Session session) throws IOException{
         this.session = session;
         user = accountService.getUserInformation(session.getUserPrincipal().getName());
-        userId = user.getUserID();
+        userEmail = accountService.getUserEmail(session.getUserPrincipal().getName());
         onlineCount++;
         logger.debug("new connection import");
         
         r = new HashSet();
         r = user.getManagedEvent();
-        webSocketSet.put(userId, this);
+        webSocketSet.put(userEmail, this);
         
         Gson gson = new Gson();
         String json = gson.toJson(r);
@@ -78,10 +67,10 @@ public class WebsocketDemo {
         //Set<Event> r = user.getManagedEvent();
         try {
 			session.getBasicRemote().sendText(json);
-			logger.debug("{} message send",userId);
+			logger.debug("{} message send", userEmail);
 		} catch (IOException e) {
 			e.printStackTrace();
-            logger.debug("User {} message send error",userId);
+            logger.debug("User {} message send error", userEmail);
 		}
       
         //logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
@@ -102,14 +91,14 @@ public class WebsocketDemo {
         logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
         */
     	webSocketSet.remove(this);
-    	logger.debug("close connection from {}",this.userId);
+    	logger.debug("close connection from {}",this.userEmail);
     	
     }
 
     
     @OnMessage
     public void onMessage(String message, Session session) {
-        logger.debug("receive message from User {}: {}",this.userId,message);
+        logger.debug("receive message from User {}: {}",this.userEmail,message);
         this.sendToUser(message);
     }
     
@@ -119,7 +108,7 @@ public class WebsocketDemo {
         //String now = getNowTime();
         try {
             if (webSocketSet.get(sendUserno) != null) {
-                webSocketSet.get(sendUserno).sendMessage("ms|"+this.userId+"|"+sendMessage);
+                webSocketSet.get(sendUserno).sendMessage("ms|"+this.userEmail +"|"+sendMessage);
             } else {
                 this.sendMessage("Target user is current offline now, try again later");
             }
@@ -132,7 +121,7 @@ public class WebsocketDemo {
     
     @OnError
     public void onError(Session session, Throwable error){
-        logger.debug("User {} message send error",this.userId);
+        logger.debug("User {} message send error",this.userEmail);
         error.printStackTrace();
     }
 
