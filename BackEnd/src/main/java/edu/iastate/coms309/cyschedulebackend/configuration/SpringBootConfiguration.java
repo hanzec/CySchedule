@@ -19,7 +19,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
 
-@EnableAsync
 @Configuration
 @EnableCaching
 @EnableSwagger2
