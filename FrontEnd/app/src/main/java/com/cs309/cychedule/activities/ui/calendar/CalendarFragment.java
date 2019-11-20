@@ -66,7 +66,7 @@ public class CalendarFragment extends Fragment {
     private Calendar calendar;
     SessionManager sessionManager;
     
-    private static String URL_ADDEVENT = "http://coms-309-yt-4.misc.iastate.edu/api/v1/event/add";
+    private static String URL_ADDEVENT = "https://dev.hanzec.com/api/v1/event/add";
     String token = "";
 
     @RequiresApi(api = Build.VERSION_CODES.M)

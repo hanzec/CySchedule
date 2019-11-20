@@ -41,7 +41,7 @@ import com.google.gson.Gson;
 public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
-    private static String URL_LOGIN = "http://coms-309-yt-4.misc.iastate.edu/api/v1/auth/login";
+    private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
     ProgressDialog progressDialog;

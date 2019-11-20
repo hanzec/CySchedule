@@ -53,7 +53,7 @@ import io.jsonwebtoken.security.Keys;
 public class HomeFragment extends Fragment {
 
 	SessionManager sessionManager;
-	private static String URL_GETALL = "http://coms-309-yt-4.misc.iastate.edu/api/v1/event/all";
+	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
 
 	private HomeViewModel homeViewModel;
 	private RecyclerView recyclerView;
