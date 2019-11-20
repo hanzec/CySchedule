@@ -2,6 +2,7 @@ package com.cs309.cychedule.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.provider.AlarmClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -23,7 +25,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,11 +39,12 @@ import com.cs309.cychedule.services.SocketService;
  * MainActivity is the activity of our app's home page
  * It contains all our functions' fragments
  */
-public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     SessionManager sessionManager;
     private AppBarConfiguration mAppBarConfiguration;
-
+    private String output_dest;
+    private String output_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -76,6 +82,15 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         NavigationUI.setupWithNavController(navigationView, navController);
         startService(new Intent(this, SocketService.class));
     
+        Menu menuView = navigationView.getMenu();
+        MenuItem _send = menuView.findItem(R.id.nav_send);
+        _send.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+              outputDialog();
+               return true;
+            }
+        });
         View headerView = navigationView.getHeaderView(0);
         ImageView _avator = headerView.findViewById(R.id.nav_header_avatar);
         final TextView _name = headerView.findViewById(R.id.nav_header_name);
@@ -156,6 +171,45 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         }
     }
     
+    private void toast(String str){
+        Toast.makeText( getBaseContext(), str, Toast.LENGTH_LONG).show();
+    }
+    
+    private void outputDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        
+        builder.setTitle("Send MSG");
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        
+        final EditText input_dest = new EditText(this);
+        input_dest.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        input_dest.setHint("Receiver(Email)");
+        layout.addView(input_dest);
+    
+        final EditText input_text = new EditText(this);
+        input_text.setInputType(InputType.TYPE_CLASS_TEXT);
+        input_text.setHint("Text message");
+        input_text.setHeight(500);
+        layout.addView(input_text);
+        
+        builder.setView(layout);
+        
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                output_dest = input_dest.getText().toString();
+                output_text = input_text.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
     private void logoutDiag() {
 //        final ProgressDialog dialog = new ProgressDialog(this);
 //        dialog.setCancelable(false);//是否能背后退取消
