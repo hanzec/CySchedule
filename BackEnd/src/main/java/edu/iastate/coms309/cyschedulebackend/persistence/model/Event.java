@@ -1,13 +1,15 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
 
+import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.catalina.User;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.util.List;
+import javax.persistence.*;
+import javax.persistence.Entity;
+import java.time.ZonedDateTime;
 
 @Setter
 @Getter
@@ -16,18 +18,26 @@ import java.util.List;
 public class Event {
 
     @Id
+    @Expose
     @Column(name = "event_id")
     @GeneratedValue(generator = "uuid2")
     public String eventID;
 
+    @Expose
     public String name;
 
-    public String endTime;
+    @Column
+    @Expose
+    public ZonedDateTime endTime;
 
-    public String startTime;
+    @Column
+    @Expose
+    public ZonedDateTime startTime;
 
+    @Expose
     public String location;
 
+    @Expose
     public String description;
 
     @Column(

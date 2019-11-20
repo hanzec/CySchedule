@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.activities.Main3Activity;
+import com.cs309.cychedule.activities.MainActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,7 +56,7 @@ public class UserUtil {
 
 		Intent resultIntent = new Intent(context, context.getClass());
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-		stackBuilder.addParentStack(Main3Activity.class);
+		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(resultIntent);
 		PendingIntent resultPendingIntent
 				= stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -1,6 +1,6 @@
 package com.cs309.cychedule.activities;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +9,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cs309.cychedule.R;
-import com.cs309.cychedule.services.SocketService;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,7 +18,7 @@ import java.util.TimerTask;
  * It is a welcome animation and will show up immediately when we open the app
  */
 public class WelcomeActivity extends BaseActivity implements View.OnClickListener {
-	private int recLen = 1;//倒计时秒数
+	private int recLen = 4;//倒计时秒数
 	private TextView skip;
 	Timer timer = new Timer();
 	private Handler handler;
@@ -64,18 +63,7 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
 		// 		""+sign).show();
 		
 	}
-	
 
-	
-	/**
-	 * 跳转到MainActivity
-	 */
-	private void toMain() {
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
-		finish();
-	}
-	
 	/**
 	 * 跳转到LoginActivity
 	 */

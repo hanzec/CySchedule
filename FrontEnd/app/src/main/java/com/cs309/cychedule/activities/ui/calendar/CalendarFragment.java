@@ -83,7 +83,7 @@ public class CalendarFragment extends Fragment {
         // });
 
         sessionManager = new SessionManager(root.getContext());
-        
+
         final ImageView logo = root.findViewById(R.id.cal_logo);
         
         calendar = Calendar.getInstance();
@@ -333,32 +333,32 @@ public class CalendarFragment extends Fragment {
                 }
                 long startLong = Long.parseLong(startIntTemp);
                 long endLong = Long.parseLong(endIntTemp);
-    
+
                 startCalendar = Calendar.getInstance();
                 endCalendar = Calendar.getInstance();
                 startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
                 endCalendar.set(endYear, endMonth, endDay, endHour, endMinute);
-    
+
                 if(cbox_allDayAct.isChecked()){
                     startStr = startDateInput.getText().toString()+" 00:00";
                     endStr = endDateInput.getText().toString()+" 23:59";
                     startCalendar.set(startYear, startMonth, startDay, 0, 0);
                     endCalendar.set(endYear, endMonth, endDay, 23, 59);
                 }
-    
+
                 if(cbox_justThisDay.isChecked()){
                     endStr = startDateInput.getText().toString()+" 23:59";
                     startCalendar.set(startYear, startMonth, startDay, startHour, startMinute);
                     endCalendar.set(startYear, startMonth, startDay, 23, 59);
                 }
-                
+
                 if (startCalendar.compareTo(endCalendar)>=0){
                     Log.e("TAG", startLong+" "+endLong);
                     Toast emptyInputWarning = Toast.makeText(root.getContext(), "Please enter a valid end date", Toast.LENGTH_SHORT);
                     emptyInputWarning.show();
                     error = true;
                 }
-                
+
                 if(!error){
                     logo.setImageDrawable(getResources().getDrawable(R.drawable.gitcat2));
                     locationText = locationInput.getText().toString();
@@ -430,12 +430,13 @@ public class CalendarFragment extends Fragment {
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             Map<String, String> header = new HashMap<String, String>();
+                            header.put("Content-Type", "application/json; charset=UTF-8");
                             if(sessionManager.getLoginToken().get("tokenID") != null)
-                                header.put("Authorization", generateToken(
+                                requestHeader.put("Authorization", generateToken(
                                         "I don't know",
                                         sessionManager.getLoginToken().get("tokenID"),
                                         sessionManager.getLoginToken().get("secret")));
-                            return header;
+                            return requestHeader;
                         }
                     };
                     //requestQueue.add(stringRequest);

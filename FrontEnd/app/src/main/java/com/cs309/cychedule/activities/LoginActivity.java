@@ -28,6 +28,11 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import com.cs309.cychedule.R;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.cs309.cychedule.patterns.Singleton;
+import com.google.gson.Gson;
+
 /**
  * LoginActivity is the activity of the login page
  * We put all the login logic here
@@ -71,8 +76,6 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
-        _emailText.setText("auuokay@gmail.com");
-        _passwordText.setText("123321");
     }
 
     public void login() {
@@ -80,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        progressDialog = new ProgressDialog(LoginActivity.this,
+        progressDialog = new ProgressDialog(this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
@@ -103,12 +106,20 @@ public class LoginActivity extends AppCompatActivity {
 //                            JSONObject object = new JSONObject(response);
 //                            String status = object.getString("status");
 //                            JSONObject loginToken = object.getJSONObject("responseBody");
-
+//                             JSONObject jsonObj = new JSONObject(response);
+                            // Map response_map = (Map) jsonObj.getJSONObject("response");
+                            // String response_value = jsonObj.getString("response");
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
                             Map loginToken = (Map) serverResponse.getResponseBody().get("loginToken");
+                            Map body = serverResponse.getResponseBody();
                             if (serverResponse.isSuccess())
                             {
+                                Log.e(TAG,body.toString());
+                                // Log.e(TAG,response_value);
+                                // Log.e(TAG,response_map.toString());
+                                Log.e(TAG,response);
+
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                 String secret = (String) loginToken.get("secret");
                                 String tokenID = (String) loginToken.get("tokenID");
@@ -116,7 +127,11 @@ public class LoginActivity extends AppCompatActivity {
 //                                String token = loginToken.getString("token").trim();
 //                                String tokenID = loginToken.getString("tokenID").trim();
 //                                String refreshKey = loginToken.getString("refreshKey").trim();
+                                String name = (String) body.get("firstName") + (String) body.get("lastName");
+                                String email = (String) body.get("email");
                                 sessionManager.createSession(secret, tokenID, refreshKey);
+                                sessionManager.setUseriInfo("NAME",name);
+                                sessionManager.setUseriInfo("EMAIL",email);
                                 onLoginSuccess();
                             }
                             else
@@ -180,8 +195,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
+        progressDialog.dismiss();
         _loginButton.setEnabled(true);
-        startActivity(new Intent(this, Main3Activity.class));
+        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, SocketService.class);
+        startService(intent);
         finish();
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }

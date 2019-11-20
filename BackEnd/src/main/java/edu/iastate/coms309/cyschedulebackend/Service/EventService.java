@@ -15,9 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
+
 
 @Service
 public class EventService {
@@ -30,31 +38,32 @@ public class EventService {
     EventRepository eventRepository;
 
     @Transactional
-    public Event updateEvent(EventRequest newEvent, String eventID){
+    public Event updateEvent(EventRequest newEvent, String eventID) throws ParseException {
         Event event = eventRepository.getOne(eventID);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("E LLL dd HH:mm:ss z yyyy",Locale.US);
 
         //set event object
         event.setName(newEvent.getName());
-        event.setEndTime(newEvent.getEndTime());
+        event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setLocation(newEvent.getLocation());
-        event.setStartTime(newEvent.getStartTime());
+        event.setStartTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setDescription(newEvent.getDescription());
 
         eventRepository.save(event);
         return event;
     }
 
-    @Async
     @Transactional
-    public void addEvent(EventRequest newEvent, UserInformation userInformation){
+    public void addEvent(EventRequest newEvent, UserInformation userInformation) throws ParseException {
         Event event = new Event();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("E LLL dd HH:mm:ss z yyyy",Locale.US);
 
         //set event object
         event.setName(newEvent.getName());
         event.setAdminUser(userInformation);
-        event.setEndTime(newEvent.getEndTime());
+        event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setLocation(newEvent.getLocation());
-        event.setStartTime(newEvent.getStartTime());
+        event.setStartTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setDescription(newEvent.getDescription());
 
         //set relation with user
@@ -70,9 +79,9 @@ public class EventService {
 
         try {
             eventRequest.setName(event.getName());
-            eventRequest.setEndTime(event. getEndTime());
+            eventRequest.setEndTime(event.getEndTime().toString());
             eventRequest.setLocation(event.getLocation());
-            eventRequest.setStartTime(event.getStartTime());
+            eventRequest.setStartTime(event.getStartTime().toString());
             eventRequest.setDescription(event.getDescription());
         }catch (EntityNotFoundException e){
             throw new EventNotFoundException(id);

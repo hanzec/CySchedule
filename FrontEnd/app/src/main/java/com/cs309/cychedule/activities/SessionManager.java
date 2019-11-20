@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 
 import java.util.HashMap;
 
+import static android.provider.ContactsContract.Intents.Insert.EMAIL;
+import static android.provider.Settings.NameValueTable.NAME;
+
 /**
  * SessionManager is used to store the token
  * It also has the function to check login status, return the login token and logout
@@ -24,23 +27,28 @@ public class SessionManager
     public static final String REFRESH_KEY = "refreshKey";
 
 
-    public SessionManager(Context context)
-    {
+    public SessionManager(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = sharedPreferences.edit();
     }
-
-
-    public void createSession(String secret, String tokenID, String refreshKey)
-    {
+    
+    public void createSession(String secret, String tokenID, String refreshKey) {
         editor.putBoolean(LOGIN, true);
         editor.putString(SECRET, secret);
         editor.putString(TOKEN_ID, tokenID);
         editor.putString(REFRESH_KEY, refreshKey);
         editor.apply();
     }
-
+    
+    public void setUseriInfo(String KEY, String VALUE) {
+        editor.putString(KEY, VALUE);
+    }
+    
+    public String getUserInfo(String KEY) {
+        return sharedPreferences.getString(KEY,null);
+    }
+    
     public boolean isLogin()
     {
         return sharedPreferences.getBoolean(LOGIN, false);
@@ -52,7 +60,7 @@ public class SessionManager
         {
             Intent i = new Intent(context, LoginActivity.class);
             context.startActivity(i);
-            ((Main3Activity) context).finish();
+            ((MainActivity) context).finish();
         }
     }
 
@@ -71,6 +79,6 @@ public class SessionManager
         editor.commit();
         Intent i = new Intent(context, LoginActivity.class);
         context.startActivity(i);
-        ((Main3Activity) context).finish();
+        ((MainActivity) context).finish();
     }
 }

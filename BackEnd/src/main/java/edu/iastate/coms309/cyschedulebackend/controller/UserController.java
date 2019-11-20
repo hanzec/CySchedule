@@ -2,13 +2,18 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.*;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.ChangePasswordRequest;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.token.TokenService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +27,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
-@Api(tags = "RestAPI Related to Authentication")
+@Api(tags = "RestAPI Related user Account")
 public class UserController{
 
     @Autowired
@@ -33,6 +38,39 @@ public class UserController{
 
     @Autowired
     FileManagementService fileManagementService;
+
+    @GetMapping(value = "/")
+    @ApiOperation("Get user information")
+    public Response getUserInformation(Principal principal, HttpServletRequest request){
+        UserInformation userInformation = accountService.getUserInformation(principal.getName());
+
+        return new Response()
+                .OK()
+                .addResponse("userName",userInformation.getUsername())
+                .addResponse("lastName",userInformation.getLastName())
+                .addResponse("firstName",userInformation.getFirstName())
+                .send(request.getRequestURI());
+    }
+
+    @PostMapping(value = "/password")
+    @ApiOperation("Reset password aip")
+    public Response resetPassword(Principal principal, @Validated ChangePasswordRequest changePasswordRequest, HttpServletRequest request) throws PasswordNotMatchException {
+        PasswordEncoder passwordEncoder = accountService.getPasswordEncoder();
+        UserCredential userCredential = accountService.getUserCredential(principal.getName());
+
+        //check old password
+        if(!passwordEncoder.matches(changePasswordRequest.getOldPassword(),userCredential.getPassword()))
+            throw new PasswordNotMatchException(principal.getName());
+
+        //write new password
+        userCredential.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+
+        accountService.updateUserCredential(userCredential);
+
+        return new Response()
+                .OK()
+                .send(request.getRequestURI());
+    }
 
     @GetMapping(value = "/avatar")
     @ApiOperation("get user avatar ")
@@ -72,7 +110,7 @@ public class UserController{
     }
 
     @GetMapping(value = "/token")
-    @ApiOperation("delete current login Token")
+    @ApiOperation("get All existed token")
     public Response getAllToken(Principal principal, HttpServletRequest request){
         Response response = new Response();
         List<UserToken> tokens = userTokenService.getAllTokenBelongToUser(accountService.getUserEmail(principal.getName()));
