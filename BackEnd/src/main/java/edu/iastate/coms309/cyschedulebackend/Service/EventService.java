@@ -61,8 +61,9 @@ public class EventService {
         //set event object
         event.setName(newEvent.getName());
         event.setAdminUser(userInformation);
-        event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setLocation(newEvent.getLocation());
+        event.setStartTimeUnix(event.getStartTime().toEpochSecond());
+        event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setStartTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setDescription(newEvent.getDescription());
 
@@ -79,10 +80,11 @@ public class EventService {
 
         try {
             eventRequest.setName(event.getName());
-            eventRequest.setEndTime(event.getEndTime().toString());
             eventRequest.setLocation(event.getLocation());
-            eventRequest.setStartTime(event.getStartTime().toString());
             eventRequest.setDescription(event.getDescription());
+            eventRequest.setEndTime(event.getEndTime().toString());
+            eventRequest.setStartTime(event.getStartTime().toString());
+            event.setStartTimeUnix(event.getStartTime().toEpochSecond());
         }catch (EntityNotFoundException e){
             throw new EventNotFoundException(id);
         }
