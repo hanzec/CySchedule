@@ -101,7 +101,7 @@ public class WebsocketDemo {
         logger.debug("User{}login with {} device",this.userId,userSocket.get(this.userId).size());
         logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
         */
-    	webSocketSet.remove(userId, this);
+    	webSocketSet.remove(this);
     	logger.debug("close connection from {}",this.userId);
     	
     }
