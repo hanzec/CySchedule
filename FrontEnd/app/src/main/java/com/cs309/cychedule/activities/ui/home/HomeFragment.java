@@ -7,7 +7,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,34 +15,56 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.LoginActivity;
+import com.cs309.cychedule.activities.SessionManager;
+import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * HomeFragment is the home page of our app
  * It has the main functions and the ways to them
  */
 public class HomeFragment extends Fragment {
-	
+
+	SessionManager sessionManager;
+	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
+
 	private HomeViewModel homeViewModel;
 	private RecyclerView recyclerView;
 	private boolean isLoading = false;
 
 	private static String events;
-	
+
 	private HomeRecyclerAdapter adapter;
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
-	                         ViewGroup container, Bundle savedInstanceState) {
+							 ViewGroup container, Bundle savedInstanceState) {
 		homeViewModel =
 				ViewModelProviders.of(this).get(HomeViewModel.class);
 		View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -54,29 +75,30 @@ public class HomeFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
-// 		Log.e("TAG",events);
+		sessionManager = new SessionManager(getContext());
+		sessionManager.checkLogin();
 		return root;
 	}
-	
+
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		init();
 	}
-	
+
 	private void init() {
 		final Activity activity = getActivity();
-		
-		
+
+
 		recyclerView = activity.findViewById(R.id.fragment_home_recyclerview);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
 		recyclerView.setLayoutManager(layoutManager);
-		
+
 		recyclerView.setNestedScrollingEnabled(true);
 
 /**改逻辑看这里!*/
@@ -85,7 +107,7 @@ public class HomeFragment extends Fragment {
 		//空list
 		//ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyAlarmHomeData();
 		//塞数据
-        ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateHomeData();
+		ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateHomeData();
 		renderHomeView(homeData, activity);
 		//如果你想关闭下拉刷新的话
 		initScrollListener();
@@ -96,6 +118,46 @@ public class HomeFragment extends Fragment {
 		refreshLayout.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh(RefreshLayout refreshlayout) {
+				final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
+				//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+				requestQueue.start();
+
+				StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+						new Response.Listener<String>() {
+							@Override
+							public void onResponse(String response) {
+								try
+								{
+									events = response;
+									//Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
+								}
+								catch (Exception e)
+								{
+									e.printStackTrace();
+									Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+								}
+							}
+						},
+						new Response.ErrorListener() {
+							@Override
+							public void onErrorResponse(VolleyError error) {
+								Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+							}
+						})
+				{
+					@Override
+					public Map<String, String> getHeaders() throws AuthFailureError {
+						Map<String, String> requestHeader = new HashMap<String, String>();
+						if(sessionManager.getLoginToken().get("tokenID") != null)
+							requestHeader.put("Authorization", generateToken(
+									"I don't know",
+									sessionManager.getLoginToken().get("tokenID"),
+									sessionManager.getLoginToken().get("secret")));
+						return requestHeader;
+					}
+				};
+				//requestQueue.add(stringRequest);
+				Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
 				refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
 			}
 		});
@@ -106,7 +168,18 @@ public class HomeFragment extends Fragment {
 			}
 		});
 	}
-	
+
+	private String generateToken(String requestUrl, String tokenID, String password){
+		Key key = Keys.hmacShaKeyFor(password.getBytes());
+		return Jwts.builder()
+				.signWith(key)
+				.setId(tokenID)
+				.setIssuer("CySchedule")
+				.claim("requestUrl",requestUrl)
+				.setExpiration(new Date(System.currentTimeMillis() + 20000))
+				.compact();
+	}
+
 	private void renderHomeView(ArrayList<HomeRecyclerAdapter.HomeData> homeData, final Activity activity) {
 
 		ConstraintLayout emptyView = activity.findViewById(R.id.fragment_home_empty_container);
@@ -133,26 +206,26 @@ public class HomeFragment extends Fragment {
 			recyclerView.setAdapter(adapter);
 		}
 	}
-	
+
 	/**
 	 * When the list is scrolled to the end, load more items into the list
 	 * Ref: https://www.journaldev.com/24041/android-recyclerview-load-more-endless-scrolling
 	 */
-	
+
 	private void initScrollListener() {
-		
+
 		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
 			}
-			
+
 			@Override
 			public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 				super.onScrolled(recyclerView, dx, dy);
-				
+
 				LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-				
+
 				if (!isLoading) {
 					ArrayList<HomeRecyclerAdapter.HomeData> homeData = adapter.getMockHomeData();
 					if (linearLayoutManager != null &&
@@ -164,27 +237,27 @@ public class HomeFragment extends Fragment {
 				}
 			}
 		});
-		
-		
+
+
 	}
-	
+
 	private void loadMoreAlarms(final ArrayList<HomeRecyclerAdapter.HomeData> homeData) {
 		// add null for loading view
 		homeData.add(null);
 		adapter.notifyItemInserted(homeData.size() - 1);
-		
+
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				
+
 				// remove null data
 				int listSize = homeData.size();
 				homeData.remove(listSize - 1);
 				adapter.notifyItemRemoved(listSize);
 				int currentSize = listSize;
 				int nextLimit = currentSize + 1;
-				
+
 				while (currentSize - 1 < nextLimit) {
 					currentSize++;
 					// add new alarm data
@@ -199,14 +272,14 @@ public class HomeFragment extends Fragment {
 				isLoading = false;
 			}
 		}, 2000);
-		
+
 	}
-	
-	
+
+
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateEmptyHomeData() {
 		return new ArrayList<>();
 	}
-	
+
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateEmptyAlarmHomeData() {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
