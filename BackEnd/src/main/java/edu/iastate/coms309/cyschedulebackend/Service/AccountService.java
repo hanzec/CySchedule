@@ -2,6 +2,7 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 
 import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
@@ -88,6 +89,14 @@ public class AccountService implements UserDetailsService{
     )
     public boolean existsByEmail(String email){ return userCredentialRepository.existsById(email);}
 
+    public UserInformation getUserInformation(String userID){ return userInformationRepository.getOne(userID); }
+
+    public UserCredential getUserCredential(String userID){return userCredentialRepository.getByUserID(userID); }
+
+    @Async
+    @Transactional
+    public void updateUserCredential(UserCredential userCredential){ userCredentialRepository.save(userCredential); }
+
     @Async
     @Transactional
     public void updateUserInformation(UserInformation userInformation){ userInformationRepository.save(userInformation); }
@@ -95,8 +104,6 @@ public class AccountService implements UserDetailsService{
     @Cacheable(value = "email", key = "#userID + '_id'")
     public String getUserEmail(String userID) {
         return userCredentialRepository.getUserEmailByUserID(userID); }
-
-    public UserInformation getUserInformation(String userID){ return userInformationRepository.getOne(userID);}
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -108,7 +115,7 @@ public class AccountService implements UserDetailsService{
         return userCredential;
     }
 
-    @Cacheable(value = "false")
+    public PasswordEncoder getPasswordEncoder(){ return passwordEncoder; }
     public boolean checkPassword(String email, String password){
         return passwordEncoder.matches(password, userCredentialRepository.getOne(email).getPassword());
     }

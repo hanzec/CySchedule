@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
@@ -38,7 +39,7 @@ import com.google.gson.Gson;
 //import org.springframework.web.socket.server.standard.SpringConfigurator;
 //import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
-@Component
+
 @ServerEndpoint(value="/websocket")
 public class WebsocketDemo {
     
@@ -46,28 +47,30 @@ public class WebsocketDemo {
     //private static ApplicationContext applicationContext;
     
 
-    private static CopyOnWriteArraySet<WebsocketDemo> webSocketSet = new CopyOnWriteArraySet<WebsocketDemo>();
+    //private static CopyOnWriteArraySet<WebsocketDemo> webSocketSet = new CopyOnWriteArraySet<WebsocketDemo>();
+    private static ConcurrentHashMap<String, WebsocketDemo> webSocketSet = new ConcurrentHashMap<String, WebsocketDemo>();
     private static int onlineCount = 0;
     private Session session;
     private String userId;
     private UserInformation user;
-    //private static AccountService accountService;
+    private static AccountService accountService;
     private Set<Event> r;
     
-    //public static void setAccountService(AccountService as) {
-    //	WebsocketDemo.accountService = as;
-    //}
+    public static void setAccountService(AccountService as) {
+    	WebsocketDemo.accountService = as;
+    }
     
     @OnOpen
     public void onOpen(Session session) throws IOException{
         this.session = session;
-        this.userId = "1b38a87a-06cc-4776-b184-37654e6487f6";
-        //user = (UserInformation)accountService.loadUserByUsername(userId);
+        user = accountService.getUserInformation(session.getUserPrincipal().getName());
+        userId = user.getUserID();
         onlineCount++;
         logger.debug("new connection import");
         
-        r = new HashSet(this.setEvent());
-        webSocketSet.add(this);
+        r = new HashSet();
+        r = user.getManagedEvent();
+        webSocketSet.put(userId, this);
         
         Gson gson = new Gson();
         String json = gson.toJson(r);
@@ -84,6 +87,7 @@ public class WebsocketDemo {
         //logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
         
     }
+
 
     
     @OnClose
@@ -106,14 +110,24 @@ public class WebsocketDemo {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.debug("receive message from User {}: {}",this.userId,message);
-        try {
-			session.getBasicRemote().sendText("Message Received");
-		} catch (IOException e) {
-			e.printStackTrace();
-            logger.debug("User {} message send error",userId);
-		}
-        if(session ==null)  logger.debug("session null");
+        this.sendToUser(message);
     }
+    
+    public void sendToUser(String message) {
+        String sendUserno = message.split("|")[0];
+        String sendMessage = message.split("|")[1];
+        //String now = getNowTime();
+        try {
+            if (webSocketSet.get(sendUserno) != null) {
+                webSocketSet.get(sendUserno).sendMessage("ms|"+this.userId+"|"+sendMessage);
+            } else {
+                this.sendMessage("Target user is current offline now, try again later");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     
     @OnError
@@ -183,6 +197,11 @@ public class WebsocketDemo {
     	
     	return r;
     }
+    
+    public void sendMessage(String message) throws IOException {
+        this.session.getBasicRemote().sendText(message);
+    }
+
     
     public ArrayList<Event> setEvent() {
     	ArrayList<Event> p = new ArrayList();

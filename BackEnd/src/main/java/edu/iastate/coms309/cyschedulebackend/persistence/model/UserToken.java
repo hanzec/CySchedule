@@ -47,8 +47,6 @@ public class UserToken {
             optional = false,
             cascade = {CascadeType.MERGE,CascadeType.REFRESH}
     )
-    @JoinColumn(
-          name = "email"
-    )
+    @JoinColumn(name = "email")
     UserCredential owner;
 }
