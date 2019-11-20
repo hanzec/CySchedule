@@ -396,7 +396,7 @@ public class CalendarFragment extends Fragment {
                     {
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
-                            params.put("name", "NULL");
+                            params.put("name", "Calendar");
                             params.put("startTime", startStr);
                             params.put("endTime", endStr);
                             params.put("location", locationText);
