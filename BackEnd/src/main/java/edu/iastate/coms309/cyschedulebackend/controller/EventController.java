@@ -95,7 +95,7 @@ public class EventController {
 
     @ApiOperation("update timeBlock by id")
     @PutMapping(value = "/{eventID}")
-    public Response updateTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID, @Validated EventRequest newEvent) throws ParseException {
+    public Response updateTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID, @Validated EventRequest newEvent) throws ParseException, EventNotFoundException {
         Response response = new Response();
 
         // check ownership
