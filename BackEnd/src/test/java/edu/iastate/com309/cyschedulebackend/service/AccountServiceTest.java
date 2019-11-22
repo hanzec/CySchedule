@@ -7,7 +7,6 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserCredentialRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserInformationRepository;
 
-import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.ChangePasswordRequest;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
 import org.junit.Before;
 import org.junit.Test;
