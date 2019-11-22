@@ -54,18 +54,15 @@ public class UserController{
 
     @PostMapping(value = "/password")
     @ApiOperation("Reset password aip")
-    public Response resetPassword(Principal principal, @Validated ChangePasswordRequest changePasswordRequest, HttpServletRequest request) throws PasswordNotMatchException {
-        PasswordEncoder passwordEncoder = accountService.getPasswordEncoder();
-        UserCredential userCredential = accountService.getUserCredential(principal.getName());
+    public Response resetPassword(
+            Principal principal,
+            HttpServletRequest request,
+            @Validated ChangePasswordRequest changePasswordRequest) throws PasswordNotMatchException {
 
-        //check old password
-        if(!passwordEncoder.matches(changePasswordRequest.getOldPassword(),userCredential.getPassword()))
-            throw new PasswordNotMatchException(principal.getName());
-
-        //write new password
-        userCredential.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-
-        accountService.updateUserCredential(userCredential);
+        accountService.resetPassword(
+                principal.getName(),
+                changePasswordRequest.getNewPassword(),
+                changePasswordRequest.getOldPassword());
 
         return new Response()
                 .OK()
