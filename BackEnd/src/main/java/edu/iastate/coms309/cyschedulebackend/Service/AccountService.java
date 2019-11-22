@@ -108,7 +108,7 @@ public class AccountService implements UserDetailsService{
     }
 
     public void checkPassword(String email, String password) throws PasswordNotMatchException {
-        if (passwordEncoder.matches(password, userCredentialRepository.getOne(email).getPassword()))
+        if (!passwordEncoder.matches(password, userCredentialRepository.getOne(email).getPassword()))
             throw new PasswordNotMatchException(email);
     }
 
