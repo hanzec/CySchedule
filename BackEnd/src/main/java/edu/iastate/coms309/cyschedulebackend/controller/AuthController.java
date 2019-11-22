@@ -31,8 +31,6 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 public class AuthController {
     /*
     Maybe a improve point
-        - /getChallenge api may leak user information whatever user exist or not should generate same information
-
     */
 
     @Autowired
@@ -48,15 +46,12 @@ public class AuthController {
     public Response login(HttpServletRequest request, @Validated LoginRequest loginRequest) throws PasswordNotMatchException {
         UserCredential userCredential = (UserCredential) accountService.loadUserByUsername(loginRequest.getEmail());
 
-        if(!accountService.checkPassword(loginRequest.getEmail(),loginRequest.getPassword()))
-            throw new PasswordNotMatchException(loginRequest.getEmail());
+        accountService.checkPassword(loginRequest.getEmail(),loginRequest.getPassword());
 
         logger.debug("User [ " + loginRequest.getEmail() + " ] is permit to login");
         return new Response()
                 .OK()
-                .addResponse("email",loginRequest.getEmail())
                 .addResponse("loginToken",userTokenService.creat(userCredential))
-                .addResponse("userName", userCredential.getUserInformation().getUsername())
                 .send(request.getRequestURI());
     }
 

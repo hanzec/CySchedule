@@ -3,6 +3,8 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
+import edu.iastate.coms309.cyschedulebackend.exception.io.FileUploadFailedException;
+import edu.iastate.coms309.cyschedulebackend.exception.user.UserAvatarNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.*;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.ChangePasswordRequest;
@@ -54,18 +56,15 @@ public class UserController{
 
     @PostMapping(value = "/password")
     @ApiOperation("Reset password aip")
-    public Response resetPassword(Principal principal, @Validated ChangePasswordRequest changePasswordRequest, HttpServletRequest request) throws PasswordNotMatchException {
-        PasswordEncoder passwordEncoder = accountService.getPasswordEncoder();
-        UserCredential userCredential = accountService.getUserCredential(principal.getName());
+    public Response resetPassword(
+            Principal principal,
+            HttpServletRequest request,
+            @Validated ChangePasswordRequest changePasswordRequest) throws PasswordNotMatchException {
 
-        //check old password
-        if(!passwordEncoder.matches(changePasswordRequest.getOldPassword(),userCredential.getPassword()))
-            throw new PasswordNotMatchException(principal.getName());
-
-        //write new password
-        userCredential.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-
-        accountService.updateUserCredential(userCredential);
+        accountService.resetPassword(
+                principal.getName(),
+                changePasswordRequest.getNewPassword(),
+                changePasswordRequest.getOldPassword());
 
         return new Response()
                 .OK()
@@ -74,39 +73,31 @@ public class UserController{
 
     @GetMapping(value = "/avatar")
     @ApiOperation("get user avatar ")
-    public Response getAvatar(Principal principal, HttpServletRequest request){
-        Response response = new Response();
-        UserInformation userInformation =  accountService.getUserInformation(principal.getName());
+    public Response getAvatar(Principal principal, HttpServletRequest request) throws UserAvatarNotFoundException {
 
-        if(userInformation.getAvatar() == null)
-            return response.NotFound().send(request.getRequestURI());
-        else{
-            Map<String,String> map = new HashMap<>();
-            map.put("FileName",userInformation.getAvatar().getFileName());
-            map.put("FileDownloadLink",fileManagementService.getFile(userInformation.getAvatar()));
-            response.addResponse("avatar", map);
-            return response.OK().send(request.getRequestURI());
-        }
+        FileObject avatar = accountService.getAvatar(principal.getName());
+
+        return new Response()
+                .OK()
+                .addResponse("FileName",avatar.getFileName())
+                .addResponse("FileDownloadLink",fileManagementService.getFile(avatar))
+                .send(request.getRequestURI());
     }
 
     @PostMapping(value = "/avatar")
     @ApiOperation("Update User avatar")
-    public Response updateAvatar(@RequestParam("file") MultipartFile file, Principal principal, HttpServletRequest request) {
-        Response response = new Response();
-        UserInformation userInformation =  accountService.getUserInformation(principal.getName());
+    public Response updateAvatar(@RequestParam("file") MultipartFile file, Principal principal, HttpServletRequest request) throws FileUploadFailedException {
 
-        if(userInformation.getAvatar() != null)
-            fileManagementService.deleteFile(userInformation.getAvatar());
-
+        //ignore exception if there is not avatar before
         try {
-            userInformation.setAvatar(fileManagementService.putFile(file, "avatar"));
-        } catch (IOException e) {
-            return response.BadRequested("file upload failed").send(request.getRequestURI());
-        }
+            fileManagementService.deleteFile(accountService.getAvatar(principal.getName()));
+        } catch (UserAvatarNotFoundException ignored) {}
 
-        accountService.updateUserInformation(userInformation);
+        accountService.updateAvatar(principal.getName(),fileManagementService.putFile(file, "avatar"));
 
-        return response.Created().send(request.getRequestURI());
+        return new Response()
+                .Created()
+                .send(request.getRequestURI());
     }
 
     @GetMapping(value = "/token")

@@ -38,7 +38,11 @@ public class EventService {
     EventRepository eventRepository;
 
     @Transactional
-    public Event updateEvent(EventRequest newEvent, String eventID) throws ParseException {
+    public Event updateEvent(EventRequest newEvent, String eventID) throws ParseException, EventNotFoundException {
+
+        if(!this.existByID(eventID))
+            throw new EventNotFoundException(eventID);
+
         Event event = eventRepository.getOne(eventID);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("E LLL dd HH:mm:ss z yyyy",Locale.US);
 
@@ -96,7 +100,6 @@ public class EventService {
     @Transactional
     public void deleteEvent(String id){ eventRepository.deleteById(id); }
 
-    @Transactional
     @Cacheable(
             value = "false",
             unless = "#result == true"
