@@ -62,11 +62,7 @@ public class UserInformation implements Serializable{
     )
     private Set<Event> managedEvent;
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            mappedBy = "fileOwner",
-            targetEntity = FileObject.class
-    )
+    @OneToMany
     private Set<FileObject> uploadedFile;
 
     @OneToOne(

@@ -71,34 +71,34 @@ public class UserController{
                 .send(request.getRequestURI());
     }
 
-    @GetMapping(value = "/avatar")
-    @ApiOperation("get user avatar ")
-    public Response getAvatar(Principal principal, HttpServletRequest request) throws UserAvatarNotFoundException {
-
-        FileObject avatar = accountService.getAvatar(principal.getName());
-
-        return new Response()
-                .OK()
-                .addResponse("FileName",avatar.getFileName())
-                .addResponse("FileDownloadLink",fileManagementService.getFile(avatar))
-                .send(request.getRequestURI());
-    }
-
-    @PostMapping(value = "/avatar")
-    @ApiOperation("Update User avatar")
-    public Response updateAvatar(@RequestParam("file") MultipartFile file, Principal principal, HttpServletRequest request) throws FileUploadFailedException {
-
-        //ignore exception if there is not avatar before
-        try {
-            fileManagementService.deleteFile(accountService.getAvatar(principal.getName()));
-        } catch (UserAvatarNotFoundException ignored) {}
-
-        accountService.updateAvatar(principal.getName(),fileManagementService.putFile(file, "avatar"));
-
-        return new Response()
-                .Created()
-                .send(request.getRequestURI());
-    }
+//    @GetMapping(value = "/avatar")
+//    @ApiOperation("get user avatar ")
+//    public Response getAvatar(Principal principal, HttpServletRequest request) throws UserAvatarNotFoundException {
+//
+//        FileObject avatar = accountService.getAvatar(principal.getName());
+//
+//        return new Response()
+//                .OK()
+//                .addResponse("FileName",avatar.getFileName())
+//                .addResponse("FileDownloadLink",fileManagementService.getFile(avatar))
+//                .send(request.getRequestURI());
+//    }
+//
+//    @PostMapping(value = "/avatar")
+//    @ApiOperation("Update User avatar")
+//    public Response updateAvatar(@RequestParam("file") MultipartFile file, Principal principal, HttpServletRequest request) throws FileUploadFailedException {
+//
+//        //ignore exception if there is not avatar before
+//        try {
+//            fileManagementService.deleteFile(accountService.getAvatar(principal.getName()));
+//        } catch (UserAvatarNotFoundException ignored) {}
+//
+//        accountService.updateAvatar(principal.getName(),fileManagementService.putFile(file, "avatar"));
+//
+//        return new Response()
+//                .Created()
+//                .send(request.getRequestURI());
+//    }
 
     @GetMapping(value = "/token")
     @ApiOperation("get All existed token")

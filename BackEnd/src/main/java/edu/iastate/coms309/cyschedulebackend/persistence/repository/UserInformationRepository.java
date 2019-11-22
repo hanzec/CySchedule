@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface UserInformationRepository extends JpaRepository<UserInformation, String> {
 
-    @Query("SELECT UserInformation.avatar FROM UserInformation u  WHERE a.userID = ?1")
-    FileObject getUserAvatar(String id);
+//    @Query("SELECT UserInformation.avatar FROM UserInformation u  WHERE a.userID = ?1")
+//    FileObject getUserAvatar(String id);
 
-    @Query("SELECT UserInformation FROM UserInformation u  WHERE a.userID = ?1 AND UserInformation.avatar IS NULL ")
-    boolean isAvatarExist(String id);
+//    @Query("SELECT UserInformation FROM UserInformation u  WHERE a.userID = ?1 AND UserInformation.avatar IS NULL ")
+//    boolean isAvatarExist(String id);
 }

@@ -86,12 +86,12 @@ public class AccountService implements UserDetailsService{
         logger.info("New User with id :[" + userCredential.getUserID() + "] is created");
     }
 
-    public FileObject getAvatar(String id) throws UserAvatarNotFoundException {
-        if(userInformationRepository.isAvatarExist(id))
-            throw new UserAvatarNotFoundException(id);
-        logger.debug("New avatar request for user :[" + id + "]");
-        return userInformationRepository.getUserAvatar(id);
-    }
+//    public FileObject getAvatar(String id) throws UserAvatarNotFoundException {
+////        if(userInformationRepository.isAvatarExist(id))
+////            throw new UserAvatarNotFoundException(id);
+//        logger.debug("New avatar request for user :[" + id + "]");
+//        return userInformationRepository.getUserAvatar(id);
+//    }
 
     @Async
     @Transactional
