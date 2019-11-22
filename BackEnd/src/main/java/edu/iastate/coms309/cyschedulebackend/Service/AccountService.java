@@ -3,6 +3,8 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
+import edu.iastate.coms309.cyschedulebackend.exception.user.UserAvatarNotFoundException;
+import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
@@ -25,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.PushBuilder;
 import java.io.File;
 import java.util.Set;
 import java.util.UUID;
@@ -81,6 +84,27 @@ public class AccountService implements UserDetailsService{
         userCredentialRepository.save(userCredential);
 
         logger.info("New User with id :[" + userCredential.getUserID() + "] is created");
+    }
+
+    public FileObject getAvatar(String id) throws UserAvatarNotFoundException {
+        if(userInformationRepository.isAvatarExist(id))
+            throw new UserAvatarNotFoundException(id);
+        logger.debug("New avatar request for user :[" + id + "]");
+        return userInformationRepository.getUserAvatar(id);
+    }
+
+    @Async
+    @Transactional
+    public void updateAvatar(String id, FileObject fileObject){
+
+        if(!userInformationRepository.existsById(id))
+            throw new UsernameNotFoundException(id);
+
+        UserInformation userInformation =  userInformationRepository.getOne(id);
+
+        userInformation.setAvatar(fileObject);
+
+        userInformationRepository.save(userInformation);
     }
 
     public void checkPassword(String email, String password) throws PasswordNotMatchException {

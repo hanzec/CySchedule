@@ -3,8 +3,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -13,6 +12,13 @@ public class FileObject{
 
     @Id
     private String fileId;
+
+    @Column(
+            name = "user_id",
+            updatable = false,
+            insertable = false
+    )
+    private String ownerID;
 
     private long fileSize;
 

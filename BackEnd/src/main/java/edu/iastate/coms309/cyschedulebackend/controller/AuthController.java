@@ -31,8 +31,6 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 public class AuthController {
     /*
     Maybe a improve point
-        - /getChallenge api may leak user information whatever user exist or not should generate same information
-
     */
 
     @Autowired

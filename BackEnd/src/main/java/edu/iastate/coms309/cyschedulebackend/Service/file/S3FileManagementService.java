@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import edu.iastate.coms309.cyschedulebackend.exception.io.FileUploadFailedException;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.FileObjectRepository;
@@ -66,7 +67,7 @@ public class S3FileManagementService extends FileManagementService {
     }
 
     @Override
-    public FileObject putFile(MultipartFile file,String fileType) {
+    public FileObject putFile(MultipartFile file,String fileType) throws FileUploadFailedException {
         //construct file object Metadata
         ObjectMetadata data = new ObjectMetadata();
         data.setContentLength(file.getSize());
@@ -83,7 +84,7 @@ public class S3FileManagementService extends FileManagementService {
         try {
             bucket.putObject(bucketName, fileObject.toString(),file.getInputStream(), data);
         } catch (IOException e) {
-            return null;
+            throw new FileUploadFailedException();
         }
 
         fileObjectRepository.save(fileObject);
