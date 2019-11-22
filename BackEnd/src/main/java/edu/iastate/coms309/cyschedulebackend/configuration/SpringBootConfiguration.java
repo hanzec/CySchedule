@@ -1,6 +1,7 @@
 package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import com.google.gson.*;
+import edu.iastate.coms309.cyschedulebackend.Service.EventService;
 import edu.iastate.coms309.cyschedulebackend.Utils.SpringfoxJsonToGsonAdapter;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,11 @@ import java.time.ZonedDateTime;
 @EnableSwagger2
 @EnableTransactionManagement
 public class SpringBootConfiguration {
+
+    @Bean
+    public EventService eventService(){
+        return new EventService();
+    }
 
     @Bean
     public GsonHttpMessageConverter gsonHttpMessageConverter() {
