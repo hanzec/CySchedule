@@ -23,7 +23,6 @@ import java.time.ZonedDateTime;
 @Configuration
 @EnableCaching
 @EnableSwagger2
-@EnableTransactionManagement
 public class SpringBootConfiguration {
 
     @Bean
