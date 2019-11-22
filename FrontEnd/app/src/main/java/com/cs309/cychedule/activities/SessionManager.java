@@ -25,8 +25,6 @@ public class SessionManager
     public static final String SECRET = "secret";
     public static final String TOKEN_ID = "tokenID";
     public static final String REFRESH_KEY = "refreshKey";
-    private static final String USER_NAME = "userName";
-    private static final String EMAIL = "email";
 
 
     public SessionManager(Context context) {
@@ -40,13 +38,6 @@ public class SessionManager
         editor.putString(SECRET, secret);
         editor.putString(TOKEN_ID, tokenID);
         editor.putString(REFRESH_KEY, refreshKey);
-        editor.apply();
-    }
-    
-    public void storeUserInfo(String userName, String email) {
-        editor.putBoolean(LOGIN, true);
-        editor.putString(USER_NAME, userName);
-        editor.putString(EMAIL, email);
         editor.apply();
     }
     
@@ -72,14 +63,6 @@ public class SessionManager
         loginToken.put(TOKEN_ID, sharedPreferences.getString(TOKEN_ID, null));
         loginToken.put(REFRESH_KEY, sharedPreferences.getString(REFRESH_KEY, null));
         return loginToken;
-    }
-
-    public HashMap<String, String> getUserInfo()
-    {
-        HashMap<String, String> user = new HashMap<>();
-        user.put(USER_NAME, sharedPreferences.getString(USER_NAME, null));
-        user.put(EMAIL, sharedPreferences.getString(EMAIL, null));
-        return user;
     }
 
     public void logout()

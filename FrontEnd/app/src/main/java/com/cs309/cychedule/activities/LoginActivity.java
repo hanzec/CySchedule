@@ -120,13 +120,10 @@ public class LoginActivity extends AppCompatActivity {
                                 String secret = (String) loginToken.get("secret");
                                 String tokenID = (String) loginToken.get("tokenID");
                                 String refreshKey = (String) loginToken.get("refreshKey");
-                                String userName = (String) sr.get("username");
-                                String email = (String) sr.get("email");
 //                                String token = loginToken.getString("token").trim();
 //                                String tokenID = loginToken.getString("tokenID").trim();
 //                                String refreshKey = loginToken.getString("refreshKey").trim();
                                 sessionManager.createSession(secret, tokenID, refreshKey);
-                                sessionManager.storeUserInfo(userName, email);
                                 onLoginSuccess();
                             }
                             else
