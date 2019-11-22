@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 
 
-@Service
 public class EventService {
     /*
     Maybe a improve point
@@ -66,9 +65,11 @@ public class EventService {
         event.setName(newEvent.getName());
         event.setAdminUser(userInformation);
         event.setLocation(newEvent.getLocation());
-        event.setStartTimeUnix(event.getStartTime().toEpochSecond());
         event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setStartTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
+
+        //do not switch this line
+        event.setStartTimeUnix(event.getStartTime().toEpochSecond());
         event.setDescription(newEvent.getDescription());
 
         //set relation with user

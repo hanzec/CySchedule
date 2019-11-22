@@ -2,7 +2,6 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-import edu.iastate.coms309.cyschedulebackend.handler.LoginFailureHandler;
 import edu.iastate.coms309.cyschedulebackend.security.filter.TokenFilter;
 import edu.iastate.coms309.cyschedulebackend.security.provider.TokenAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Order(1)
@@ -90,8 +87,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         //login page configuration
         http
-                .formLogin()
-                .failureHandler(new LoginFailureHandler());
+                .formLogin();
 
          //Add our custom JWT security filter
         TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());

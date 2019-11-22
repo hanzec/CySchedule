@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -53,6 +54,9 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "user_id")
     public UserInformation adminUser;
+
+    @OneToMany
+    private Set<FileObject> uploadedFile;
 
     @ManyToMany(mappedBy = "joinedEvent")
     private List<UserInformation> relatedUser;

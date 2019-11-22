@@ -62,6 +62,9 @@ public class UserInformation implements Serializable{
     )
     private Set<Event> managedEvent;
 
+    @OneToMany
+    private Set<FileObject> uploadedFile;
+
     @OneToOne(
             optional = false,
             fetch = FetchType.LAZY,
