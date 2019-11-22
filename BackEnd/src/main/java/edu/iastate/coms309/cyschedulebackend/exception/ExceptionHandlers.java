@@ -7,6 +7,8 @@ import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenAlreadyExpireEx
 import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenVerifyFaildException;
 import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.exception.event.NotPrimitiveException;
+import edu.iastate.coms309.cyschedulebackend.exception.io.FileUploadFailedException;
+import edu.iastate.coms309.cyschedulebackend.exception.user.UserAvatarNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,8 @@ public class ExceptionHandlers {
 
     @ExceptionHandler({
             EventNotFoundException.class,
-            UsernameNotFoundException.class})
+            UsernameNotFoundException.class,
+            UserAvatarNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void GenericNotFoundException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
         sendMessage(ex,request,response);
@@ -62,6 +65,13 @@ public class ExceptionHandlers {
         logger.debug("Request forbidden because " + ex.getClass().getName() + " for endpoint [ " + request.getRequestURI() + "]" );
     }
 
+    @ExceptionHandler({
+            FileUploadFailedException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public void GenericConflictException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        sendMessage(ex,request,response);
+        logger.debug("Request forbidden because " + ex.getClass().getName() + " for endpoint [ " + request.getRequestURI() + "]" );
+    }
     private void sendMessage(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
         MethodArgumentNotValidException c = (MethodArgumentNotValidException) ex;
         List<ObjectError> errors =c.getBindingResult().getAllErrors();

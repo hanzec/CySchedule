@@ -62,12 +62,15 @@ public class EventController {
     @PostMapping(value = "/add")
     @ApiOperation("add new TimeBlock")
     public Response addNewEvent(Principal principal, HttpServletRequest request,  @Validated EventRequest newEvent) throws ParseException {
-        Response response = new Response();
         UserInformation userInformation = accountService.getUserInformation(principal.getName());
+
         eventService.addEvent(newEvent,userInformation);
 
         logger.debug("A new event for user [" + principal.getName() + "] is success created");
-        return response.Created().send(request.getRequestURI());
+
+        return new Response()
+                .Created()
+                .send(request.getRequestURI());
     }
 
     @ApiOperation("delete timeBlock by id")
@@ -75,7 +78,7 @@ public class EventController {
     public Response deleteTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID) {
         Response response = new Response();
 
-        // check ownership
+        // check ownership( will migrate to decision manager)
         if (eventService.checkOwnerShip(eventID, principal.getName()))
             return response.Forbidden().send(request.getRequestURI()).Created();
 
@@ -98,13 +101,9 @@ public class EventController {
     public Response updateTimeBlock(Principal principal, HttpServletRequest request, @PathVariable String eventID, @Validated EventRequest newEvent) throws ParseException, EventNotFoundException {
         Response response = new Response();
 
-        // check ownership
+        // check ownership( will migrate to decision manager)
         if (!eventService.checkOwnerShip(eventID, principal.getName()))
             return response.Forbidden().send(request.getRequestURI()).Created();
-
-        // check existence
-        if (!eventService.existByID(eventID))
-            return response.NotFound().send(request.getRequestURI());
 
         eventService.updateEvent(newEvent, eventID);
         logger.debug("A updated event for user [" + principal.getName() + "] is success updated");
