@@ -55,11 +55,7 @@ import io.jsonwebtoken.security.Keys;
  * It contains all our functions' fragments
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 7fbcf403f3caa67f79b7cebf532c8b50e76cc926
     private static String URL_INFO = "https://dev.hanzec.com/api/v1/user/";
     SessionManager sessionManager;
     private AppBarConfiguration mAppBarConfiguration;
@@ -67,11 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String output_text;
     static String userName;
     static String email;
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 7fbcf403f3caa67f79b7cebf532c8b50e76cc926
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         
@@ -80,11 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
-<<<<<<< HEAD
         
-=======
-
->>>>>>> 7fbcf403f3caa67f79b7cebf532c8b50e76cc926
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -126,25 +114,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ImageView _avator = headerView.findViewById(R.id.nav_header_avatar);
         final TextView _name = headerView.findViewById(R.id.nav_header_name);
         final TextView _email = headerView.findViewById(R.id.nav_header_email);
-<<<<<<< HEAD
         
         final RequestQueue requestQueue = Singleton.getInstance(this).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.start();
         
-=======
-
-        final RequestQueue requestQueue = Singleton.getInstance(this).getRequestQueue();
-        //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.start();
-
->>>>>>> 7fbcf403f3caa67f79b7cebf532c8b50e76cc926
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_INFO,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try
                         {
+                            Log.e("TAG",response);
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
                             Map sr = serverResponse.getResponseBody();
@@ -202,9 +183,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     
     public String generateToken(String requestUrl, String tokenID, String password){
-        // if (tokenID.isEmpty()){
-        //     throw new NullPointerException();
-        // }
+        if (tokenID.isEmpty()){
+            throw new NullPointerException();
+        }
         Key key = Keys.hmacShaKeyFor(password.getBytes());
         return Jwts.builder()
                 .signWith(key)
@@ -214,20 +195,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setExpiration(new Date(System.currentTimeMillis() + 20000))
                 .compact();
     }
-<<<<<<< HEAD
-=======
-
-    private String generateToken(String requestUrl, String tokenID, String password){
-        Key key = Keys.hmacShaKeyFor(password.getBytes());
-        return Jwts.builder()
-                .signWith(key)
-                .setId(tokenID)
-                .setIssuer("CySchedule")
-                .claim("requestUrl",requestUrl)
-                .setExpiration(new Date(System.currentTimeMillis() + 20000))
-                .compact();
-    }
->>>>>>> 7fbcf403f3caa67f79b7cebf532c8b50e76cc926
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
