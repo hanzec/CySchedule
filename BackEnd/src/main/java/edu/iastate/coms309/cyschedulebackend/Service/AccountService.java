@@ -3,6 +3,8 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
+import edu.iastate.coms309.cyschedulebackend.exception.user.UserAvatarNotFoundException;
+import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
@@ -25,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.PushBuilder;
 import java.io.File;
 import java.util.Set;
 import java.util.UUID;
@@ -83,6 +86,55 @@ public class AccountService implements UserDetailsService{
         logger.info("New User with id :[" + userCredential.getUserID() + "] is created");
     }
 
+//    public FileObject getAvatar(String id) throws UserAvatarNotFoundException {
+////        if(userInformationRepository.isAvatarExist(id))
+////            throw new UserAvatarNotFoundException(id);
+//        logger.debug("New avatar request for user :[" + id + "]");
+//        return userInformationRepository.getUserAvatar(id);
+//    }
+
+    @Async
+    @Transactional
+    public void updateAvatar(String id, FileObject fileObject){
+
+        if(!userInformationRepository.existsById(id))
+            throw new UsernameNotFoundException(id);
+
+        UserInformation userInformation =  userInformationRepository.getOne(id);
+
+        userInformation.setAvatar(fileObject);
+
+        userInformationRepository.save(userInformation);
+    }
+
+    public void checkPassword(String email, String password) throws PasswordNotMatchException {
+        if (!passwordEncoder.matches(password, userCredentialRepository.getOne(email).getPassword()))
+            throw new PasswordNotMatchException(email);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserCredential userCredential;
+        if (this.existsByEmail(email))
+            userCredential = userCredentialRepository.getOne(email);
+        else
+            throw new UsernameNotFoundException("username " + email + " is not found");
+        return userCredential;
+    }
+
+    @Transactional
+    public void resetPassword(String userID, String newPassword, String oldPassword) throws PasswordNotMatchException {
+
+        UserCredential userCredential = userCredentialRepository.getByUserID(userID);
+
+        if(!passwordEncoder.matches(userCredential.getPassword(),oldPassword))
+            throw new PasswordNotMatchException(userCredential.getEmail());
+
+        userCredential.setPassword(passwordEncoder.encode(newPassword));
+
+        userCredentialRepository.save(userCredential);
+    }
+
     @Cacheable(
             value = "false",
             unless = "#result == false"
@@ -91,32 +143,11 @@ public class AccountService implements UserDetailsService{
 
     public UserInformation getUserInformation(String userID){ return userInformationRepository.getOne(userID); }
 
-    public UserCredential getUserCredential(String userID){return userCredentialRepository.getByUserID(userID); }
-
-    @Async
-    @Transactional
-    public void updateUserCredential(UserCredential userCredential){ userCredentialRepository.save(userCredential); }
-
     @Async
     @Transactional
     public void updateUserInformation(UserInformation userInformation){ userInformationRepository.save(userInformation); }
 
     @Cacheable(value = "email", key = "#userID + '_id'")
-    public String getUserEmail(String userID) {
-        return userCredentialRepository.getUserEmailByUserID(userID); }
+    public String getUserEmail(String userID) { return userCredentialRepository.getUserEmailByUserID(userID); }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserCredential userCredential;
-        if (userCredentialRepository.existsById(email))
-            userCredential = userCredentialRepository.getOne(email);
-        else
-            throw new UsernameNotFoundException("username " + email + " is not found");
-        return userCredential;
-    }
-
-    public PasswordEncoder getPasswordEncoder(){ return passwordEncoder; }
-    public boolean checkPassword(String email, String password){
-        return passwordEncoder.matches(password, userCredentialRepository.getOne(email).getPassword());
-    }
 }

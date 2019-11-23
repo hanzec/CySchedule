@@ -61,16 +61,6 @@ public class SessionManager
         editor.apply();
     }
     
-  
-    
-    public void setUseriInfo(String KEY, String VALUE) {
-        editor.putString(KEY, VALUE);
-    }
-    
-    public String getUserInfo(String KEY) {
-        return sharedPreferences.getString(KEY,null);
-    }
-    
     public boolean isLogin()
     {
         return sharedPreferences.getBoolean(LOGIN, false);
@@ -88,11 +78,11 @@ public class SessionManager
 
     public HashMap<String, String> getLoginToken()
     {
-        HashMap<String, String> user = new HashMap<>();
-        user.put(SECRET, sharedPreferences.getString(SECRET, null));
-        user.put(TOKEN_ID, sharedPreferences.getString(TOKEN_ID, null));
-        user.put(REFRESH_KEY, sharedPreferences.getString(REFRESH_KEY, null));
-        return user;
+        HashMap<String, String> loginToken = new HashMap<>();
+        loginToken.put(SECRET, sharedPreferences.getString(SECRET, null));
+        loginToken.put(TOKEN_ID, sharedPreferences.getString(TOKEN_ID, null));
+        loginToken.put(REFRESH_KEY, sharedPreferences.getString(REFRESH_KEY, null));
+        return loginToken;
     }
 
     public void logout()

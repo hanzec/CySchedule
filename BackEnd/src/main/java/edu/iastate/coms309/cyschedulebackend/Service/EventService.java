@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 
 
-@Service
 public class EventService {
     /*
     Maybe a improve point
@@ -38,7 +37,11 @@ public class EventService {
     EventRepository eventRepository;
 
     @Transactional
-    public Event updateEvent(EventRequest newEvent, String eventID) throws ParseException {
+    public Event updateEvent(EventRequest newEvent, String eventID) throws ParseException, EventNotFoundException {
+
+        if(!this.existByID(eventID))
+            throw new EventNotFoundException(eventID);
+
         Event event = eventRepository.getOne(eventID);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("E LLL dd HH:mm:ss z yyyy",Locale.US);
 
@@ -62,9 +65,11 @@ public class EventService {
         event.setName(newEvent.getName());
         event.setAdminUser(userInformation);
         event.setLocation(newEvent.getLocation());
-        event.setStartTimeUnix(event.getStartTime().toEpochSecond());
         event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setStartTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
+
+        //do not switch this line
+        event.setStartTimeUnix(event.getStartTime().toEpochSecond());
         event.setDescription(newEvent.getDescription());
 
         //set relation with user
@@ -96,7 +101,6 @@ public class EventService {
     @Transactional
     public void deleteEvent(String id){ eventRepository.deleteById(id); }
 
-    @Transactional
     @Cacheable(
             value = "false",
             unless = "#result == true"

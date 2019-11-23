@@ -11,8 +11,8 @@ import java.util.Set;
 @Repository
 public interface EventRepository extends JpaRepository<Event,String> {
     @Query("From Event e WHERE e.adminUserID = ?1 ORDER BY start_timex_unix ASC")
-    public List<Event> getManagedEvent(String userId);
+    List<Event> getManagedEvent(String userId);
 
     @Query("FROM Event e INNER JOIN e.relatedUser user WHERE user.UserID = ?1 ORDER BY start_time_unix ASC")
-    public List<Event> getJoinedEvent(String userID);
+    List<Event> getJoinedEvent(String userID);
 }

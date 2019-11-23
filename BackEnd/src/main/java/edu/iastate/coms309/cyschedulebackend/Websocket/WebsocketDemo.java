@@ -44,11 +44,8 @@ import com.google.gson.Gson;
 public class WebsocketDemo {
     
     private Logger logger = LoggerFactory.getLogger(WebsocketDemo.class);
-    //private static ApplicationContext applicationContext;
-    
-
-    //private static CopyOnWriteArraySet<WebsocketDemo> webSocketSet = new CopyOnWriteArraySet<WebsocketDemo>();
     private static ConcurrentHashMap<String, WebsocketDemo> webSocketSet = new ConcurrentHashMap<String, WebsocketDemo>();
+    private static ConcurrentHashMap<String, Session> TestSet = new ConcurrentHashMap<String, Session>();
     private static int onlineCount = 0;
     private Session session;
     private String userId;
@@ -63,26 +60,45 @@ public class WebsocketDemo {
     @OnOpen
     public void onOpen(Session session) throws IOException{
         this.session = session;
-        user = accountService.getUserInformation(session.getUserPrincipal().getName());
-        userId = user.getUserID();
+        
+        if(session.getUserPrincipal()== null) {
+        	user = null;
+        	userId = "test"+String.valueOf(onlineCount);
+        	try {
+    			session.getBasicRemote().sendText("hello " + userId);
+    			//logger.debug("{} message send",userId);
+    			webSocketSet.put(userId, this);
+    			TestSet.put(userId, session);
+    			session.getBasicRemote().sendText(""+TestSet.size());
+    			
+    		} catch (IOException e) {
+    			e.printStackTrace();
+                //logger.debug("User {} message send error",userId);
+    		}
+        }
+        else {
+        	this.user = accountService.getUserInformation(session.getUserPrincipal().getName());
+            this.userId = session.getUserPrincipal().getName();
+            
+            logger.debug("new connection import");
+            
+            r = new HashSet();
+            r = user.getManagedEvent();
+            webSocketSet.put(userId, this);
+            
+            Gson gson = new Gson();
+            String json = gson.toJson(r);
+            
+            //Set<Event> r = user.getManagedEvent();
+            try {
+    			session.getBasicRemote().sendText(json);
+    			logger.debug("{} message send",userId);
+    		} catch (IOException e) {
+    			e.printStackTrace();
+                logger.debug("User {} message send error",userId);
+    		}
+        }
         onlineCount++;
-        logger.debug("new connection import");
-        
-        r = new HashSet();
-        r = user.getManagedEvent();
-        webSocketSet.put(userId, this);
-        
-        Gson gson = new Gson();
-        String json = gson.toJson(r);
-        
-        //Set<Event> r = user.getManagedEvent();
-        try {
-			session.getBasicRemote().sendText(json);
-			logger.debug("{} message send",userId);
-		} catch (IOException e) {
-			e.printStackTrace();
-            logger.debug("User {} message send error",userId);
-		}
       
         //logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
         
@@ -110,18 +126,23 @@ public class WebsocketDemo {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.debug("receive message from User {}: {}",this.userId,message);
-        this.sendToUser(message);
+        this.sendToUser(message,session);
     }
-    
-    public void sendToUser(String message) {
+    //for test use only now
+    public void sendToUser(String message,Session session) {
         String sendUserno = message.split("|")[0];
         String sendMessage = message.split("|")[1];
+        
         //String now = getNowTime();
         try {
-            if (webSocketSet.get(sendUserno) != null) {
-                webSocketSet.get(sendUserno).sendMessage("ms|"+this.userId+"|"+sendMessage);
+            
+            if (TestSet.contains(sendUserno)) {
+                TestSet.get(sendUserno).getBasicRemote().sendText("ms|"+this.userId+"|"+sendMessage);
+                //System.out.println("ms|"+this.userId+"|"+sendMessage);
             } else {
-                this.sendMessage("Target user is current offline now, try again later");
+                this.session.getBasicRemote().sendText("Target user is current offline now, try again later");
+                //System.out.println("Target user is current offline now, try again later");
+                
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -199,7 +220,7 @@ public class WebsocketDemo {
     }
     
     public void sendMessage(String message) throws IOException {
-        this.session.getBasicRemote().sendText(message);
+        session.getBasicRemote().sendText(message);
     }
 
     

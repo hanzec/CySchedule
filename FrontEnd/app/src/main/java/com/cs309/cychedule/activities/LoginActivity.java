@@ -109,15 +109,10 @@ public class LoginActivity extends AppCompatActivity {
                             // String response_value = jsonObj.getString("response");
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
-                            Map loginToken = (Map) serverResponse.getResponseBody().get("loginToken");
-                            Map body = serverResponse.getResponseBody();
+                            Map sr = serverResponse.getResponseBody();
+                            Map loginToken = (Map) sr.get("loginToken");
                             if (serverResponse.isSuccess())
                             {
-                                Log.e(TAG,body.toString());
-                                // Log.e(TAG,response_value);
-                                // Log.e(TAG,response_map.toString());
-                                Log.e(TAG,response);
-
                                 Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                 String secret = (String) loginToken.get("secret");
                                 String tokenID = (String) loginToken.get("tokenID");
@@ -125,11 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 //                                String token = loginToken.getString("token").trim();
 //                                String tokenID = loginToken.getString("tokenID").trim();
 //                                String refreshKey = loginToken.getString("refreshKey").trim();
-                                String name = (String) body.get("firstName") + (String) body.get("lastName");
-                                String email = (String) body.get("email");
                                 sessionManager.createSession(secret, tokenID, refreshKey);
-                                sessionManager.setUseriInfo("NAME",name);
-                                sessionManager.setUseriInfo("EMAIL",email);
                                 onLoginSuccess();
                             }
                             else
@@ -162,12 +153,6 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("email", email);
                 params.put("password", password);
                 return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> loginToken = sessionManager.getLoginToken();
-                return loginToken;
             }
         };
         //requestQueue.add(stringRequest);

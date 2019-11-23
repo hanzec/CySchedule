@@ -13,8 +13,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cs309.cychedule.activities.ui.home.HomeFragment;
-import com.cs309.cychedule.activities.ui.home.HomeRecyclerAdapter;
-import com.cs309.cychedule.utilities.UserUtil;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -66,7 +64,6 @@ public class SocketService extends Service {
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
-        
         Toast.makeText(context, "Service started!" , Toast.LENGTH_LONG).show();
     }
 
@@ -128,10 +125,10 @@ public class SocketService extends Service {
                 public void onMessage(String message) {
                     Log.d("MESSAGE", "Server sent: " + message);
                     HomeFragment.getEvents(message);
-                    Looper.prepare();
-                    //Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
-                    //UserUtil.notificationHandler(context, 1, "Received a server message:", message);
-                    Looper.loop();
+//                    Looper.prepare();
+//                    Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
+//                    UserUtil.notificationHandler(context, 1, "Received a server message:", message);
+//                    Looper.loop();
                 }
 
                 @Override
