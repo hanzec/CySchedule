@@ -19,7 +19,9 @@ public class SessionManager
     public SharedPreferences.Editor editor;
     public Context context;
     int PRIVATE_MODE = 0;
-
+    public String tokenID;
+    public String userName;
+    
     private static final String PREF_NAME = "LOGIN";
     private static final String LOGIN = "IS_LOGIN";
     public static final String SECRET = "secret";
@@ -33,6 +35,24 @@ public class SessionManager
         editor = sharedPreferences.edit();
     }
     
+    public SessionManager(String tokenID,String userName){
+        this.tokenID = tokenID;
+        this.userName = userName;
+    }
+    
+    public void initSession(String tokenID,String userName){
+        this.tokenID = tokenID;
+        this.userName = userName;
+    }
+    
+    public String getTokenID(){
+        return this.tokenID;
+    }
+    
+    public String getUserName(){
+        return this.userName;
+    }
+    
     public void createSession(String secret, String tokenID, String refreshKey) {
         editor.putBoolean(LOGIN, true);
         editor.putString(SECRET, secret);
@@ -40,6 +60,8 @@ public class SessionManager
         editor.putString(REFRESH_KEY, refreshKey);
         editor.apply();
     }
+    
+  
     
     public void setUseriInfo(String KEY, String VALUE) {
         editor.putString(KEY, VALUE);

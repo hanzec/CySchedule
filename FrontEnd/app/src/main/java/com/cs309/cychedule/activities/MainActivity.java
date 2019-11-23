@@ -1,8 +1,6 @@
 package com.cs309.cychedule.activities;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.text.InputType;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -25,36 +24,56 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.patterns.Singleton;
 import com.cs309.cychedule.services.SocketService;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.google.gson.Gson;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * MainActivity is the activity of our app's home page
  * It contains all our functions' fragments
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+    
+    private static String URL_INFO = "https://dev.hanzec.com/api/v1/user/";
     SessionManager sessionManager;
     private AppBarConfiguration mAppBarConfiguration;
     private String output_dest;
     private String output_text;
+    static String userName;
+    static String email;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         getBaseContext();
@@ -81,22 +100,71 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         startService(new Intent(this, SocketService.class));
-    
+        
         Menu menuView = navigationView.getMenu();
         MenuItem _send = menuView.findItem(R.id.nav_send);
         _send.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-              outputDialog();
-               return true;
+                outputDialog();
+                return true;
             }
         });
         View headerView = navigationView.getHeaderView(0);
         ImageView _avator = headerView.findViewById(R.id.nav_header_avatar);
         final TextView _name = headerView.findViewById(R.id.nav_header_name);
-        TextView _email = headerView.findViewById(R.id.nav_header_email);
-        _name.setText(sessionManager.getUserInfo("NAME"));
-        _email.setText(sessionManager.getUserInfo("EMAIL"));
+        final TextView _email = headerView.findViewById(R.id.nav_header_email);
+        
+        final RequestQueue requestQueue = Singleton.getInstance(this).getRequestQueue();
+        //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.start();
+        
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_INFO,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try
+                        {
+                            Log.e("TAG",response);
+                            Gson gson = new Gson();
+                            ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+                            Map sr = serverResponse.getResponseBody();
+                            if (serverResponse.isSuccess())
+                            {
+                                userName = (String) sr.get("username");
+                                email = (String) sr.get("email");
+                                _name.setText(userName);
+                                _email.setText(email);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                            Log.e("TAG", e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.toString());                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> requestHeader = new HashMap<String, String>();
+                if(sessionManager.getLoginToken().get("tokenID") != null)
+                    requestHeader.put("Authorization", generateToken(
+                            "I don't know",
+                            sessionManager.getLoginToken().get("tokenID"),
+                            sessionManager.getLoginToken().get("secret")));
+                return requestHeader;
+            }
+        };
+        //requestQueue.add(stringRequest);
+        Singleton.getInstance(this).addToRequestQueue(stringRequest);
+//        _name.setText(userName);
+//        _email.setText(email);
         _avator.setImageResource(R.drawable.gitcat2);
         _avator.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,9 +178,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText( getBaseContext(), "Hello, "+_name.getText(), Toast.LENGTH_LONG).show();
             }
         });
-    
+        _name.setText("aaaaaa");
+        _email.setText("bbbbbbbb");
     }
-
+    
+    public String generateToken(String requestUrl, String tokenID, String password){
+        // if (tokenID.isEmpty()){
+        //     throw new NullPointerException();
+        // }
+        Key key = Keys.hmacShaKeyFor(password.getBytes());
+        return Jwts.builder()
+                .signWith(key)
+                .setId(tokenID)
+                .setIssuer("CySchedule")
+                .claim("requestUrl",requestUrl)
+                .setExpiration(new Date(System.currentTimeMillis() + 20000))
+                .compact();
+    }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.main3, menu);
         return true;
     }
-
+    
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -186,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         input_dest.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         input_dest.setHint("Receiver(Email)");
         layout.addView(input_dest);
-    
+        
         final EditText input_text = new EditText(this);
         input_text.setInputType(InputType.TYPE_CLASS_TEXT);
         input_text.setHint("Text message");
@@ -294,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
         dia.show();
     }
+    
     
 }
 

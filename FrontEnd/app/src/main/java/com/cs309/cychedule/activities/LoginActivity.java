@@ -29,11 +29,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import com.cs309.cychedule.R;
-import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
-import com.cs309.cychedule.patterns.Singleton;
-import com.google.gson.Gson;
-
 /**
  * LoginActivity is the activity of the login page
  * We put all the login logic here
@@ -58,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         sessionManager = new SessionManager(this);
-
+       
         _loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +72,8 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+        _emailText.setText("user@example.com");
+        _passwordText.setText("password");
     }
 
     public void login() {

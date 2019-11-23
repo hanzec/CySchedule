@@ -1,15 +1,37 @@
 package com.cs309.cychedule.activities.ui.home;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.SessionManager;
+import com.cs309.cychedule.patterns.Singleton;
+import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
+import com.google.gson.Gson;
 
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 /**
  * This class is to show the events in current week with recycle view
@@ -19,9 +41,22 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
     private ArrayList<Event> mockEvents;
     private final int VIEW_TYPE_ITEM = 1;
     private final int VIEW_TYPE_HEADER = 0;
-
+SessionManager sessionManager;
     EventThisWeekRecyclerAdapter() {
         this.mockEvents = generateMockEvents();
+    }
+    
+    
+    Context context;
+    
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        context = recyclerView.getContext();
+    }
+    
+    EventThisWeekRecyclerAdapter(ArrayList<Event> eventList) {
+        this.mockEvents =eventList;
     }
 
     @NonNull
@@ -109,16 +144,84 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
             this.comment = comment;
         }
     }
-
+    private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
     // generate fake data, the first position is the place holder for the header
-    private ArrayList<Event> generateMockEvents() {
-        ArrayList<Event> mockEvents = new ArrayList<>();
-        mockEvents.add(new Event("header", "header", "header"));
-        int hrs = 12;
-        for (int i = 1; i < 10; i++) {
-            Event event = new Event(hrs+":" + i, "Middle Earth", "U see how it works, little brother?");
-            mockEvents.add(event);
-        }
+    public ArrayList<Event> generateMockEvents() {
+        // ArrayList<Event> mockEvents = new ArrayList<>();
+        // mockEvents.add(new Event("header", "header", "header"));
+        // mockEvents.add(new Event("12:03", "Canada", "test TTS"));
+        // mockEvents.add(new Event("event this week", "event this week", "event this week"));
+        // mockEvents.add(new Event("alarm header", "alarm header", "alarm header"));
+        this.mockEvents = new ArrayList<>();
+       final RequestQueue requestQueue = Singleton.getInstance(context).getRequestQueue();
+        requestQueue.start();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.e("TAG",response);
+                            Toast.makeText(context, response, Toast.LENGTH_LONG).show();
+                            Gson gson = new Gson();
+                            ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+                            Map<String, Object> events = serverResponse.getResponseBody();
+                        
+                            for(Map.Entry<String,Object> entry : events.entrySet()){
+                                if(entry instanceof Map) {
+                                    Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
+                                    mockEvents.add(new EventThisWeekRecyclerAdapter.Event(
+                                            gson.fromJson(event.get("endTime").toString(),
+                                                    Calendar.class).toString(),
+                                                    event.get("location").toString(),
+                                                    event.get("description").toString()));
+                                }
+                            }
+                        
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                            Log.e("TAG",e.toString());
+                             // Toast.makeText(context, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG",error.toString());
+                        // Toast.makeText(context, "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> requestHeader = new HashMap<String, String>();
+                if(sessionManager.getLoginToken().get("tokenID") != null)
+                    requestHeader.put("Authorization", generateToken(
+                            "I don't know",
+                            sessionManager.getLoginToken().get("tokenID"),
+                            sessionManager.getLoginToken().get("secret")));
+                return requestHeader;
+            }
+        };
+        // requestQueue.add(stringRequest);
+        Singleton.getInstance(context).addToRequestQueue(stringRequest);
+        mockEvents.add(new EventThisWeekRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
+        // mockEvents.add(new EventThisWeekRecyclerAdapter.Event("event this week", "event this week", "event this week"));
+        // mockEvents.add(new EventThisWeekRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
+        //
         return mockEvents;
+    }
+    
+    private String generateToken(String requestUrl, String tokenID, String password){
+        Key key = Keys.hmacShaKeyFor(password.getBytes());
+        return Jwts.builder()
+                .signWith(key)
+                .setId(tokenID)
+                .setIssuer("CySchedule")
+                .claim("requestUrl",requestUrl)
+                .setExpiration(new Date(System.currentTimeMillis() + 20000))
+                .compact();
     }
 }

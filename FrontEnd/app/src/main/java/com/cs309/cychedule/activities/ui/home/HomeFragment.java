@@ -39,9 +39,11 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -93,80 +95,79 @@ public class HomeFragment extends Fragment {
 
 	private void init() {
 		final Activity activity = getActivity();
-
-
 		recyclerView = activity.findViewById(R.id.fragment_home_recyclerview);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
 		recyclerView.setLayoutManager(layoutManager);
-
 		recyclerView.setNestedScrollingEnabled(true);
 
 /**改逻辑看这里!*/
 		//空页面, 什么数据都没的情况
-		//ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyHomeData();
+		ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyHomeData();
 		//空list
-		//ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyAlarmHomeData();
+		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyAlarmHomeData();
 		//塞数据
-		ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateHomeData();
+		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateHomeData();
+		//服务器数据
+		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = getServerList();
 		renderHomeView(homeData, activity);
 		//如果你想关闭下拉刷新的话
 		initScrollListener();
 
 
-		//refresh layout
-		RefreshLayout refreshLayout = activity.findViewById(R.id.refreshLayout);
-		refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-			@Override
-			public void onRefresh(RefreshLayout refreshlayout) {
-				final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
-				//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-				requestQueue.start();
-
-				StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
-						new Response.Listener<String>() {
-							@Override
-							public void onResponse(String response) {
-								try
-								{
-									events = response;
-									Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
-								}
-								catch (Exception e)
-								{
-									e.printStackTrace();
-									Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
-								}
-							}
-						},
-						new Response.ErrorListener() {
-							@Override
-							public void onErrorResponse(VolleyError error) {
-								Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
-							}
-						})
-				{
-					@Override
-					public Map<String, String> getHeaders() throws AuthFailureError {
-						Map<String, String> requestHeader = new HashMap<String, String>();
-						if(sessionManager.getLoginToken().get("tokenID") != null)
-							requestHeader.put("Authorization", generateToken(
-									"I don't know",
-									sessionManager.getLoginToken().get("tokenID"),
-									sessionManager.getLoginToken().get("secret")));
-						return requestHeader;
-					}
-				};
-				//requestQueue.add(stringRequest);
-				Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
-				refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-			}
-		});
-		refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-			@Override
-			public void onLoadMore(RefreshLayout refreshlayout) {
-				refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-			}
-		});
+	// 	//refresh layout
+	// 	RefreshLayout refreshLayout = activity.findViewById(R.id.refreshLayout);
+	// 	refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+	// 		@Override
+	// 		public void onRefresh(RefreshLayout refreshlayout) {
+	// 			final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
+	// 			//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+	// 			requestQueue.start();
+	//
+	// 			StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+	// 					new Response.Listener<String>() {
+	// 						@Override
+	// 						public void onResponse(String response) {
+	// 							try
+	// 							{
+	// 								events = response;
+	// 								Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
+	// 							}
+	// 							catch (Exception e)
+	// 							{
+	// 								e.printStackTrace();
+	// 								Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+	// 							}
+	// 						}
+	// 					},
+	// 					new Response.ErrorListener() {
+	// 						@Override
+	// 						public void onErrorResponse(VolleyError error) {
+	// 							Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+	// 						}
+	// 					})
+	// 			{
+	// 				@Override
+	// 				public Map<String, String> getHeaders() throws AuthFailureError {
+	// 					Map<String, String> requestHeader = new HashMap<String, String>();
+	// 					if(sessionManager.getLoginToken().get("tokenID") != null)
+	// 						requestHeader.put("Authorization", generateToken(
+	// 								"I don't know",
+	// 								sessionManager.getLoginToken().get("tokenID"),
+	// 								sessionManager.getLoginToken().get("secret")));
+	// 					return requestHeader;
+	// 				}
+	// 			};
+	// 			//requestQueue.add(stringRequest);
+	// 			Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+	// 			refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+	// 		}
+	// 	});
+	// 	refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+	// 		@Override
+	// 		public void onLoadMore(RefreshLayout refreshlayout) {
+	// 			refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+	// 		}
+	// 	});
 	}
 
 	private String generateToken(String requestUrl, String tokenID, String password){
@@ -306,6 +307,126 @@ public class HomeFragment extends Fragment {
 		}
 		return list;
 	}
+	
+	// ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
+	// public ArrayList<HomeRecyclerAdapter.HomeData> getServerList() {
+	// 	list = new ArrayList<>();
+	// 	StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+	// 			new Response.Listener<String>() {
+	// 				@Override
+	// 				public void onResponse(String response) {
+	// 					try {
+	// 						Gson gson = new Gson();
+	// 						ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+	// 						Map<String, Object> events = serverResponse.getResponseBody();
+	//
+	// 						for(Map.Entry<String,Object> entry : events.entrySet()){
+	// 							if(entry instanceof Map) {
+	// 								Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
+	// 								list.add(new HomeRecyclerAdapter.Event(
+	// 										gson.fromJson(event.get("endTime").toString(),
+	// 												Calendar.class).toString(),
+	// 										Objects.requireNonNull(event.get("location")).toString(),
+	// 										Objects.requireNonNull(event.get("description")).toString()));
+	// 							}
+	// 						}
+	//
+	// 					}
+	// 					catch (Exception e)
+	// 					{
+	// 						e.printStackTrace();
+	// 						Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+	// 					}
+	// 				}
+	// 			},
+	// 			new Response.ErrorListener() {
+	// 				@Override
+	// 				public void onErrorResponse(VolleyError error) {
+	// 					Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+	// 				}
+	// 			})
+	// 	{
+	// 		@Override
+	// 		public Map<String, String> getHeaders() throws AuthFailureError {
+	// 			Map<String, String> requestHeader = new HashMap<String, String>();
+	// 			if(sessionManager.getLoginToken().get("tokenID") != null)
+	// 				requestHeader.put("Authorization", generateToken(
+	// 						"I don't know",
+	// 						sessionManager.getLoginToken().get("tokenID"),
+	// 						sessionManager.getLoginToken().get("secret")));
+	// 			return requestHeader;
+	// 		}
+	// 	};
+	// 	//requestQueue.add(stringRequest);
+	// 	Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+	// 	list.add(new HomeRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
+	// 	list.add(new HomeRecyclerAdapter.Event("event this week", "event this week", "event this week"));
+	// 	list.add(new HomeRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
+	// 	for (int i = 1; i < 3; i++) {
+	// 		HomeRecyclerAdapter.Alarm event = new HomeRecyclerAdapter.Alarm(i + " Days Left", true, i + " Final Exam");
+	// 		list.add(event);
+	// 	}
+	//
+	// 	return list;
+	// }
+	//
+	// ArrayList<EventThisWeekRecyclerAdapter.Event> list = new ArrayList<>();
+	// public ArrayList<EventThisWeekRecyclerAdapter.Event> getServerList() {
+	// 	this.list = new ArrayList<>();
+	// 	StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+	// 			new Response.Listener<String>() {
+	// 				@Override
+	// 				public void onResponse(String response) {
+	// 					try {
+	// 						Gson gson = new Gson();
+	// 						ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+	// 						Map<String, Object> events = serverResponse.getResponseBody();
+	//
+	// 						for(Map.Entry<String,Object> entry : events.entrySet()){
+	// 							if(entry instanceof Map) {
+	// 								Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
+	// 								list.add(new EventThisWeekRecyclerAdapter.Event(
+	// 										gson.fromJson(event.get("endTime").toString(),
+	// 										Objects.requireNonNull(event.get("location")).toString(),
+	// 										Objects.requireNonNull(event.get("description")).toString()));
+	// 							}
+	// 						}
+	//
+	// 					}
+	// 					catch (Exception e)
+	// 					{
+	// 						e.printStackTrace();
+	// 						Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+	// 					}
+	// 				}
+	// 			},
+	// 			new Response.ErrorListener() {
+	// 				@Override
+	// 				public void onErrorResponse(VolleyError error) {
+	// 					Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+	// 				}
+	// 			})
+	// 	{
+	// 		@Override
+	// 		public Map<String, String> getHeaders() throws AuthFailureError {
+	// 			Map<String, String> requestHeader = new HashMap<String, String>();
+	// 			if(sessionManager.getLoginToken().get("tokenID") != null)
+	// 				requestHeader.put("Authorization", generateToken(
+	// 						"I don't know",
+	// 						sessionManager.getLoginToken().get("tokenID"),
+	// 						sessionManager.getLoginToken().get("secret")));
+	// 			return requestHeader;
+	// 		}
+	// 	};
+	// 	//requestQueue.add(stringRequest);
+	// 	Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+	// 	list.add(new EventThisWeekRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
+	// 	list.add(new EventThisWeekRecyclerAdapter.Event("event this week", "event this week", "event this week"));
+	// 	list.add(new EventThisWeekRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
+	//
+	// 	return list;
+	// }
+	
 
 	public static void getEvents(String s) {
 		events = s;
