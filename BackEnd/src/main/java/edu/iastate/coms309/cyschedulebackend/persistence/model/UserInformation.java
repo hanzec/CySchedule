@@ -39,19 +39,7 @@ public class UserInformation implements Serializable{
     @OneToOne
     private FileObject avatar;
 
-    @ManyToMany
-    @OrderBy("start_time ASC")
-    @JoinTable(
-            name = "user_event",
-            joinColumns = @JoinColumn(
-                    name = "user_id",
-                    referencedColumnName = "user_id"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "event_id",
-                    referencedColumnName = "event_id"
-            )
-    )
+    @ManyToMany(mappedBy = "joinedEvent")
     private Set<Event> joinedEvent;
 
     @OrderBy("start_time ASC")
