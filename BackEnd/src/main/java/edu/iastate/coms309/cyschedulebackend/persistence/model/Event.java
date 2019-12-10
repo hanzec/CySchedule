@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -59,6 +60,6 @@ public class Event {
     private Set<FileObject> uploadedFile;
 
     @ManyToMany(mappedBy = "joinedEvent")
-    private List<UserInformation> relatedUser;
+    private List<UserInformation> relatedUser = new ArrayList<>();
 
 }
