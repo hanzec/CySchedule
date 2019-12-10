@@ -307,5 +307,26 @@ public class WebsocketDemo {
     	p.add(e4);
     	return p;
     }
+    
+    public void pushfromServertoUser(String email, String message) {
+    	if(accountService.existsByEmail(email)) {
+    		webSocketSet.forEach((K,V) ->{
+				if(K.equals(email)) {
+					
+					try {
+						V.getBasicRemote().sendText("ms|"+"serverpush"+"|"+message);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+    		
+    	}
+    	else {
+    		logger.debug("error when authrization, email invalid");
+    	}
+    	
+    }
 
 }
