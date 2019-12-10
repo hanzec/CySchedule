@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         _emailText.setText("user@example.com");
         _passwordText.setText("password");
+        login();
     }
 
     public void login() {
