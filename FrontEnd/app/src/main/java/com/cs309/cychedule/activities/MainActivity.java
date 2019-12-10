@@ -37,15 +37,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.cs309.cychedule.R;
+import com.cs309.cychedule.activities.ui.home.HomeFragment;
+import com.cs309.cychedule.activities.ui.home.STDevent;
 import com.cs309.cychedule.patterns.Singleton;
 import com.cs309.cychedule.services.SocketService;
 import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
 import com.google.gson.Gson;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -242,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return super.onOptionsItemSelected(item);
     }
+    
     
     @Override
     public void onBackPressed() {

@@ -1,13 +1,18 @@
 package com.cs309.cychedule.activities.ui.home;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.AlarmClock;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.annotation.Nullable;
@@ -56,20 +61,20 @@ public class HomeFragment extends Fragment {
 
 	SessionManager sessionManager;
 	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
+	private ArrayList<STDevent> eventList;
+	private ArrayList<HomeRecyclerAdapter.HomeData> homeData;
 
 	private HomeViewModel homeViewModel;
-	private RecyclerView recyclerView;
+	public RecyclerView recyclerView;
 	private boolean isLoading = false;
-
 	private static String events;
-
 	private HomeRecyclerAdapter adapter;
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
 							 ViewGroup container, Bundle savedInstanceState) {
 		homeViewModel =
 				ViewModelProviders.of(this).get(HomeViewModel.class);
-		View root = inflater.inflate(R.layout.fragment_home, container, false);
+		final View root = inflater.inflate(R.layout.fragment_home, container, false);
 //        final TextView textView = root.findViewById(R.id.text_home);
 //        homeViewModel.getText().observe(this, new Observer<String>() {
 //            @Override
@@ -77,11 +82,13 @@ public class HomeFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
-		sessionManager = new SessionManager(getContext());
+		sessionManager = new SessionManager(this.getContext());
 		sessionManager.checkLogin();
 		return root;
 	}
-
+	
+	
+	
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -94,7 +101,7 @@ public class HomeFragment extends Fragment {
 	}
 
 	private void init() {
-		final Activity activity = getActivity();
+		final Activity activity =  getActivity();
 		recyclerView = activity.findViewById(R.id.fragment_home_recyclerview);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
 		recyclerView.setLayoutManager(layoutManager);
@@ -102,74 +109,171 @@ public class HomeFragment extends Fragment {
 
 /**改逻辑看这里!*/
 		//空页面, 什么数据都没的情况
-		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyHomeData();
+		//homeData = generateEmptyHomeData();
 		//空list
-		ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyAlarmHomeData();
+		// homeData = generateEmptyAlarmHomeData();
 		//塞数据
-		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateHomeData();
+		 homeData = generateHomeData();
 		//服务器数据
-		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = getServerList();
-		renderHomeView(homeData, activity);
+		//homeData = getServerList();
+		eventList = new ArrayList<STDevent>();
+		// eventList.add(new STDevent("TESSSST", "TESSSSST,", "TEEEEEST"));
+		// eventList.add(new STDevent("TESSSST", "TESSSSST,", "TEEEEEST"));
+		// eventList.add(new STDevent("TESSSST", "TESSSSST,", "TEEEEEST"));
+		// eventList.add(new STDevent("TESSSST", "TESSSSST,", "TEEEEEST"));
+		// eventList.add(new STDevent("TESSSST", "TESSSSST,", "TEEEEEST"));
+		renderHomeView(eventList, activity);
+		getSeverEvents();
 		//如果你想关闭下拉刷新的话
 		// initScrollListener();
-
-
-	// 	//refresh layout
-	// 	RefreshLayout refreshLayout = activity.findViewById(R.id.refreshLayout);
-	// 	refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-	// 		@Override
-	// 		public void onRefresh(RefreshLayout refreshlayout) {
-	// 			final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
-	// 			//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-	// 			requestQueue.start();
-	//
-	// 			StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
-	// 					new Response.Listener<String>() {
-	// 						@Override
-	// 						public void onResponse(String response) {
-	// 							try
-	// 							{
-	// 								events = response;
-	// 								Toast.makeText(getContext(), "Received Events: " + events, Toast.LENGTH_LONG).show();
-	// 							}
-	// 							catch (Exception e)
-	// 							{
-	// 								e.printStackTrace();
-	// 								Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
-	// 							}
-	// 						}
-	// 					},
-	// 					new Response.ErrorListener() {
-	// 						@Override
-	// 						public void onErrorResponse(VolleyError error) {
-	// 							Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
-	// 						}
-	// 					})
-	// 			{
-	// 				@Override
-	// 				public Map<String, String> getHeaders() throws AuthFailureError {
-	// 					Map<String, String> requestHeader = new HashMap<String, String>();
-	// 					if(sessionManager.getLoginToken().get("tokenID") != null)
-	// 						requestHeader.put("Authorization", generateToken(
-	// 								"I don't know",
-	// 								sessionManager.getLoginToken().get("tokenID"),
-	// 								sessionManager.getLoginToken().get("secret")));
-	// 					return requestHeader;
-	// 				}
-	// 			};
-	// 			//requestQueue.add(stringRequest);
-	// 			Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
-	// 			refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-	// 		}
-	// 	});
-	// 	refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-	// 		@Override
-	// 		public void onLoadMore(RefreshLayout refreshlayout) {
-	// 			refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-	// 		}
-	// 	});
+		
+		// RefreshLayout refreshLayout = activity.findViewById(R.id.refreshLayout);
+		// refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+		// 	@Override
+		// 	public void onRefresh(RefreshLayout refreshlayout) {
+		// 		final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
+		// 		//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+		// 		requestQueue.start();
+		//
+		// 		StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+		// 				new Response.Listener<String>() {
+		// 					@Override
+		// 					public void onResponse(String response) {
+		// 						try {
+		// 							ArrayList<STDevent> serverEventList = new ArrayList<>();
+		// 							Log.e("Adpter.getResponse", response);
+		// 							Gson gson = new Gson();
+		// 							ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+		// 							Map<String, Object> events = serverResponse.getResponseBody();
+		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
+		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
+		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
+		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
+		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
+		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
+		//
+		// 							for (Map.Entry<String, Object> entry : events.entrySet()) {
+		//
+		// 								Log.e("Adpter.addEvent: ", "JUST TEST");
+		// 								Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
+		// 								// mockEvents.add(new Event(
+		// 								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
+		// 								//         event.get("location").toString(),
+		// 								//         event.get("description").toString()));
+		// 								// Log.e("Adpter.addEvent: ",
+		// 								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
+		// 								// Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
+		// 								//         Toast.LENGTH_SHORT).show();
+		// 							}
+		// 							setNewEventList(serverEventList);
+		// 						}
+		// 						catch (Exception e)
+		// 						{
+		// 							e.printStackTrace();
+		// 							Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+		// 						}
+		// 					}
+		// 				},
+		// 				new Response.ErrorListener() {
+		// 					@Override
+		// 					public void onErrorResponse(VolleyError error) {
+		// 						Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+		// 					}
+		// 				})
+		// 		{
+		// 			@Override
+		// 			public Map<String, String> getHeaders() throws AuthFailureError {
+		// 				Map<String, String> requestHeader = new HashMap<String, String>();
+		// 				if(sessionManager.getLoginToken().get("tokenID") != null)
+		// 					requestHeader.put("Authorization", generateToken(
+		// 							"I don't know",
+		// 							sessionManager.getLoginToken().get("tokenID"),
+		// 							sessionManager.getLoginToken().get("secret")));
+		// 				return requestHeader;
+		// 			}
+		// 		};
+		// 		//requestQueue.add(stringRequest);
+		// 		Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+		// 		refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+		// 	}
+		// });
+		// refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+		// 	@Override
+		// 	public void onLoadMore(RefreshLayout refreshlayout) {
+		// 		refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+		// 	}
+		// });
 	}
-
+	
+	
+	public void getSeverEvents() {
+		String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
+		final ArrayList<STDevent> serverEventList = new ArrayList<>();
+		RequestQueue requestQueue = Singleton.getInstance(this.getContext()).getRequestQueue();
+		requestQueue.start();
+		StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+				new Response.Listener<String>() {
+					@Override
+					public void onResponse(String response) {
+						try {
+							Log.e("Adpter.getResponse", response);
+							Gson gson = new Gson();
+							ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+							Map<String, Object> events = serverResponse.getResponseBody();
+							serverEventList.add(new STDevent("T1TTTTT", "TTTTTT", "TTTTT"));
+							serverEventList.add(new STDevent("TT2TTTT", "TTTTTT", "TTTTT"));
+							serverEventList.add(new STDevent("TTT3TTT", "TTTTTT", "TTTTT"));
+							serverEventList.add(new STDevent("TTTTTT", "TTTTTT", "TTTTT"));
+							serverEventList.add(new STDevent("TTTTTT", "TTTTTT", "TTTTT"));
+							serverEventList.add(new STDevent("TTTTTT", "TTTTTT", "TTTTT"));
+							for (Map.Entry<String, Object> entry : events.entrySet()) {
+								
+								Log.e("Adpter.addEvent: ", "JUST TEST");
+								Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
+								// mockEvents.add(new Event(
+								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
+								//         event.get("location").toString(),
+								//         event.get("description").toString()));
+								// Log.e("Adpter.addEvent: ",
+								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
+								// Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
+								//         Toast.LENGTH_SHORT).show();
+							}
+							setNewEventList(serverEventList);
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+							Log.e("getServerEvents", e.toString());
+						}
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						Log.e("getServerEvents", "Add Event Error: " + error.toString());
+					}
+				}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				Map<String, String> requestHeader = new HashMap<String, String>();
+				if (sessionManager.getLoginToken().get("tokenID") != null)
+					requestHeader.put("Authorization", generateToken(
+							"I don't know",
+							sessionManager.getLoginToken().get("tokenID"),
+							sessionManager.getLoginToken().get("secret")));
+				return requestHeader;
+			}
+		};
+		//requestQueue.add(stringRequest);
+		Singleton.getInstance(this.getContext()).addToRequestQueue(stringRequest);
+		serverEventList.add(new STDevent("Header is not shown", "this one is today", "will not be in the week list"));
+	}
+	
+	public void setNewEventList(ArrayList<STDevent> newEventList){
+		final Activity activity = getActivity();
+		this.eventList = newEventList;
+		renderHomeView(eventList,activity);
+	}
 	private String generateToken(String requestUrl, String tokenID, String password){
 		Key key = Keys.hmacShaKeyFor(password.getBytes());
 		return Jwts.builder()
@@ -181,7 +285,7 @@ public class HomeFragment extends Fragment {
 				.compact();
 	}
 
-	private void renderHomeView(ArrayList<HomeRecyclerAdapter.HomeData> homeData, final Activity activity) {
+	private void renderHomeView(ArrayList<STDevent> eventList, final Activity activity) {
 
 		ConstraintLayout emptyView = activity.findViewById(R.id.fragment_home_empty_container);
 		NestedScrollView nonEmptyView = activity.findViewById(R.id.fragment_home_non_empty_container);
@@ -194,7 +298,7 @@ public class HomeFragment extends Fragment {
 			emptyView.setVisibility(View.GONE);
 			nonEmptyView.setVisibility(View.VISIBLE);
 
-			adapter = new HomeRecyclerAdapter(homeData);
+			adapter = new HomeRecyclerAdapter(homeData,eventList);
 
 			adapter.setOnEmptyViewClickListener(new HomeRecyclerAdapter.OnEmptyViewClickListener() {
 				@Override
@@ -203,7 +307,7 @@ public class HomeFragment extends Fragment {
 					navController.navigate(R.id.nav_daysCounter);
 				}
 			});
-
+			
 			recyclerView.setAdapter(adapter);
 		}
 	}
@@ -213,6 +317,10 @@ public class HomeFragment extends Fragment {
 	 * Ref: https://www.journaldev.com/24041/android-recyclerview-load-more-endless-scrolling
 	 */
 
+	
+	private  void initPullDownRefresh(){
+		// 	//refresh layout
+	}
 	private void initScrollListener() {
 
 		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -266,7 +374,7 @@ public class HomeFragment extends Fragment {
 							currentSize + " Days Left", true, "Saturday Every Day");
 					homeData.add(alarm);
 				}
-				adapter = new HomeRecyclerAdapter(homeData);
+				adapter = new HomeRecyclerAdapter(homeData,eventList);
 				recyclerView.setAdapter(adapter);
 				// this line would mess up other switches' status
 //                adapter.notifyDataSetChanged();
@@ -295,16 +403,16 @@ public class HomeFragment extends Fragment {
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateHomeData() {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
-		list.add(new HomeRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
+		list.add(new HomeRecyclerAdapter.Event("23:33", "Header", "test TTS"));
 		// event this week
-		list.add(new HomeRecyclerAdapter.Event("event this week", "event this week", "event this week"));
+		list.add(new HomeRecyclerAdapter.Event("test", "tes222t", "test"));
 		// alarm list header
-		list.add(new HomeRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
+		list.add(new HomeRecyclerAdapter.Event("test", "alarm header", "alarm header"));
 		// alarm list item
-		for (int i = 1; i < 3; i++) {
-			HomeRecyclerAdapter.Alarm event = new HomeRecyclerAdapter.Alarm(i + " Days Left", true, i + " Final Exam");
-			list.add(event);
-		}
+		// for (int i = 1; i < 3; i++) {
+		// 	HomeRecyclerAdapter.Alarm event = new HomeRecyclerAdapter.Alarm(i + " Days Left", true, i + " Final Exam");
+		// 	list.add(event);
+		// }
 		return list;
 	}
 	
@@ -431,4 +539,6 @@ public class HomeFragment extends Fragment {
 	public static void getEvents(String s) {
 		events = s;
 	}
+	
+	
 }

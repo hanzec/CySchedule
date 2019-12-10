@@ -26,15 +26,16 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     private final int VIEW_TYPE_ALARM_ITEM = 3;
     private final int VIEW_TYPE_ALARM_LOADING = 4;
     private final int VIEW_TYPE_ALARM_EMPTY = 5;
-
+    private ArrayList<STDevent> eventList;
 
     private ArrayList<HomeData> mockHomeData;
 
     private OnEmptyViewClickListener mListener;
 
 
-    HomeRecyclerAdapter(ArrayList<HomeData> homeData) {
+    HomeRecyclerAdapter(ArrayList<HomeData> homeData, ArrayList<STDevent> eventList) {
         this.mockHomeData = homeData;
+        this.eventList = eventList;
         // no alarm items
         if (mockHomeData.size() == 3)
             mockHomeData.add(new Alarm("empty", true, "empty"));
@@ -211,7 +212,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             if (recyclerView.getAdapter() == null) {
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(layoutManager);
-                EventThisWeekRecyclerAdapter adapter = new EventThisWeekRecyclerAdapter();
+                EventThisWeekRecyclerAdapter adapter = new EventThisWeekRecyclerAdapter(eventList);
                 recyclerView.setAdapter(adapter);
             }
         }

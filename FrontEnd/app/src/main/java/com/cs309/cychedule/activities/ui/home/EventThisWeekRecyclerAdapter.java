@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,12 +43,17 @@ import io.jsonwebtoken.security.Keys;
  */
 public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThisWeekRecyclerAdapter.EventThisWeekBasicViewHolder> {
 
-    private ArrayList<Event> mockEvents;
+    private ArrayList<STDevent> mockEvents;
     private final int VIEW_TYPE_ITEM = 1;
     private final int VIEW_TYPE_HEADER = 0;
     
-    EventThisWeekRecyclerAdapter() {
-        this.mockEvents = generateMockEvents();
+
+    
+    EventThisWeekRecyclerAdapter(ArrayList<STDevent> eventList) {
+    	if(eventList.size()==0)
+		    this.mockEvents = generateMockEvents();
+    	else
+            this.mockEvents =eventList;
     }
     
     SessionManager sessionManager;
@@ -58,9 +66,7 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
         sessionManager = new SessionManager(context);
     }
     
-    EventThisWeekRecyclerAdapter(ArrayList<Event> eventList) {
-        this.mockEvents =eventList;
-    }
+   
 
     @NonNull
     @Override
@@ -77,7 +83,7 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
 
     @Override
     public void onBindViewHolder(@NonNull EventThisWeekBasicViewHolder viewHolder, int position) {
-        Event event = mockEvents.get(position);
+	    STDevent event = mockEvents.get(position);
         viewHolder.bindView(event);
     }
 
@@ -100,7 +106,7 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
             this.viewType = viewType;
         }
 
-        abstract void bindView(Event event);
+        abstract void bindView(STDevent event);
     }
 
     // header view
@@ -111,7 +117,7 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
         }
 
         @Override
-        void bindView(Event event) {
+        void bindView(STDevent event) {
         }
     }
 
@@ -128,7 +134,7 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
             commentsValue = itemView.findViewById(R.id.fragment_home_event_this_week_comment_value);
         }
 
-        void bindView(Event event) {
+        void bindView(STDevent event) {
             this.timeValue.setText(event.time);
             this.locationValue.setText(event.location);
             this.commentsValue.setText(event.comment);
@@ -136,20 +142,11 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
     }
 
     // Event data model
-    class Event {
-        String time;
-        String location;
-        String comment;
-
-        Event(String time, String location, String comment) {
-            this.time = time;
-            this.location = location;
-            this.comment = comment;
-        }
-    }
-    private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
+   
+   
     // generate fake data, the first position is the place holder for the header
-    public ArrayList<Event> generateMockEvents() {
+    public ArrayList<STDevent> generateMockEvents() {
+	    String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
         // ArrayList<Event> mockEvents = new ArrayList<>();
         // mockEvents.add(new Event("header", "header", "header"));
         // mockEvents.add(new Event("12:03", "Canada", "test TTS"));
@@ -166,27 +163,28 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
                     public void onResponse(String response) {
                         try
                         {
-                            Log.e("TAG",response);
+                            Log.e("Adpter.getResponse",response);
                             Toast.makeText(context, response, Toast.LENGTH_LONG).show();
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
                             Map<String, Object> events = serverResponse.getResponseBody();
     
                             for(Map.Entry<String,Object> entry : events.entrySet()){
-                                if(entry instanceof Map) {
+                                
+	                                Log.e("Adpter.addEvent: ","JUST TEST");
                                     Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
-                                    mockEvents.add(new EventThisWeekRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
-    
-                                    mockEvents.add(new EventThisWeekRecyclerAdapter.Event(
-                                            gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
-                                            event.get("location").toString(),
-                                            event.get("description").toString()));
-                                    Log.e("EVENT",
-                                            gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
+                                    mockEvents.add(new STDevent("12:03", "Canada", "test11111111 TTS"));
+                                    // mockEvents.add(new Event(
+                                    //         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
+                                    //         event.get("location").toString(),
+                                    //         event.get("description").toString()));
+                                    // Log.e("Adpter.addEvent: ",
+                                    //         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
                                     // Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
                                     //         Toast.LENGTH_SHORT).show();
-                                }
                             }
+                            Log.e("ARR","ARRAYLIST: "+mockEvents.toString());
+                         
                         }
                         catch (Exception e)
                         {
@@ -215,10 +213,10 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
         };
         //requestQueue.add(stringRequest);
         Singleton.getInstance(context).addToRequestQueue(stringRequest);
-        mockEvents.add(new EventThisWeekRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
-        // mockEvents.add(new EventThisWeekRecyclerAdapter.Event("event this week", "event this week", "event this week"));
-        // mockEvents.add(new EventThisWeekRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
-        Log.e("ARR","ARRAYLIST: "+mockEvents.toString());
+
+         mockEvents.add(new STDevent("Header is not shown", "this one is today", "will not be in the week list"));
+        // mockEvents.add(new STDevent("alarm header", "alarm header", "alarm header"));
+        Log.e("Adpter.mockEvent","ARRAYLIST: "+mockEvents.toString());
         return mockEvents;
     }
     
