@@ -102,16 +102,16 @@ public class HomeFragment extends Fragment {
 
 /**改逻辑看这里!*/
 		//空页面, 什么数据都没的情况
-		ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyHomeData();
+		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyHomeData();
 		//空list
-		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyAlarmHomeData();
+		ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateEmptyAlarmHomeData();
 		//塞数据
 		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = generateHomeData();
 		//服务器数据
 		// ArrayList<HomeRecyclerAdapter.HomeData> homeData = getServerList();
 		renderHomeView(homeData, activity);
 		//如果你想关闭下拉刷新的话
-		initScrollListener();
+		// initScrollListener();
 
 
 	// 	//refresh layout
@@ -284,7 +284,7 @@ public class HomeFragment extends Fragment {
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateEmptyAlarmHomeData() {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
-		list.add(new HomeRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
+		list.add(new HomeRecyclerAdapter.Event("21:55", "AMES", "test TTS"));
 		// event this week
 		list.add(new HomeRecyclerAdapter.Event("event this week", "event this week", "event this week"));
 		// alarm list header

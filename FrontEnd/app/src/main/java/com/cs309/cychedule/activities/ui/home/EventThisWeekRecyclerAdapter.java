@@ -22,6 +22,8 @@ import com.cs309.cychedule.patterns.Singleton;
 import com.cs309.cychedule.utilities.cyScheduleServerSDK.models.ServerResponse;
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,18 +43,19 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
     private ArrayList<Event> mockEvents;
     private final int VIEW_TYPE_ITEM = 1;
     private final int VIEW_TYPE_HEADER = 0;
-SessionManager sessionManager;
+    
     EventThisWeekRecyclerAdapter() {
         this.mockEvents = generateMockEvents();
     }
     
-    
+    SessionManager sessionManager;
     Context context;
     
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         context = recyclerView.getContext();
+        sessionManager = new SessionManager(context);
     }
     
     EventThisWeekRecyclerAdapter(ArrayList<Event> eventList) {
@@ -153,44 +156,49 @@ SessionManager sessionManager;
         // mockEvents.add(new Event("event this week", "event this week", "event this week"));
         // mockEvents.add(new Event("alarm header", "alarm header", "alarm header"));
         this.mockEvents = new ArrayList<>();
-       final RequestQueue requestQueue = Singleton.getInstance(context).getRequestQueue();
+        RequestQueue requestQueue = Singleton.getInstance(context).getRequestQueue();
+        //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.start();
+    
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try {
+                        try
+                        {
                             Log.e("TAG",response);
                             Toast.makeText(context, response, Toast.LENGTH_LONG).show();
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
                             Map<String, Object> events = serverResponse.getResponseBody();
-                        
+    
                             for(Map.Entry<String,Object> entry : events.entrySet()){
                                 if(entry instanceof Map) {
                                     Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
+                                    mockEvents.add(new EventThisWeekRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
+    
                                     mockEvents.add(new EventThisWeekRecyclerAdapter.Event(
-                                            gson.fromJson(event.get("endTime").toString(),
-                                                    Calendar.class).toString(),
-                                                    event.get("location").toString(),
-                                                    event.get("description").toString()));
+                                            gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
+                                            event.get("location").toString(),
+                                            event.get("description").toString()));
+                                    Log.e("EVENT",
+                                            gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
+                                    // Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
+                                    //         Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        
                         }
                         catch (Exception e)
                         {
                             e.printStackTrace();
-                            Log.e("TAG",e.toString());
-                             // Toast.makeText(context, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("TAG",error.toString());
-                        // Toast.makeText(context, "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
                     }
                 })
         {
@@ -205,12 +213,12 @@ SessionManager sessionManager;
                 return requestHeader;
             }
         };
-        // requestQueue.add(stringRequest);
+        //requestQueue.add(stringRequest);
         Singleton.getInstance(context).addToRequestQueue(stringRequest);
         mockEvents.add(new EventThisWeekRecyclerAdapter.Event("12:03", "Canada", "test TTS"));
         // mockEvents.add(new EventThisWeekRecyclerAdapter.Event("event this week", "event this week", "event this week"));
         // mockEvents.add(new EventThisWeekRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
-        //
+        Log.e("ARR","ARRAYLIST: "+mockEvents.toString());
         return mockEvents;
     }
     

@@ -27,7 +27,7 @@ public class SessionManager
     public static final String SECRET = "secret";
     public static final String TOKEN_ID = "tokenID";
     public static final String REFRESH_KEY = "refreshKey";
-
+    public static final String EVENTLIST = "secret";
 
     public SessionManager(Context context) {
         this.context = context;
