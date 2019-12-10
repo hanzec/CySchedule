@@ -72,6 +72,6 @@ public class Event {
                     referencedColumnName = "user_id"
             )
     )
-    private List<UserInformation> relatedUser = new ArrayList<>();
+    private List<UserInformation> relatedUser;
 
 }

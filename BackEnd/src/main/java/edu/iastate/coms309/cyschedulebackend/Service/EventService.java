@@ -21,10 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 public class EventService {
@@ -73,6 +70,8 @@ public class EventService {
         event.setDescription(newEvent.getDescription());
 
         //set relation with user
+        if(event.getRelatedUser() == null)
+            event.setRelatedUser(new ArrayList<>());
         event.getRelatedUser().add(userInformation);
         event.getAdminUser().getManagedEvent().add(event);
 

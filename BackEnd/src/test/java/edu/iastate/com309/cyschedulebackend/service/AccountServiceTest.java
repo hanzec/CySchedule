@@ -73,7 +73,7 @@ public class AccountServiceTest {
     @Test(expected = PasswordNotMatchException.class)
     public void testResetPasswordWithWrongOldPassword() throws PasswordNotMatchException {
         Mockito.when(passwordEncoder.matches(anyString(),anyString())).thenReturn(false);
-        Mockito.when(userCredentialRepository.getByUserID(anyString())).thenReturn(userCredential);
+        Mockito.when(userCredentialRepository.getOne(anyString())).thenReturn(userCredential);
 
         accountService.resetPassword("123","123","123");
     }

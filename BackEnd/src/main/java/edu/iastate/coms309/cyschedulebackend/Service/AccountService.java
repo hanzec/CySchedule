@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.PushBuilder;
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -46,21 +47,28 @@ public class AccountService implements UserDetailsService{
             - cache may not update when password is update (2019-10-27)
      */
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    PermissionRepository permissionRepository;
+    private final PermissionRepository permissionRepository;
 
-    @Autowired
-    UserCredentialRepository userCredentialRepository;
+    private final UserCredentialRepository userCredentialRepository;
 
-    @Autowired
-    UserInformationRepository userInformationRepository;
+    private final UserInformationRepository userInformationRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public AccountService(){
+
+    public AccountService(PasswordEncoder passwordEncoder,
+                          PermissionRepository permissionRepository,
+                          UserCredentialRepository userCredentialRepository,
+                          UserInformationRepository userInformationRepository){
+
+        //Update auto-injection Objects
+        this.passwordEncoder = passwordEncoder;
+        this.permissionRepository = permissionRepository;
+        this.userCredentialRepository = userCredentialRepository;
+        this.userInformationRepository = userInformationRepository;
+
         //initialized user role information
         if(!permissionRepository.existsById("ROLE_USER")){
             Permission permission = new Permission();
@@ -94,6 +102,9 @@ public class AccountService implements UserDetailsService{
             userCredential.setUserInformation(userInformation);
             userCredential.setJwtKey(UUID.randomUUID().toString());
             userCredential.setPassword(passwordEncoder.encode("admin"));
+
+            if(userCredential.getPermissions() == null)
+                userCredential.setPermissions(new HashSet<>());
             userCredential.getPermissions().add(permissionRepository.getOne("ROLE_ADMIN"));
 
             //save to database
@@ -173,7 +184,7 @@ public class AccountService implements UserDetailsService{
     @Transactional
     public void resetPassword(String userID, String newPassword, String oldPassword) throws PasswordNotMatchException {
 
-        UserCredential userCredential = userCredentialRepository.getByUserID(userID);
+        UserCredential userCredential = userCredentialRepository.getOne(getUserEmail(userID));
 
         if(!passwordEncoder.matches(userCredential.getPassword(),oldPassword))
             throw new PasswordNotMatchException(userCredential.getEmail());
