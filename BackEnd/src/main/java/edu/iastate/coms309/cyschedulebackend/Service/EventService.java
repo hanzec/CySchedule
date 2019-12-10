@@ -73,6 +73,7 @@ public class EventService {
         event.setDescription(newEvent.getDescription());
 
         //set relation with user
+        event.getRelatedUser().add(userInformation);
         event.getAdminUser().getManagedEvent().add(event);
 
         eventRepository.save(event);
@@ -116,19 +117,10 @@ public class EventService {
         return eventRepository.getOne(eventID).getAdminUser().getUserID().equals(userID);
     }
 
+    @Transactional
+    public List<Event> getAllEvent(String userID) { return eventRepository.getAllEvent(userID); }
 
     @Transactional
-    public List<Event> getAllManagedEvent(String userID){
-        return eventRepository.getManagedEvent(userID);
-    }
-
-    @Transactional
-    public List<Event> getAllEvent(String userID) {
-        List<Event> events = new ArrayList<>();
-
-        events.addAll(eventRepository.getJoinedEvent(userID));
-        events.addAll(eventRepository.getManagedEvent(userID));
-        return events;
-    }
+    public List<Event> getAllManagedEvent(String userID){ return eventRepository.getAdminEvent(userID); }
 
 }
