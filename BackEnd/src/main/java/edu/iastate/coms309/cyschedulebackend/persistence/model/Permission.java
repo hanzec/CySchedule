@@ -14,9 +14,6 @@ import javax.persistence.*;
 public class Permission implements GrantedAuthority {
     @Id
     @Column(name = "role_id")
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer roleID;
-
     private String roleName;
 
     private String description;

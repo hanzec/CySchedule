@@ -10,6 +10,7 @@ import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.repository.PermissionRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserCredentialRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserInformationRepository;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.PushBuilder;
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,16 +47,72 @@ public class AccountService implements UserDetailsService{
             - cache may not update when password is update (2019-10-27)
      */
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    UserCredentialRepository userCredentialRepository;
+    private final PermissionRepository permissionRepository;
 
-    @Autowired
-    UserInformationRepository userInformationRepository;
+    private final UserCredentialRepository userCredentialRepository;
+
+    private final UserInformationRepository userInformationRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    public AccountService(PasswordEncoder passwordEncoder,
+                          PermissionRepository permissionRepository,
+                          UserCredentialRepository userCredentialRepository,
+                          UserInformationRepository userInformationRepository){
+
+        //Update auto-injection Objects
+        this.passwordEncoder = passwordEncoder;
+        this.permissionRepository = permissionRepository;
+        this.userCredentialRepository = userCredentialRepository;
+        this.userInformationRepository = userInformationRepository;
+
+        //initialized user role information
+        if(!permissionRepository.existsById("ROLE_USER")){
+            Permission permission = new Permission();
+            permission.setRoleName("ROLE_USER");
+            permission.setDescription("Default Role for new User Role");
+            permissionRepository.save(permission);
+        }
+        if(!permissionRepository.existsById("ROLE_ADMIN")){
+            Permission permission = new Permission();
+            permission.setRoleName("ROLE_ADMIN");
+            permission.setDescription("Default Role for new admin Role");
+            permissionRepository.save(permission);
+        }
+
+        //Set up admin account if there is not
+        if(userCredentialRepository
+                .getUserCredentialByPermissionsContains(
+                        permissionRepository.getOne("ROLE_ADMIN")).size() < 1){
+            UserCredential userCredential = new UserCredential();
+            UserInformation userInformation = new UserInformation();
+
+            //update User Details
+            userInformation.setUsername("admin");
+            userInformation.setLastName("admin");
+            userInformation.setFirstName("admin");
+            userInformation.setUserCredential(userCredential);
+            userInformation.setRegisterTime(System.currentTimeMillis()/1000L);
+
+            //Update User Credential
+            userCredential.setEmail("admin@example.com");
+            userCredential.setUserInformation(userInformation);
+            userCredential.setJwtKey(UUID.randomUUID().toString());
+            userCredential.setPassword(passwordEncoder.encode("admin"));
+
+            if(userCredential.getPermissions() == null)
+                userCredential.setPermissions(new HashSet<>());
+            userCredential.getPermissions().add(permissionRepository.getOne("ROLE_ADMIN"));
+
+            //save to database
+            userCredentialRepository.save(userCredential);
+
+            logger.info("New Admin with id :[" + userCredential.getUserID() + "] is created");
+        }
+    }
 
     @Async
     @Transactional
@@ -76,9 +134,11 @@ public class AccountService implements UserDetailsService{
 
         //Update User Credential
         userCredential.setEmail(user.getEmail());
+        userCredential.setPermissions(new HashSet<>());
         userCredential.setUserInformation(userInformation);
         userCredential.setJwtKey(UUID.randomUUID().toString());
         userCredential.setPassword(passwordEncoder.encode(user.getPassword()));
+        userCredential.getPermissions().add(permissionRepository.getOne("ROLE_USER"));
 
         //save to database
         userCredentialRepository.save(userCredential);
@@ -125,7 +185,7 @@ public class AccountService implements UserDetailsService{
     @Transactional
     public void resetPassword(String userID, String newPassword, String oldPassword) throws PasswordNotMatchException {
 
-        UserCredential userCredential = userCredentialRepository.getByUserID(userID);
+        UserCredential userCredential = userCredentialRepository.getOne(getUserEmail(userID));
 
         if(!passwordEncoder.matches(userCredential.getPassword(),oldPassword))
             throw new PasswordNotMatchException(userCredential.getEmail());

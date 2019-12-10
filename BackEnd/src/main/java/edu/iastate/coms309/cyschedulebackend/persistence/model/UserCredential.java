@@ -37,7 +37,7 @@ public class UserCredential implements org.springframework.security.core.userdet
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
-    private Set<Permission> permissions;
+    private Set<Permission> permissions ;
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(

@@ -7,7 +7,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -30,6 +31,11 @@ public class SpringBootConfiguration {
     @Bean
     public EventService eventService(){
         return new EventService();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new Pbkdf2PasswordEncoder();
     }
 
     @Bean

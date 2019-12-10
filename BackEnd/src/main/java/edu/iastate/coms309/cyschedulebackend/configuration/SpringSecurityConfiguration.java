@@ -24,18 +24,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    AccountService accountService;
+    final AccountService accountService;
 
-    @Autowired
-    UserTokenService userTokenService;
+    final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    TokenAuthenticationProvider tokenAuthenticationProvider;
+    final UserTokenService userTokenService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new Pbkdf2PasswordEncoder();
+    final TokenAuthenticationProvider tokenAuthenticationProvider;
+
+    public SpringSecurityConfiguration(AccountService accountService,
+                                       PasswordEncoder passwordEncoder,
+                                       UserTokenService userTokenService,
+                                       TokenAuthenticationProvider tokenAuthenticationProvider) {
+        this.accountService = accountService;
+        this.passwordEncoder = passwordEncoder;
+        this.userTokenService = userTokenService;
+        this.tokenAuthenticationProvider = tokenAuthenticationProvider;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //Provider for session Login
         authenticationManagerBuilder
                 .userDetailsService(accountService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override

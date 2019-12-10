@@ -33,13 +33,16 @@ public class AuthController {
     Maybe a improve point
     */
 
-    @Autowired
-    AccountService accountService;
+    final AccountService accountService;
 
-    @Autowired
-    UserTokenService userTokenService;
+    final UserTokenService userTokenService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public AuthController(AccountService accountService, UserTokenService userTokenService) {
+        this.accountService = accountService;
+        this.userTokenService = userTokenService;
+    }
 
     @PostMapping(value = "/login")
     @ApiOperation("Login API")

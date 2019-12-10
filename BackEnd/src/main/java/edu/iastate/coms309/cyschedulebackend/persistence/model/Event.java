@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -58,7 +59,19 @@ public class Event {
     @OneToMany
     private Set<FileObject> uploadedFile;
 
-    @ManyToMany(mappedBy = "joinedEvent")
+    @ManyToMany
+    @OrderBy("startTimeUnix ASC")
+    @JoinTable(
+            name = "user_event",
+            joinColumns = @JoinColumn(
+                    name = "event_id",
+                    referencedColumnName = "event_id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "user_id"
+            )
+    )
     private List<UserInformation> relatedUser;
 
 }

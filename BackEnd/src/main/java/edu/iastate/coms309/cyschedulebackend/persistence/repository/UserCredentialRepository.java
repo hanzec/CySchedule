@@ -1,9 +1,12 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.repository;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface UserCredentialRepository extends JpaRepository<UserCredential, String> {
@@ -11,5 +14,5 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
     @Query("SELECT email FROM UserCredential a WHERE a.userID = ?1")
     String getUserEmailByUserID(String id);
 
-    UserCredential getByUserID(String userID);
+    List<UserCredential> getUserCredentialByPermissionsContains(Permission permission);
 }

@@ -44,8 +44,8 @@ import com.google.gson.Gson;
 public class WebsocketDemo {
     
     private Logger logger = LoggerFactory.getLogger(WebsocketDemo.class);
-    private static ConcurrentHashMap<String, WebsocketDemo> webSocketSet = new ConcurrentHashMap<String, WebsocketDemo>();
-    private static ConcurrentHashMap<String, Session> TestSet = new ConcurrentHashMap<String, Session>();
+    private static ConcurrentHashMap<String, Session> webSocketSet = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, Session> TestSet = new ConcurrentHashMap<>();
     private static int onlineCount = 0;
     private Session session;
     private String userId;
@@ -58,46 +58,63 @@ public class WebsocketDemo {
     }
     
     @OnOpen
-    public void onOpen(Session session) throws IOException{
+    public void onOpen(String email, Session session) throws IOException{
         this.session = session;
+        userId = email;
+        webSocketSet.put(userId, session);
+//        try {
+//        	session.getBasicRemote().sendText(userId);
+//        	webSocketSet.forEach((K,V) ->{
+//				
+//					
+//					try {
+//						session.getBasicRemote().sendText(K);
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				
+//			});
+//        	
+//        }catch (IOException e) {
+//        	e.printStackTrace();
+//        }
         
-        if(session.getUserPrincipal()== null) {
-        	user = null;
-        	userId = "test"+String.valueOf(onlineCount);
-        	try {
-    			session.getBasicRemote().sendText("hello " + userId);
-    			//logger.debug("{} message send",userId);
-    			webSocketSet.put(userId, this);
-    			TestSet.put(userId, session);
-    			session.getBasicRemote().sendText(""+TestSet.size());
-    			
-    		} catch (IOException e) {
-    			e.printStackTrace();
-                //logger.debug("User {} message send error",userId);
-    		}
-        }
-        else {
-        	this.user = accountService.getUserInformation(session.getUserPrincipal().getName());
-            this.userId = session.getUserPrincipal().getName();
-            
+        
+//        if(session.getUserPrincipal()== null) {
+//        	this.user = null;
+//        	this.userId = "test"+String.valueOf(onlineCount);
+//        	try {
+//    			session.getBasicRemote().sendText("hello " + userId);
+//    			//logger.debug("{} message send",userId);
+//    			//r = new HashSet();
+//                //r = user.getManagedEvent();
+//    			webSocketSet.put(userId, this);
+//    			TestSet.put(userId,session );
+//    			session.getBasicRemote().sendText(""+TestSet.size());
+//    			TestSet.forEach((K,V) ->{
+//    				try {
+//						session.getBasicRemote().sendText(K);
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//    			});
+//    			this.sendToUser("test0|hello", session);
+//    			
+//    		} catch (IOException e) {
+//    			e.printStackTrace();
+//                //logger.debug("User {} message send error",userId);
+//    		}
+//        }
+//        else {
+//        	this.user = accountService.getUserInformation(session.getUserPrincipal().getName());
+//            this.userId = session.getUserPrincipal().getName();
+//            session.getBasicRemote().sendText("hello " + userId);
             logger.debug("new connection import");
             
-            r = new HashSet();
-            r = user.getManagedEvent();
-            webSocketSet.put(userId, this);
             
-            Gson gson = new Gson();
-            String json = gson.toJson(r);
-            
-            //Set<Event> r = user.getManagedEvent();
-            try {
-    			session.getBasicRemote().sendText(json);
-    			logger.debug("{} message send",userId);
-    		} catch (IOException e) {
-    			e.printStackTrace();
-                logger.debug("User {} message send error",userId);
-    		}
-        }
+//        }
         onlineCount++;
       
         //logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
@@ -117,7 +134,7 @@ public class WebsocketDemo {
         logger.debug("User{}login with {} device",this.userId,userSocket.get(this.userId).size());
         logger.debug("current User Online{},Total user{}",userSocket.size(),onlineCount);
         */
-    	webSocketSet.remove(this);
+    	webSocketSet.remove(userId);
     	logger.debug("close connection from {}",this.userId);
     	
     }
@@ -130,23 +147,49 @@ public class WebsocketDemo {
     }
     //for test use only now
     public void sendToUser(String message,Session session) {
-        String sendUserno = message.split("|")[0];
-        String sendMessage = message.split("|")[1];
+        String sendUserno = message.split("\\|")[0];
+        String sendMessage = message.split("\\|")[1];
+        
+        if(accountService.existsByEmail(sendUserno)) {
+        	
+//        	try {
+            	//session.getBasicRemote().sendText(sendUserno);
+            	webSocketSet.forEach((K,V) ->{
+    				if(K.equals(sendUserno)) {
+    					
+    					try {
+    						V.getBasicRemote().sendText("ms|"+this.userId+"|"+sendMessage);
+    					} catch (IOException e) {
+    						// TODO Auto-generated catch block
+    						e.printStackTrace();
+    					}
+    				}
+    			});
+                
+//                if (webSocketSet.contains(sendUserno)) {
+//                	webSocketSet.get(sendUserno).getBasicRemote().sendText("ms|"+this.userId+"|"+sendMessage);
+//                    //System.out.println("ms|"+this.userId+"|"+sendMessage);
+//                } else {
+//                    this.session.getBasicRemote().sendText("Target user is current offline now, try again later");
+//                    //System.out.println("Target user is current offline now, try again later");
+//                    
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        	
+        }
+        else {
+        	try {
+				this.session.getBasicRemote().sendText("Target email doesn't exist");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
         
         //String now = getNowTime();
-        try {
-            
-            if (TestSet.contains(sendUserno)) {
-                TestSet.get(sendUserno).getBasicRemote().sendText("ms|"+this.userId+"|"+sendMessage);
-                //System.out.println("ms|"+this.userId+"|"+sendMessage);
-            } else {
-                this.session.getBasicRemote().sendText("Target user is current offline now, try again later");
-                //System.out.println("Target user is current offline now, try again later");
-                
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
     }
 
 

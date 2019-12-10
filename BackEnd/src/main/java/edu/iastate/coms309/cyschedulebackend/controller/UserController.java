@@ -32,14 +32,19 @@ import java.util.Map;
 @Api(tags = "RestAPI Related user Account")
 public class UserController{
 
-    @Autowired
-    AccountService accountService;
+    final AccountService accountService;
 
-    @Autowired
-    UserTokenService userTokenService;
+    final UserTokenService userTokenService;
 
-    @Autowired
-    FileManagementService fileManagementService;
+    final FileManagementService fileManagementService;
+
+    public UserController(AccountService accountService,
+                          UserTokenService userTokenService,
+                          FileManagementService fileManagementService) {
+        this.accountService = accountService;
+        this.userTokenService = userTokenService;
+        this.fileManagementService = fileManagementService;
+    }
 
     @GetMapping(value = "/")
     @ApiOperation("Get user information")
