@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
 	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
 	private ArrayList<STDevent> eventList;
 	private ArrayList<HomeRecyclerAdapter.HomeData> homeData;
-
+private int counter = 1;
 	private HomeViewModel homeViewModel;
 	public RecyclerView recyclerView;
 	private boolean isLoading = false;
@@ -127,82 +127,80 @@ public class HomeFragment extends Fragment {
 		//如果你想关闭下拉刷新的话
 		// initScrollListener();
 		
-		// RefreshLayout refreshLayout = activity.findViewById(R.id.refreshLayout);
-		// refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-		// 	@Override
-		// 	public void onRefresh(RefreshLayout refreshlayout) {
-		// 		final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
-		// 		//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-		// 		requestQueue.start();
-		//
-		// 		StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
-		// 				new Response.Listener<String>() {
-		// 					@Override
-		// 					public void onResponse(String response) {
-		// 						try {
-		// 							ArrayList<STDevent> serverEventList = new ArrayList<>();
-		// 							Log.e("Adpter.getResponse", response);
-		// 							Gson gson = new Gson();
-		// 							ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
-		// 							Map<String, Object> events = serverResponse.getResponseBody();
-		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
-		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
-		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
-		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
-		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
-		// 							serverEventList.add(new STDevent("RRRR", "RRRR", "RRRR"));
-		//
-		// 							for (Map.Entry<String, Object> entry : events.entrySet()) {
-		//
-		// 								Log.e("Adpter.addEvent: ", "JUST TEST");
-		// 								Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
-		// 								// mockEvents.add(new Event(
-		// 								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
-		// 								//         event.get("location").toString(),
-		// 								//         event.get("description").toString()));
-		// 								// Log.e("Adpter.addEvent: ",
-		// 								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
-		// 								// Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
-		// 								//         Toast.LENGTH_SHORT).show();
-		// 							}
-		// 							setNewEventList(serverEventList);
-		// 						}
-		// 						catch (Exception e)
-		// 						{
-		// 							e.printStackTrace();
-		// 							Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
-		// 						}
-		// 					}
-		// 				},
-		// 				new Response.ErrorListener() {
-		// 					@Override
-		// 					public void onErrorResponse(VolleyError error) {
-		// 						Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
-		// 					}
-		// 				})
-		// 		{
-		// 			@Override
-		// 			public Map<String, String> getHeaders() throws AuthFailureError {
-		// 				Map<String, String> requestHeader = new HashMap<String, String>();
-		// 				if(sessionManager.getLoginToken().get("tokenID") != null)
-		// 					requestHeader.put("Authorization", generateToken(
-		// 							"I don't know",
-		// 							sessionManager.getLoginToken().get("tokenID"),
-		// 							sessionManager.getLoginToken().get("secret")));
-		// 				return requestHeader;
-		// 			}
-		// 		};
-		// 		//requestQueue.add(stringRequest);
-		// 		Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
-		// 		refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-		// 	}
-		// });
-		// refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-		// 	@Override
-		// 	public void onLoadMore(RefreshLayout refreshlayout) {
-		// 		refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-		// 	}
-		// });
+		RefreshLayout refreshLayout = activity.findViewById(R.id.refreshLayout);
+		refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh(RefreshLayout refreshlayout) {
+				final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
+				//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+				requestQueue.start();
+
+				StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
+						new Response.Listener<String>() {
+							@Override
+							public void onResponse(String response) {
+								try {
+									ArrayList<STDevent> serverEventList = new ArrayList<>();
+									Log.e("Adpter.getResponse", response);
+									Gson gson = new Gson();
+									ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+									Map<String, Object> events = serverResponse.getResponseBody();
+									for (int i = 0; i <7 ; i++) {
+										serverEventList.add(new STDevent(""+counter+counter+counter,
+												""+counter+counter+counter,""+counter+counter+counter));
+									}
+									for (Map.Entry<String, Object> entry : events.entrySet()) {
+
+										Log.e("Adpter.addEvent: ", "JUST TEST");
+										Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
+										// mockEvents.add(new Event(
+										//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
+										//         event.get("location").toString(),
+										//         event.get("description").toString()));
+										// Log.e("Adpter.addEvent: ",
+										//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
+										// Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
+										//         Toast.LENGTH_SHORT).show();
+									}
+									counter++;
+									setNewEventList(serverEventList);
+								}
+								catch (Exception e)
+								{
+									e.printStackTrace();
+									Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+								}
+							}
+						},
+						new Response.ErrorListener() {
+							@Override
+							public void onErrorResponse(VolleyError error) {
+								Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
+							}
+						})
+				{
+					@Override
+					public Map<String, String> getHeaders() throws AuthFailureError {
+						Map<String, String> requestHeader = new HashMap<String, String>();
+						if(sessionManager.getLoginToken().get("tokenID") != null)
+							requestHeader.put("Authorization", generateToken(
+									"I don't know",
+									sessionManager.getLoginToken().get("tokenID"),
+									sessionManager.getLoginToken().get("secret")));
+						return requestHeader;
+					}
+				};
+				//requestQueue.add(stringRequest);
+				Singleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+				refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+			}
+		});
+		refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+			@Override
+			public void onLoadMore(RefreshLayout refreshlayout) {
+				refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+			}
+		});
 	}
 	
 	
@@ -220,12 +218,10 @@ public class HomeFragment extends Fragment {
 							Gson gson = new Gson();
 							ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
 							Map<String, Object> events = serverResponse.getResponseBody();
-							serverEventList.add(new STDevent("T1TTTTT", "TTTTTT", "TTTTT"));
-							serverEventList.add(new STDevent("TT2TTTT", "TTTTTT", "TTTTT"));
-							serverEventList.add(new STDevent("TTT3TTT", "TTTTTT", "TTTTT"));
-							serverEventList.add(new STDevent("TTTTTT", "TTTTTT", "TTTTT"));
-							serverEventList.add(new STDevent("TTTTTT", "TTTTTT", "TTTTT"));
-							serverEventList.add(new STDevent("TTTTTT", "TTTTTT", "TTTTT"));
+							for (int i = 0; i <7 ; i++) {
+								serverEventList.add(new STDevent(""+counter+counter+counter,
+										""+counter+counter+counter,""+counter+counter+counter));
+							}
 							for (Map.Entry<String, Object> entry : events.entrySet()) {
 								
 								Log.e("Adpter.addEvent: ", "JUST TEST");
@@ -239,6 +235,7 @@ public class HomeFragment extends Fragment {
 								// Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
 								//         Toast.LENGTH_SHORT).show();
 							}
+							counter++;
 							setNewEventList(serverEventList);
 							
 						} catch (Exception e) {
