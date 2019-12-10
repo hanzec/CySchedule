@@ -134,6 +134,7 @@ public class AccountService implements UserDetailsService{
 
         //Update User Credential
         userCredential.setEmail(user.getEmail());
+        userCredential.setPermissions(new HashSet<>());
         userCredential.setUserInformation(userInformation);
         userCredential.setJwtKey(UUID.randomUUID().toString());
         userCredential.setPassword(passwordEncoder.encode(user.getPassword()));

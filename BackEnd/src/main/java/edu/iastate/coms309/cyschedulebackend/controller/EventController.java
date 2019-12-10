@@ -27,13 +27,17 @@ import java.text.ParseException;
 @Api(tags = "RestAPI Related to TimeBlock")
 public class EventController {
 
-    @Autowired
-    EventService eventService;
+    final EventService eventService;
 
-    @Autowired
-    AccountService accountService;
+    final AccountService accountService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public EventController(EventService eventService,
+                           AccountService accountService) {
+        this.eventService = eventService;
+        this.accountService = accountService;
+    }
 
     @GetMapping(value = "/all")
     @ApiOperation("Get All TimeBlock")
