@@ -19,20 +19,40 @@ public class SessionManager
     public SharedPreferences.Editor editor;
     public Context context;
     int PRIVATE_MODE = 0;
-
+    public String tokenID;
+    public String userName;
+    
     private static final String PREF_NAME = "LOGIN";
     private static final String LOGIN = "IS_LOGIN";
     public static final String SECRET = "secret";
     public static final String TOKEN_ID = "tokenID";
     public static final String REFRESH_KEY = "refreshKey";
-    private static final String USER_NAME = "userName";
-    private static final String EMAIL = "email";
+    public static final String USERNAME = "userName";
+    public static final String EMAIL = "email";
 
 
     public SessionManager(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = sharedPreferences.edit();
+    }
+    
+    public SessionManager(String tokenID,String userName){
+        this.tokenID = tokenID;
+        this.userName = userName;
+    }
+    
+    public void initSession(String tokenID,String userName){
+        this.tokenID = tokenID;
+        this.userName = userName;
+    }
+    
+    public String getTokenID(){
+        return this.tokenID;
+    }
+    
+    public String getUserName(){
+        return this.userName;
     }
     
     public void createSession(String secret, String tokenID, String refreshKey) {
@@ -42,10 +62,10 @@ public class SessionManager
         editor.putString(REFRESH_KEY, refreshKey);
         editor.apply();
     }
-    
-    public void storeUserInfo(String userName, String email) {
-        editor.putBoolean(LOGIN, true);
-        editor.putString(USER_NAME, userName);
+
+    public void storeInfo(String userName, String email)
+    {
+        editor.putString(USERNAME, userName);
         editor.putString(EMAIL, email);
         editor.apply();
     }
@@ -76,10 +96,10 @@ public class SessionManager
 
     public HashMap<String, String> getUserInfo()
     {
-        HashMap<String, String> user = new HashMap<>();
-        user.put(USER_NAME, sharedPreferences.getString(USER_NAME, null));
-        user.put(EMAIL, sharedPreferences.getString(EMAIL, null));
-        return user;
+        HashMap<String, String> userInfo = new HashMap<>();
+        userInfo.put(USERNAME, sharedPreferences.getString(USERNAME, null));
+        userInfo.put(EMAIL, sharedPreferences.getString(EMAIL, null));
+        return userInfo;
     }
 
     public void logout()

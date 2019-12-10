@@ -212,6 +212,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(layoutManager);
                 EventThisWeekRecyclerAdapter adapter = new EventThisWeekRecyclerAdapter();
+                
                 recyclerView.setAdapter(adapter);
             }
         }

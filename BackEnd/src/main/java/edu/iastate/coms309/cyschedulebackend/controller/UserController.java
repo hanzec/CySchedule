@@ -48,9 +48,10 @@ public class UserController{
 
         return new Response()
                 .OK()
-                .addResponse("userName",userInformation.getUsername())
+                .addResponse("username",userInformation.getUsername())
                 .addResponse("lastName",userInformation.getLastName())
                 .addResponse("firstName",userInformation.getFirstName())
+                .addResponse("email",userInformation.getUserCredential().getEmail())
                 .send(request.getRequestURI());
     }
 

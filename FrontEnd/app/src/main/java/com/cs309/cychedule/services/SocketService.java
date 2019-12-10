@@ -12,8 +12,8 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cs309.cychedule.activities.SessionManager;
 import com.cs309.cychedule.activities.ui.home.HomeFragment;
-import com.cs309.cychedule.activities.ui.home.HomeRecyclerAdapter;
 import com.cs309.cychedule.utilities.UserUtil;
 
 import org.java_websocket.client.WebSocketClient;
@@ -32,6 +32,7 @@ public class SocketService extends Service {
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
     Message msg;
+    SessionManager sessionManager;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -66,8 +67,9 @@ public class SocketService extends Service {
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
-        
         Toast.makeText(context, "Service started!" , Toast.LENGTH_LONG).show();
+        sessionManager = new SessionManager(this);
+        sessionManager.checkLogin();
     }
 
     @Override
@@ -115,7 +117,8 @@ public class SocketService extends Service {
 
                 @Override
                 public void onOpen(ServerHandshake handshake) {
-                    send("Connection Request");
+                    String email = sessionManager.getUserInfo().get("email");
+                    send(email);
                     Log.d("OPEN", "WebSocket is connecting");
                 }
 
@@ -128,10 +131,10 @@ public class SocketService extends Service {
                 public void onMessage(String message) {
                     Log.d("MESSAGE", "Server sent: " + message);
                     HomeFragment.getEvents(message);
-//                    Looper.prepare();
-//                    Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
-//                    UserUtil.notificationHandler(context, 1, "Received a server message:", message);
-//                    Looper.loop();
+                    Looper.prepare();
+                    Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
+                    UserUtil.noti_invite(context, 1, "Received a server message:", message);
+                    Looper.loop();
                 }
 
                 @Override
@@ -159,5 +162,13 @@ public class SocketService extends Service {
         super.onDestroy();
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
         stopSelf(msg.arg1);
+    }
+
+    public void sendMessages(String s)
+    {
+        if (client != null)
+        {
+            client.send(s);
+        }
     }
 }

@@ -35,8 +35,9 @@
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.Dark"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" >
 
+        </activity>
     </application>
 
 </manifest>
