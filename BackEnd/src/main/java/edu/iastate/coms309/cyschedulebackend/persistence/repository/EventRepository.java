@@ -10,9 +10,9 @@ import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event,String> {
-    @Query("From Event e WHERE e.adminUserID = ?1 ORDER BY start_timex_unix ASC")
+    @Query("From Event e WHERE e.adminUserID = ?1 ORDER BY e.startTimeUnix ASC")
     List<Event> getManagedEvent(String userId);
 
-    @Query("FROM Event e INNER JOIN e.relatedUser user WHERE user.UserID = ?1 ORDER BY start_time_unix ASC")
+    @Query("FROM Event e INNER JOIN e.relatedUser user WHERE user.UserID = ?1 ORDER BY e.startTimeUnix ASC")
     List<Event> getJoinedEvent(String userID);
 }

@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     
     private static String URL_INFO = "https://dev.hanzec.com/api/v1/user/";
     SessionManager sessionManager;
+    SocketService socketService;
     private AppBarConfiguration mAppBarConfiguration;
     private String output_dest;
     private String output_text;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
+
+        socketService = new SocketService();
         
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -135,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 email = (String) sr.get("email");
                                 _name.setText(userName);
                                 _email.setText(email);
+                                sessionManager.storeInfo(userName, email);
                             }
                         }
                         catch (Exception e)
@@ -163,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         };
         //requestQueue.add(stringRequest);
         Singleton.getInstance(this).addToRequestQueue(stringRequest);
-//        _name.setText(userName);
-//        _email.setText(email);
         _avator.setImageResource(R.drawable.gitcat2);
         _avator.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText( getBaseContext(), "Hello, "+_name.getText(), Toast.LENGTH_LONG).show();
             }
         });
-        _name.setText("aaaaaa");
-        _email.setText("bbbbbbbb");
     }
     
     public String generateToken(String requestUrl, String tokenID, String password){
@@ -282,6 +282,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(DialogInterface dialog, int which) {
                 output_dest = input_dest.getText().toString();
                 output_text = input_text.getText().toString();
+                toast("To: "+output_dest+"\n"+output_text);
+                startService(new Intent(getBaseContext(), SocketService.class));
+                socketService.sendMessages(output_dest + "|" + output_text);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -376,7 +379,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
         dia.show();
     }
-    
+
+    // Method to start the service
+    public void startService(View view) {
+        startService(new Intent(getBaseContext(), SocketService.class));
+    }
+
+    // Method to stop the service
+    public void stopService(View view) {
+        stopService(new Intent(getBaseContext(), SocketService.class));
+    }
     
 }
 
