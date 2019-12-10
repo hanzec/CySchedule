@@ -64,12 +64,12 @@ public class Event {
     @JoinTable(
             name = "user_event",
             joinColumns = @JoinColumn(
-                    name = "user_id",
-                    referencedColumnName = "user_id"
-            ),
-            inverseJoinColumns = @JoinColumn(
                     name = "event_id",
                     referencedColumnName = "event_id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "user_id"
             )
     )
     private List<UserInformation> relatedUser = new ArrayList<>();
