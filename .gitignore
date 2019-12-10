@@ -11,7 +11,7 @@
 #idea
 .idea/
 .idea/workspace.xml
-
+.gradle/
 #File Gererate By IntellJ IDE
 *.iml
 BackEnd/.mvn

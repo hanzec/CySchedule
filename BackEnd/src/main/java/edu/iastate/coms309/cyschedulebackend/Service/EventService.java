@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.Service;
 
+import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Event;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 import edu.iastate.coms309.cyschedulebackend.persistence.repository.EventRepository;
@@ -13,63 +14,86 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import javax.persistence.EntityNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-@Service
+
 public class EventService {
     /*
     Maybe a improve point
-            - Token never revoke
+        - need to check ownership before get object
      */
 
     @Autowired
     EventRepository eventRepository;
 
     @Transactional
-    public Event updateEvent(EventRequest newEvent, String eventID){
+    public Event updateEvent(EventRequest newEvent, String eventID) throws ParseException, EventNotFoundException {
+
+        if(!this.existByID(eventID))
+            throw new EventNotFoundException(eventID);
+
         Event event = eventRepository.getOne(eventID);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("E LLL dd HH:mm:ss z yyyy",Locale.US);
 
         //set event object
         event.setName(newEvent.getName());
-        event.setEndTime(newEvent.getEndTime());
+        event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setLocation(newEvent.getLocation());
-        event.setStartTime(newEvent.getStartTime());
+        event.setStartTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
         event.setDescription(newEvent.getDescription());
 
         eventRepository.save(event);
         return event;
     }
 
-    @Async
     @Transactional
-    public void addEvent(EventRequest newEvent, UserInformation userInformation){
+    public void addEvent(EventRequest newEvent, UserInformation userInformation) throws ParseException {
         Event event = new Event();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("E LLL dd HH:mm:ss z yyyy",Locale.US);
 
         //set event object
         event.setName(newEvent.getName());
         event.setAdminUser(userInformation);
-        event.setEndTime(newEvent.getEndTime());
         event.setLocation(newEvent.getLocation());
-        event.setStartTime(newEvent.getStartTime());
+        event.setEndTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
+        event.setStartTime(ZonedDateTime.parse(newEvent.getEndTime(),format));
+
+        //do not switch this line
+        event.setStartTimeUnix(event.getStartTime().toEpochSecond());
         event.setDescription(newEvent.getDescription());
 
         //set relation with user
+        event.getRelatedUser().add(userInformation);
         event.getAdminUser().getManagedEvent().add(event);
 
         eventRepository.save(event);
     }
 
     @Transactional
-    public EventRequest getEvent(String id){
+    public EventRequest getEvent(String id) throws EventNotFoundException {
         Event event = eventRepository.getOne(id);
         EventRequest eventRequest = new EventRequest();
 
-
-        eventRequest.setName(event.getName());
-        eventRequest.setEndTime(event. getEndTime());
-        eventRequest.setLocation(event.getLocation());
-        eventRequest.setStartTime(event.getStartTime());
-        eventRequest.setDescription(event.getDescription());
+        try {
+            eventRequest.setName(event.getName());
+            eventRequest.setLocation(event.getLocation());
+            eventRequest.setDescription(event.getDescription());
+            eventRequest.setEndTime(event.getEndTime().toString());
+            eventRequest.setStartTime(event.getStartTime().toString());
+            event.setStartTimeUnix(event.getStartTime().toEpochSecond());
+        }catch (EntityNotFoundException e){
+            throw new EventNotFoundException(id);
+        }
 
         return eventRequest;
     }
@@ -78,7 +102,6 @@ public class EventService {
     @Transactional
     public void deleteEvent(String id){ eventRepository.deleteById(id); }
 
-    @Transactional
     @Cacheable(
             value = "false",
             unless = "#result == true"
@@ -94,7 +117,10 @@ public class EventService {
         return eventRepository.getOne(eventID).getAdminUser().getUserID().equals(userID);
     }
 
-//    @Transactional
-//    public Set<Event> getAllEvent(String userID){ return eventRepository.getAllByAdminUser_UserID(userID); }userID
+    @Transactional
+    public List<Event> getAllEvent(String userID) { return eventRepository.getAllEvent(userID); }
+
+    @Transactional
+    public List<Event> getAllManagedEvent(String userID){ return eventRepository.getAdminEvent(userID); }
 
 }

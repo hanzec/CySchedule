@@ -12,6 +12,8 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cs309.cychedule.activities.SessionManager;
+import com.cs309.cychedule.activities.ui.home.HomeFragment;
 import com.cs309.cychedule.utilities.UserUtil;
 
 import org.java_websocket.client.WebSocketClient;
@@ -20,11 +22,17 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * SocketService is the service of the WebSocket
+ * We build our WebSocket in a service way
+ */
 public class SocketService extends Service {
     Context context = this;
     WebSocketClient client;
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
+    Message msg;
+    SessionManager sessionManager;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -59,8 +67,9 @@ public class SocketService extends Service {
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
-        
         Toast.makeText(context, "Service started!" , Toast.LENGTH_LONG).show();
+        sessionManager = new SessionManager(this);
+        sessionManager.checkLogin();
     }
 
     @Override
@@ -69,7 +78,7 @@ public class SocketService extends Service {
         // Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
-        Message msg = serviceHandler.obtainMessage();
+        msg = serviceHandler.obtainMessage();
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
 
@@ -104,11 +113,12 @@ public class SocketService extends Service {
         try {
             Log.d("Socket:", "Trying socket");
             client = new WebSocketClient(new URI(
-                    "wss://dev.hanzec.com/websocket/1")) {
+                    "wss://dev.hanzec.com/websocket")) {
 
                 @Override
                 public void onOpen(ServerHandshake handshake) {
-                    send("Connection Request");
+                    String email = sessionManager.getUserInfo().get("email");
+                    send(email);
                     Log.d("OPEN", "WebSocket is connecting");
                 }
 
@@ -120,9 +130,10 @@ public class SocketService extends Service {
                 @Override
                 public void onMessage(String message) {
                     Log.d("MESSAGE", "Server sent: " + message);
+                    HomeFragment.getEvents(message);
                     Looper.prepare();
-                    // Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
-                    UserUtil.notificationHandler(context, 1, "Received a server message:", message);
+                    Toast.makeText(context, "Received a server message: " + message, Toast.LENGTH_LONG).show();
+                    UserUtil.noti_invite(context, 1, "Received a server message:", message);
                     Looper.loop();
                 }
 
@@ -150,5 +161,14 @@ public class SocketService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+        stopSelf(msg.arg1);
+    }
+
+    public void sendMessages(String s)
+    {
+        if (client != null)
+        {
+            client.send(s);
+        }
     }
 }

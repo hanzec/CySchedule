@@ -20,6 +20,10 @@ import android.widget.Toast;
 import com.cs309.cychedule.R;
 import com.cs309.cychedule.activities.LoginActivity;
 
+/**
+ * AlarmFragment is a tab to contain our alarm tool.
+ * We achieve the alarm function here.
+ */
 public class AlarmFragment extends Fragment {
 
     private AlarmViewModel alarmViewModel;

@@ -2,12 +2,12 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
-import edu.iastate.coms309.cyschedulebackend.handler.LoginFailureHandler;
 import edu.iastate.coms309.cyschedulebackend.security.filter.TokenFilter;
 import edu.iastate.coms309.cyschedulebackend.security.provider.TokenAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Order(1)
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -59,9 +60,11 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //ignoring static objects
         web.ignoring()
                 .antMatchers("/error")
+                .antMatchers("/javadoc/**")
+                .antMatchers("/index.html")
                 .antMatchers("/websocket/**")
                 .antMatchers("/api/v1/auth/**")
-                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**","/swagger-ui.html");
+                .antMatchers("/v2/api-docs", "/swagger-ui*.*");
     }
 
     @Override
@@ -74,7 +77,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable();
 
-
         //RememberMe configuration
         http
                 .rememberMe().userDetailsService(userDetailsService());
@@ -85,12 +87,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         //login page configuration
         http
-                .formLogin()
-                .failureHandler(new LoginFailureHandler())
-                .defaultSuccessUrl("/swagger-ui.html");
+                .formLogin();
 
          //Add our custom JWT security filter
-        //TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
-        //http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling();
+        TokenFilter tokenFilter = new TokenFilter(authenticationManagerBean());
+        http.addFilterBefore(tokenFilter,UsernamePasswordAuthenticationFilter.class);
     }
 }

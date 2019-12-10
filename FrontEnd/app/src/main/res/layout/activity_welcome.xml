@@ -8,14 +8,6 @@
         android:background="@color/primary"
         tools:context=".activities.WelcomeActivity">
 
-    <!--    <pl.droidsonroids.gif.GifImageView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:src="@drawable/logo"-->
-<!--            android:layout_gravity="center"-->
-<!--            />-->
-
-
     <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_view_container"
             android:layout_width="wrap_content"

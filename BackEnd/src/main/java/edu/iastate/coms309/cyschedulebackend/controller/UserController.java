@@ -2,13 +2,20 @@ package edu.iastate.coms309.cyschedulebackend.controller;
 
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
+import edu.iastate.coms309.cyschedulebackend.exception.io.FileUploadFailedException;
+import edu.iastate.coms309.cyschedulebackend.exception.user.UserAvatarNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.*;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.ChangePasswordRequest;
+import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.token.TokenService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +29,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
-@Api(tags = "RestAPI Related to Authentication")
+@Api(tags = "RestAPI Related user Account")
 public class UserController{
 
     @Autowired
@@ -34,45 +41,68 @@ public class UserController{
     @Autowired
     FileManagementService fileManagementService;
 
-    @GetMapping(value = "/avatar")
-    @ApiOperation("get user avatar ")
-    public Response getAvatar(Principal principal, HttpServletRequest request){
-        Response response = new Response();
-        UserInformation userInformation =  accountService.getUserInformation(principal.getName());
+    @GetMapping(value = "/")
+    @ApiOperation("Get user information")
+    public Response getUserInformation(Principal principal, HttpServletRequest request){
+        UserInformation userInformation = accountService.getUserInformation(principal.getName());
 
-        if(userInformation.getAvatar() == null)
-            return response.NotFound().send(request.getRequestURI());
-        else{
-            Map<String,String> map = new HashMap<>();
-            map.put("FileName",userInformation.getAvatar().getFileName());
-            map.put("FileDownloadLink",fileManagementService.getFile(userInformation.getAvatar()));
-            response.addResponse("avatar", map);
-            return response.OK().send(request.getRequestURI());
-        }
+        return new Response()
+                .OK()
+                .addResponse("username",userInformation.getUsername())
+                .addResponse("lastName",userInformation.getLastName())
+                .addResponse("firstName",userInformation.getFirstName())
+                .addResponse("email",userInformation.getUserCredential().getEmail())
+                .send(request.getRequestURI());
     }
 
-    @PostMapping(value = "/avatar")
-    @ApiOperation("Update User avatar")
-    public Response updateAvatar(@RequestParam("file") MultipartFile file, Principal principal, HttpServletRequest request) {
-        Response response = new Response();
-        UserInformation userInformation =  accountService.getUserInformation(principal.getName());
+    @PostMapping(value = "/password")
+    @ApiOperation("Reset password aip")
+    public Response resetPassword(
+            Principal principal,
+            HttpServletRequest request,
+            @Validated ChangePasswordRequest changePasswordRequest) throws PasswordNotMatchException {
 
-        if(userInformation.getAvatar() != null)
-            fileManagementService.deleteFile(userInformation.getAvatar());
+        accountService.resetPassword(
+                principal.getName(),
+                changePasswordRequest.getNewPassword(),
+                changePasswordRequest.getOldPassword());
 
-        try {
-            userInformation.setAvatar(fileManagementService.putFile(file, "avatar"));
-        } catch (IOException e) {
-            return response.BadRequested("file upload failed").send(request.getRequestURI());
-        }
-
-        accountService.updateUserInformation(userInformation);
-
-        return response.Created().send(request.getRequestURI());
+        return new Response()
+                .OK()
+                .send(request.getRequestURI());
     }
+
+//    @GetMapping(value = "/avatar")
+//    @ApiOperation("get user avatar ")
+//    public Response getAvatar(Principal principal, HttpServletRequest request) throws UserAvatarNotFoundException {
+//
+//        FileObject avatar = accountService.getAvatar(principal.getName());
+//
+//        return new Response()
+//                .OK()
+//                .addResponse("FileName",avatar.getFileName())
+//                .addResponse("FileDownloadLink",fileManagementService.getFile(avatar))
+//                .send(request.getRequestURI());
+//    }
+//
+//    @PostMapping(value = "/avatar")
+//    @ApiOperation("Update User avatar")
+//    public Response updateAvatar(@RequestParam("file") MultipartFile file, Principal principal, HttpServletRequest request) throws FileUploadFailedException {
+//
+//        //ignore exception if there is not avatar before
+//        try {
+//            fileManagementService.deleteFile(accountService.getAvatar(principal.getName()));
+//        } catch (UserAvatarNotFoundException ignored) {}
+//
+//        accountService.updateAvatar(principal.getName(),fileManagementService.putFile(file, "avatar"));
+//
+//        return new Response()
+//                .Created()
+//                .send(request.getRequestURI());
+//    }
 
     @GetMapping(value = "/token")
-    @ApiOperation("delete current login Token")
+    @ApiOperation("get All existed token")
     public Response getAllToken(Principal principal, HttpServletRequest request){
         Response response = new Response();
         List<UserToken> tokens = userTokenService.getAllTokenBelongToUser(accountService.getUserEmail(principal.getName()));

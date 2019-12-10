@@ -39,26 +39,19 @@ public class UserInformation implements Serializable{
     @OneToOne
     private FileObject avatar;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_event",
-            joinColumns = @JoinColumn(
-                    name = "user_id",
-                    referencedColumnName = "user_id"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "event_id",
-                    referencedColumnName = "event_id"
-            )
-    )
+    @ManyToMany(mappedBy = "relatedUser")
     private Set<Event> joinedEvent;
 
+    @OrderBy("start_time ASC")
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "adminUser",
             targetEntity = Event.class
     )
     private Set<Event> managedEvent;
+
+    @OneToMany
+    private Set<FileObject> uploadedFile;
 
     @OneToOne(
             optional = false,

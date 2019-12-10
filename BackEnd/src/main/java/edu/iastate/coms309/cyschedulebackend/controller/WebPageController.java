@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class WebPageController {
 
-    @GetMapping("/html")
-    public String html() {
-        return "/index.html";
-    }
+
+    @RequestMapping("/index")
+    String index() { return "index.html"; }
 
     @RequestMapping("/test")
     String test(String request){
