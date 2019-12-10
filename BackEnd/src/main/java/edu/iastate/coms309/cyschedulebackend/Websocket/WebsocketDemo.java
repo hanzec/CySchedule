@@ -44,8 +44,8 @@ import com.google.gson.Gson;
 public class WebsocketDemo {
     
     private Logger logger = LoggerFactory.getLogger(WebsocketDemo.class);
-    private static ConcurrentHashMap<String, WebsocketDemo> webSocketSet = new ConcurrentHashMap<String, WebsocketDemo>();
-    private static ConcurrentHashMap<String, Session> TestSet = new ConcurrentHashMap<String, Session>();
+    private static ConcurrentHashMap<String, Session> webSocketSet = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, Session> TestSet = new ConcurrentHashMap<>();
     private static int onlineCount = 0;
     private Session session;
     private String userId;
