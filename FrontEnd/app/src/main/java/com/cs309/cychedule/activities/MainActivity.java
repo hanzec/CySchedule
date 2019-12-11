@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private String output_text;
 	private static String userName;
 	private static String email;
+	private Intent intent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		getBaseContext();
 
 		final Intent intent = new Intent(this,SocketService.class);
+//		this.intent = intent;
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -367,6 +369,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                }
 //            }
 //        }).start();
+//		stopService(intent);
+//		unbindService(conn);
 		sessionManager.logout();
 	}
 
