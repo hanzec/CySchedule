@@ -146,7 +146,7 @@ public class WebsocketDemo {
     public void onMessage(String message, Session session) {
         logger.debug("receive message from User {}: {}",this.userId,message);
         System.out.println("Receive message "+message);
-        this.sendToUser(message,session);
+        if(message.contains("|")) this.sendToUser(message,session);
     }
     //for test use only now
     public void sendToUser(String message,Session session) {
