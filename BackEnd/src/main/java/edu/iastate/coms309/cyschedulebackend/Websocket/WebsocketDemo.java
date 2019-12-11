@@ -148,6 +148,7 @@ public class WebsocketDemo {
     }
     //for test use only now
     public void sendToUser(String message,Session session) {
+        logger.debug(message);
         String sendUserno = message.split("\\|")[0];
         String sendMessage = message.split("\\|")[1];
         
