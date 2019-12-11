@@ -63,6 +63,7 @@ public class WebsocketDemo {
         
         userId = email;
         webSocketSet.put(userId, session);
+        System.out.println(eamil + " has join the server");
 //        try {
 //        	session.getBasicRemote().sendText(userId);
 //        	webSocketSet.forEach((K,V) ->{
@@ -144,11 +145,13 @@ public class WebsocketDemo {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.debug("receive message from User {}: {}",this.userId,message);
+        System.out.println("Receive message "+message);
         this.sendToUser(message,session);
     }
     //for test use only now
     public void sendToUser(String message,Session session) {
         logger.debug(message);
+        System.out.println(message);
         String sendUserno = message.split("\\|")[0];
         String sendMessage = message.split("\\|")[1];
         
