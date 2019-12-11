@@ -1,9 +1,13 @@
 package com.cs309.cychedule.activities;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.AlarmClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		FloatingActionButton fab = findViewById(R.id.fab);
 		getBaseContext();
 
+		final Intent intent = new Intent(this,SocketService.class);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -144,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 							_email.setText(email);
 							sessionManager.storeInfo(userName, email);
 
+							bindService(intent,conn, Context.BIND_AUTO_CREATE);
 						} catch (Exception e) {
 							e.printStackTrace();
 							Log.e("TAG", e.toString());
