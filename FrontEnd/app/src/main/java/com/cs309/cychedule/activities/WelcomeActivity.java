@@ -20,13 +20,12 @@ import java.util.TimerTask;
 public class WelcomeActivity extends Activity implements View.OnClickListener {
 	private int recLen = 0;//倒计时秒数
 	private TextView skip;
-	Timer timer = new Timer();
+	private Timer timer = new Timer();
 	private Handler handler;
 	private Runnable runnable;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 		//设置当前窗体为全屏显示
@@ -63,7 +62,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 		// 		""+sign).show();
 		
 	}
-
+	
 	/**
 	 * 跳转到LoginActivity
 	 */
@@ -73,10 +72,10 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 		finish();
 	}
 	
-
+	
 	public void onClick(View view) {
 		//点击logo或者文字直接进入
-		if (view.getId() == R.id.skip||view.getId() == R.id.shimmer_view_container) {
+		if (view.getId() == R.id.skip || view.getId() == R.id.shimmer_view_container) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 			finish();
@@ -101,7 +100,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 				@Override
 				public void run() {
 					recLen--;
-					skip.setText("Click me! "+recLen+"s");
+					skip.setText("Click me! " + recLen + "s");
 					if (recLen < 0) {
 						timer.cancel();
 						//倒计时跳到0->gone

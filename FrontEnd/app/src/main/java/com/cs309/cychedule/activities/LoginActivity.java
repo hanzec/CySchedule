@@ -35,11 +35,11 @@ import butterknife.ButterKnife;
  */
 public class LoginActivity extends AppCompatActivity {
 	
-	SessionManager sessionManager;
+	private SessionManager sessionManager;
 	private static String URL_LOGIN = "https://dev.hanzec.com/api/v1/auth/login";
 	private static final String TAG = "LoginActivity";
 	private static final int REQUEST_SIGNUP = 0;
-	ProgressDialog progressDialog;
+	private ProgressDialog progressDialog;
 	
 	@BindView(R.id.input_email)
 	EditText _emailText;
