@@ -74,12 +74,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
-
         socketService = new SocketService();
-        
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);

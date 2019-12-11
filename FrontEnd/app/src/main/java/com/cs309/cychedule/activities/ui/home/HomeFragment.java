@@ -2,9 +2,11 @@ package com.cs309.cychedule.activities.ui.home;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.AlarmClock;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
@@ -43,10 +45,13 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 
 import java.security.Key;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,7 +78,7 @@ private int counter = 1;
 	public View onCreateView(@NonNull LayoutInflater inflater,
 							 ViewGroup container, Bundle savedInstanceState) {
 		homeViewModel =
-				ViewModelProviders.of(this).get(HomeViewModel.class);
+		ViewModelProviders.of(this).get(HomeViewModel.class);
 		final View root = inflater.inflate(R.layout.fragment_home, container, false);
 //        final TextView textView = root.findViewById(R.id.text_home);
 //        homeViewModel.getText().observe(this, new Observer<String>() {
@@ -137,6 +142,7 @@ private int counter = 1;
 
 				StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
 						new Response.Listener<String>() {
+							@RequiresApi(api = Build.VERSION_CODES.O)
 							@Override
 							public void onResponse(String response) {
 								try {
@@ -153,21 +159,13 @@ private int counter = 1;
 									for (Object entry : responseBody.values()) {
 										Log.e("Adpter.mapEntry ", "JUST TEST");
 										Map<String, Object> event = (Map<String, Object>) entry;
-										String endTime = event.get("endTime").toString();
+										String endTime = ((String)event.get("startTime")).substring(0,16).replace("T", " ");
 										String location = event.get("location").toString();
 										String description = event.get("description").toString();
 										serverEventList.add(new STDevent(endTime, location, description));
-										//Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
-//										serverEventList.add(new STDevent(
-//										         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
-//										         event.get("location").toString(),
-//										         event.get("description").toString()));
-										// Log.e("Adpter.addEvent: ",
-										//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
-										// Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
-										//         Toast.LENGTH_SHORT).show();
 									}
 									counter++;
+									Collections.reverse(serverEventList);
 									setNewEventList(serverEventList);
 								}
 								catch (Exception e)
@@ -200,12 +198,7 @@ private int counter = 1;
 				refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
 			}
 		});
-		refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-			@Override
-			public void onLoadMore(RefreshLayout refreshlayout) {
-				refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-			}
-		});
+		
 	}
 	
 	
@@ -230,20 +223,13 @@ private int counter = 1;
 							for (Object entry : responseBody.values()) {
 								Log.e("Adpter.mapEntry ", "JUST TEST");
 								Map<String, Object> event = (Map<String, Object>) entry;
-								String endTime = event.get("endTime").toString();
+								String endTime = ((String)event.get("startTime")).substring(0,16).replace("T", " ");
 								String location = event.get("location").toString();
 								String description = event.get("description").toString();
 								serverEventList.add(new STDevent(endTime, location, description));
-								// mockEvents.add(new Event(
-								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
-								//         event.get("location").toString(),
-								//         event.get("description").toString()));
-								// Log.e("Adpter.addEvent: ",
-								//         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
-								// Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
-								//         Toast.LENGTH_SHORT).show();
 							}
 							counter++;
+							Collections.reverse(serverEventList);
 							setNewEventList(serverEventList);
 							
 						} catch (Exception e) {
@@ -279,6 +265,7 @@ private int counter = 1;
 		this.eventList = newEventList;
 		renderHomeView(eventList,activity);
 	}
+	
 	private String generateToken(String requestUrl, String tokenID, String password){
 		Key key = Keys.hmacShaKeyFor(password.getBytes());
 		return Jwts.builder()

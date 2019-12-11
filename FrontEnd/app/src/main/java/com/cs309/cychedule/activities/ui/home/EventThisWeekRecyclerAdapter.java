@@ -153,69 +153,8 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
         // mockEvents.add(new Event("event this week", "event this week", "event this week"));
         // mockEvents.add(new Event("alarm header", "alarm header", "alarm header"));
         this.mockEvents = new ArrayList<>();
-        RequestQueue requestQueue = Singleton.getInstance(context).getRequestQueue();
-        //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.start();
-    
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try
-                        {
-                            Log.e("Adpter.getResponse",response);
-                            Toast.makeText(context, response, Toast.LENGTH_LONG).show();
-                            Gson gson = new Gson();
-                            ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
-                            Map<String, Object> events = serverResponse.getResponseBody();
-    
-                            for(Map.Entry<String,Object> entry : events.entrySet()){
-                                
-	                                Log.e("Adpter.addEvent: ","JUST TEST");
-                                    Map<String, Objects> event = (Map<String, Objects>) entry.getValue();
-                                    mockEvents.add(new STDevent("12:03", "Canada", "test11111111 TTS"));
-                                    // mockEvents.add(new Event(
-                                    //         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString(),
-                                    //         event.get("location").toString(),
-                                    //         event.get("description").toString()));
-                                    // Log.e("Adpter.addEvent: ",
-                                    //         gson.fromJson(event.get("endTime").toString(), Calendar.class).toString()+"\n"+event.get("location").toString()+"\n"+ event.get("description").toString());
-                                    // Toast.makeText(context, event.get("location").toString()+event.get("description").toString(),
-                                    //         Toast.LENGTH_SHORT).show();
-                            }
-                            Log.e("ARR","ARRAYLIST: "+mockEvents.toString());
-                         
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                            Toast.makeText(context, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Add Event Error: " + error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                })
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> requestHeader = new HashMap<String, String>();
-                if(sessionManager.getLoginToken().get("tokenID") != null)
-                    requestHeader.put("Authorization", generateToken(
-                            "I don't know",
-                            sessionManager.getLoginToken().get("tokenID"),
-                            sessionManager.getLoginToken().get("secret")));
-                return requestHeader;
-            }
-        };
-        //requestQueue.add(stringRequest);
-        Singleton.getInstance(context).addToRequestQueue(stringRequest);
-
          mockEvents.add(new STDevent("Header is not shown", "this one is today", "will not be in the week list"));
-        // mockEvents.add(new STDevent("alarm header", "alarm header", "alarm header"));
+         mockEvents.add(new STDevent("...", "...", "Loading"));
         Log.e("Adpter.mockEvent","ARRAYLIST: "+mockEvents.toString());
         return mockEvents;
     }

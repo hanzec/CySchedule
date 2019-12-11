@@ -72,9 +72,9 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
-        _emailText.setText("user@example.com");
-        _passwordText.setText("password");
-        login();
+        _emailText.setText("admin@example.com");
+        _passwordText.setText("admin");
+        // login();
     }
 
     public void login() {
