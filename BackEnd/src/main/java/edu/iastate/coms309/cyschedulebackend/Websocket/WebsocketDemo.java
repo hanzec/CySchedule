@@ -151,7 +151,7 @@ public class WebsocketDemo {
         String sendUserno = message.split("\\|")[0];
         String sendMessage = message.split("\\|")[1];
         
-        if(accountService.existsByEmail(sendUserno)) {
+        // if(accountService.existsByEmail(sendUserno)) {
         	
 //        	try {
             	//session.getBasicRemote().sendText(sendUserno);
@@ -179,15 +179,15 @@ public class WebsocketDemo {
 //                e.printStackTrace();
 //            }
 //        	
-        }
-        else {
-        	try {
-				this.session.getBasicRemote().sendText("Target email doesn't exist");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
+//         }
+//         else {
+//         	try {
+// 				this.session.getBasicRemote().sendText("Target email doesn't exist");
+// 			} catch (IOException e) {
+// 				// TODO Auto-generated catch block
+// 				e.printStackTrace();
+// 			}
+//         }
         
         //String now = getNowTime();
         
