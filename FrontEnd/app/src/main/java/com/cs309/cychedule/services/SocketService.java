@@ -3,6 +3,7 @@ package com.cs309.cychedule.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -33,6 +34,7 @@ public class SocketService extends Service {
     private ServiceHandler serviceHandler;
     Message msg;
     SessionManager sessionManager;
+    private final IBinder binder = new MyBinder();
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -81,7 +83,6 @@ public class SocketService extends Service {
         msg = serviceHandler.obtainMessage();
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
-
 //        AsyncHttpClient.getDefaultInstance().websocket("wss://dev.hanzec.com/websocket/1",
 //                "my-protocol",
 //                new AsyncHttpClient.WebSocketConnectCallback() {
@@ -112,13 +113,12 @@ public class SocketService extends Service {
 //        });
         try {
             Log.d("Socket:", "Trying socket");
+            String email = sessionManager.getUserInfo().get("email");
             client = new WebSocketClient(new URI(
-                    "wss://dev.hanzec.com/websocket")) {
+                    "wss://dev.hanzec.com/websocket/" + email)) {
 
                 @Override
                 public void onOpen(ServerHandshake handshake) {
-                    String email = sessionManager.getUserInfo().get("email");
-                    send(email);
                     Log.d("OPEN", "WebSocket is connecting");
                 }
 
@@ -149,12 +149,12 @@ public class SocketService extends Service {
         }
         client.connect();
         // If we get killed, after returning from here, restart
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
     }
 
     @Override
@@ -162,6 +162,13 @@ public class SocketService extends Service {
         super.onDestroy();
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
         stopSelf(msg.arg1);
+    }
+
+    public class MyBinder extends android.os.Binder {
+        public SocketService getService(){
+            return SocketService.this;
+        }
+
     }
 
     public void sendMessages(String s)

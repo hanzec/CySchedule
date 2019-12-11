@@ -62,26 +62,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     
     private static String URL_INFO = "https://dev.hanzec.com/api/v1/user/";
     SessionManager sessionManager;
-    SocketService socketService;
+    private SocketService socketService;
     private AppBarConfiguration mAppBarConfiguration;
     private String output_dest;
     private String output_text;
     static String userName;
     static String email;
-    
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
-        socketService = new SocketService();
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        getBaseContext();
-        
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +89,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(alarm);
             }
         });
-        
+
+        final Intent intent = new Intent(this, SocketService.class);
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ImageView _avator = headerView.findViewById(R.id.nav_header_avatar);
         final TextView _name = headerView.findViewById(R.id.nav_header_name);
         final TextView _email = headerView.findViewById(R.id.nav_header_email);
-        
+
         final RequestQueue requestQueue = Singleton.getInstance(this).getRequestQueue();
         //RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.start();
@@ -133,14 +135,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
                             Map sr = serverResponse.getResponseBody();
-                            if (serverResponse.isSuccess())
-                            {
-                                userName = (String) sr.get("username");
-                                email = (String) sr.get("email");
-                                _name.setText(userName);
-                                _email.setText(email);
-                                sessionManager.storeInfo(userName, email);
-                            }
+
+                            userName = (String) sr.get("username");
+                            email = (String) sr.get("email");
+                            _name.setText(userName);
+                            _email.setText(email);
+                            sessionManager.storeInfo(userName, email);
                         }
                         catch (Exception e)
                         {
@@ -261,7 +261,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     
     private void outputDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        
+
+
         builder.setTitle("Send MSG");
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -285,7 +286,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 output_dest = input_dest.getText().toString();
                 output_text = input_text.getText().toString();
                 toast("To: "+output_dest+"\n"+output_text);
-                startService(new Intent(getBaseContext(), SocketService.class));
                 socketService.sendMessages(output_dest + "|" + output_text);
             }
         });
@@ -297,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         builder.show();
     }
+
     private void logoutDiag() {
 //        final ProgressDialog dialog = new ProgressDialog(this);
 //        dialog.setCancelable(false);//是否能背后退取消
@@ -382,15 +383,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dia.show();
     }
 
-    // Method to start the service
-    public void startService(View view) {
-        startService(new Intent(getBaseContext(), SocketService.class));
-    }
+//    // Method to start the service
+//    public void startService(View view) {
+//        startService(new Intent(getBaseContext(), SocketService.class));
+//    }
+//
+//    // Method to stop the service
+//    public void stopService(View view) {
+//        stopService(new Intent(getBaseContext(), SocketService.class));
+//    }
 
-    // Method to stop the service
-    public void stopService(View view) {
-        stopService(new Intent(getBaseContext(), SocketService.class));
-    }
-    
+    ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            SocketService.MyBinder myBinder = (SocketService.MyBinder) service;
+            socketService = myBinder.getService();
+        }
+    };
 }
 
