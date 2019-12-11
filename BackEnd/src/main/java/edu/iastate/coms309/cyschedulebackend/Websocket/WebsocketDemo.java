@@ -63,7 +63,7 @@ public class WebsocketDemo {
         
         userId = email;
         webSocketSet.put(userId, session);
-        System.out.println(eamil + " has join the server");
+        System.out.println(email + " has join the server");
 //        try {
 //        	session.getBasicRemote().sendText(userId);
 //        	webSocketSet.forEach((K,V) ->{
