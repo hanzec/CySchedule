@@ -47,8 +47,6 @@ public class EventThisWeekRecyclerAdapter extends RecyclerView.Adapter<EventThis
     private final int VIEW_TYPE_ITEM = 1;
     private final int VIEW_TYPE_HEADER = 0;
     
-
-    
     EventThisWeekRecyclerAdapter(ArrayList<STDevent> eventList) {
     	if(eventList.size()==0)
 		    this.mockEvents = generateMockEvents();

@@ -68,7 +68,7 @@ public class HomeFragment extends Fragment {
 	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
 	private ArrayList<STDevent> eventList;
 	private ArrayList<HomeRecyclerAdapter.HomeData> homeData;
-private int counter = 1;
+	private int counter = 1;
 	private HomeViewModel homeViewModel;
 	public RecyclerView recyclerView;
 	private boolean isLoading = false;
