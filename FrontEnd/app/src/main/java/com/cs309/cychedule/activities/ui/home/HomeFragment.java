@@ -64,14 +64,14 @@ import io.jsonwebtoken.security.Keys;
  */
 public class HomeFragment extends Fragment {
 	
-	SessionManager sessionManager;
+	private SessionManager sessionManager;
 	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
 	private ArrayList<STDevent> eventList;
 	private ArrayList<HomeRecyclerAdapter.Alarm> serverAlarmList = new ArrayList<>();
 	private ArrayList<HomeRecyclerAdapter.HomeData> homeData;
 	private int counter = 1;
 	private HomeViewModel homeViewModel;
-	public RecyclerView recyclerView;
+	private RecyclerView recyclerView;
 	private boolean isLoading = false;
 	private static String events;
 	private HomeRecyclerAdapter adapter;
@@ -159,11 +159,11 @@ public class HomeFragment extends Fragment {
 									serverAlarmList = new ArrayList<>();
 									for (Object entry : responseBody.values()) {
 										Map<String, Object> event = (Map<String, Object>) entry;
-										if(event.get("name").equals("Days Counter")){
+										if (event.get("name").equals("Days Counter")) {
 											String description = event.get("description").toString();
-											String days = String.valueOf((int)(Math.random()*10));
+											String days = String.valueOf((int) (Math.random()*10));
 											serverAlarmList.add(new HomeRecyclerAdapter.Alarm(days
-													+" Days Left",
+													+ " Days Left",
 													true,
 													days + description));
 										}
@@ -175,7 +175,7 @@ public class HomeFragment extends Fragment {
 										}
 									}
 									serverAlarmList.add((new HomeRecyclerAdapter.Alarm(233
-											+" Days Left",
+											+ " Days Left",
 											true,
 											233 + "demo")));
 									Collections.reverse(serverEventList);
@@ -230,17 +230,30 @@ public class HomeFragment extends Fragment {
 //								serverEventList.add(new STDevent(""+counter+counter+counter,
 //										""+counter+counter+counter,""+counter+counter+counter));
 //							}
+							serverAlarmList = new ArrayList<>();
 							for (Object entry : responseBody.values()) {
 								Map<String, Object> event = (Map<String, Object>) entry;
-								String endTime = ((String) event.get("startTime")).substring(0, 16).replace("T", " ");
-								String location = event.get("location").toString();
-								String description = event.get("description").toString();
-								serverEventList.add(new STDevent(endTime, location, description));
+								if (event.get("name").equals("Days Counter")) {
+									String description = event.get("description").toString();
+									String days = String.valueOf((int) (Math.random()*10));
+									serverAlarmList.add(new HomeRecyclerAdapter.Alarm(days
+											+ " Days Left",
+											true,
+											days + description));
+								}
+								else {
+									String endTime = ((String) event.get("startTime")).substring(0, 16).replace("T", " ");
+									String location = event.get("location").toString();
+									String description = event.get("description").toString();
+									serverEventList.add(new STDevent(endTime, location, description));
+								}
 							}
-							counter++;
+							serverAlarmList.add((new HomeRecyclerAdapter.Alarm(233
+									+ " Days Left",
+									true,
+									233 + "demo")));
 							Collections.reverse(serverEventList);
-							setNewEventList(serverEventList, new ArrayList<HomeRecyclerAdapter.Alarm>());
-							
+							setNewEventList(serverEventList, serverAlarmList);
 						} catch (Exception e) {
 							e.printStackTrace();
 							Log.e("getServerEvents", e.toString());

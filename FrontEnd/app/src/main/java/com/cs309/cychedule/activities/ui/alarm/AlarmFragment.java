@@ -36,7 +36,7 @@ public class AlarmFragment extends Fragment {
 	private AlarmViewModel alarmViewModel;
 	
 	private Button btnAdd;
-	int hour, minute;
+	private int hour, minute;
 	
 	public View onCreateView(@NonNull LayoutInflater inflater,
 	                         ViewGroup container, Bundle savedInstanceState) {
