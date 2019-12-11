@@ -131,16 +131,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onResponse(String response) {
                         try
                         {
-                            Log.e("TAG",response);
+                            Log.e("GetUserInfo",response);
                             Gson gson = new Gson();
                             ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
                             Map sr = serverResponse.getResponseBody();
+                           
+                                userName = (String) sr.get("username");
+                                email = (String) sr.get("email");
+                                String userRole = email.equals("admin@example.com") ?
+                                        "Administrator" : "Normal User";
+                                _name.setText(userName+" -> "+userRole);
+                            Log.e("GetUserInfo",userName);
+                            Log.e("GetUserInfo",email);
+                                
+                                _email.setText(email);
+                                sessionManager.storeInfo(userName, email);
 
-                            userName = (String) sr.get("username");
-                            email = (String) sr.get("email");
-                            _name.setText(userName);
-                            _email.setText(email);
-                            sessionManager.storeInfo(userName, email);
                         }
                         catch (Exception e)
                         {

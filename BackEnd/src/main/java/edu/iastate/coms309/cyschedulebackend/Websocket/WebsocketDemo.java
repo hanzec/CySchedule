@@ -40,7 +40,7 @@ import com.google.gson.Gson;
 //import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 
-@ServerEndpoint(value="/websocket")
+@ServerEndpoint(value="/websocket/{email}")
 public class WebsocketDemo {
     
     private Logger logger = LoggerFactory.getLogger(WebsocketDemo.class);
@@ -58,10 +58,12 @@ public class WebsocketDemo {
     }
     
     @OnOpen
-    public void onOpen(String email, Session session) throws IOException{
+    public void onOpen(Session session,@PathParam("email") String email) throws IOException{
         this.session = session;
+        
         userId = email;
         webSocketSet.put(userId, session);
+        System.out.println(email + " has join the server");
 //        try {
 //        	session.getBasicRemote().sendText(userId);
 //        	webSocketSet.forEach((K,V) ->{
@@ -143,14 +145,17 @@ public class WebsocketDemo {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.debug("receive message from User {}: {}",this.userId,message);
-        this.sendToUser(message,session);
+        System.out.println("Receive message "+message);
+        if(message.contains("|")) this.sendToUser(message,session);
     }
     //for test use only now
     public void sendToUser(String message,Session session) {
+        logger.debug(message);
+        System.out.println(message);
         String sendUserno = message.split("\\|")[0];
         String sendMessage = message.split("\\|")[1];
         
-        if(accountService.existsByEmail(sendUserno)) {
+        // if(accountService.existsByEmail(sendUserno)) {
         	
 //        	try {
             	//session.getBasicRemote().sendText(sendUserno);
@@ -178,15 +183,15 @@ public class WebsocketDemo {
 //                e.printStackTrace();
 //            }
 //        	
-        }
-        else {
-        	try {
-				this.session.getBasicRemote().sendText("Target email doesn't exist");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
+//         }
+//         else {
+//         	try {
+// 				this.session.getBasicRemote().sendText("Target email doesn't exist");
+// 			} catch (IOException e) {
+// 				// TODO Auto-generated catch block
+// 				e.printStackTrace();
+// 			}
+//         }
         
         //String now = getNowTime();
         
@@ -198,6 +203,27 @@ public class WebsocketDemo {
     public void onError(Session session, Throwable error){
         logger.debug("User {} message send error",this.userId);
         error.printStackTrace();
+    }
+    
+    public void pushfromServertoUser(String email, String message) {
+    	if(accountService.existsByEmail(email)) {
+    		webSocketSet.forEach((K,V) ->{
+				if(K.equals(email)) {
+					
+					try {
+						V.getBasicRemote().sendText("ms|"+"serverpush"+"|"+message);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+    		
+    	}
+    	else {
+    		logger.debug("error when authrization, email invalid");
+    	}
+    	
     }
 
     
@@ -306,27 +332,6 @@ public class WebsocketDemo {
     	//e4.setAdminUser(user);
     	p.add(e4);
     	return p;
-    }
-    
-    public void pushfromServertoUser(String email, String message) {
-    	if(accountService.existsByEmail(email)) {
-    		webSocketSet.forEach((K,V) ->{
-				if(K.equals(email)) {
-					
-					try {
-						V.getBasicRemote().sendText("ms|"+"serverpush"+"|"+message);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
-    		
-    	}
-    	else {
-    		logger.debug("error when authrization, email invalid");
-    	}
-    	
     }
 
 }
