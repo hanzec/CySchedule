@@ -395,7 +395,7 @@ public class HomeFragment extends Fragment {
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateHomeData() {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
-		list.add(new HomeRecyclerAdapter.Event("23:33", "Header", "test TTS"));
+		list.add(new HomeRecyclerAdapter.Event("23:33", "Ames", "This is your first event, welcome!"));
 		// event this week
 		list.add(new HomeRecyclerAdapter.Event("test", "tes222t", "test"));
 		// alarm list header
