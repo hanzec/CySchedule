@@ -19,18 +19,19 @@
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <TimePicker
-        android:id="@+id/timerpicker_timer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:calendarViewShown="false"
-        android:headerBackground="@color/primary_darker"
-        android:timePickerMode="clock"
-        app:layout_constraintBottom_toTopOf="@+id/addAlarm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/timerpicker_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:layout_marginBottom="30dp"
+            android:calendarViewShown="false"
+            android:headerBackground="@color/primary_darker"
+            android:timePickerMode="clock"
+            app:layout_constraintBottom_toTopOf="@+id/addAlarm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/addAlarm"

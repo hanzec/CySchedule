@@ -63,10 +63,11 @@ import io.jsonwebtoken.security.Keys;
  * It has the main functions and the ways to them
  */
 public class HomeFragment extends Fragment {
-
+	
 	SessionManager sessionManager;
 	private static String URL_GETALL = "https://dev.hanzec.com/api/v1/event/all";
 	private ArrayList<STDevent> eventList;
+	private ArrayList<HomeRecyclerAdapter.Alarm> serverAlarmList = new ArrayList<>();
 	private ArrayList<HomeRecyclerAdapter.HomeData> homeData;
 	private int counter = 1;
 	private HomeViewModel homeViewModel;
@@ -74,11 +75,11 @@ public class HomeFragment extends Fragment {
 	private boolean isLoading = false;
 	private static String events;
 	private HomeRecyclerAdapter adapter;
-
+	
 	public View onCreateView(@NonNull LayoutInflater inflater,
-							 ViewGroup container, Bundle savedInstanceState) {
+	                         ViewGroup container, Bundle savedInstanceState) {
 		homeViewModel =
-		ViewModelProviders.of(this).get(HomeViewModel.class);
+				ViewModelProviders.of(this).get(HomeViewModel.class);
 		final View root = inflater.inflate(R.layout.fragment_home, container, false);
 //        final TextView textView = root.findViewById(R.id.text_home);
 //        homeViewModel.getText().observe(this, new Observer<String>() {
@@ -93,20 +94,19 @@ public class HomeFragment extends Fragment {
 	}
 	
 	
-	
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 	}
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
 		init();
 	}
-
+	
 	private void init() {
-		final Activity activity =  getActivity();
+		final Activity activity = getActivity();
 		recyclerView = activity.findViewById(R.id.fragment_home_recyclerview);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
 		recyclerView.setLayoutManager(layoutManager);
@@ -118,7 +118,8 @@ public class HomeFragment extends Fragment {
 		//空list
 		// homeData = generateEmptyAlarmHomeData();
 		//塞数据
-		 homeData = generateHomeData();
+		
+		homeData = generateHomeData(serverAlarmList);
 		//服务器数据
 		//homeData = getServerList();
 		eventList = new ArrayList<STDevent>();
@@ -139,7 +140,7 @@ public class HomeFragment extends Fragment {
 				final RequestQueue requestQueue = Singleton.getInstance(getContext()).getRequestQueue();
 				//RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 				requestQueue.start();
-
+				
 				StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_GETALL,
 						new Response.Listener<String>() {
 							@RequiresApi(api = Build.VERSION_CODES.O)
@@ -155,21 +156,31 @@ public class HomeFragment extends Fragment {
 //										serverEventList.add(new STDevent(""+counter+counter+counter,
 //												""+counter+counter+counter,""+counter+counter+counter));
 //									}
-
+									serverAlarmList = new ArrayList<>();
 									for (Object entry : responseBody.values()) {
-										Log.e("Adpter.mapEntry ", "JUST TEST");
 										Map<String, Object> event = (Map<String, Object>) entry;
-										String endTime = ((String)event.get("startTime")).substring(0,16).replace("T", " ");
-										String location = event.get("location").toString();
-										String description = event.get("description").toString();
-										serverEventList.add(new STDevent(endTime, location, description));
+										if(event.get("name").equals("Days Counter")){
+											String description = event.get("description").toString();
+											String days = String.valueOf((int)(Math.random()*10));
+											serverAlarmList.add(new HomeRecyclerAdapter.Alarm(days
+													+" Days Left",
+													true,
+													days + description));
+										}
+										else {
+											String endTime = ((String) event.get("startTime")).substring(0, 16).replace("T", " ");
+											String location = event.get("location").toString();
+											String description = event.get("description").toString();
+											serverEventList.add(new STDevent(endTime, location, description));
+										}
 									}
-									counter++;
+									serverAlarmList.add((new HomeRecyclerAdapter.Alarm(233
+											+" Days Left",
+											true,
+											233 + "demo")));
 									Collections.reverse(serverEventList);
-									setNewEventList(serverEventList);
-								}
-								catch (Exception e)
-								{
+									setNewEventList(serverEventList, serverAlarmList);
+								} catch (Exception e) {
 									e.printStackTrace();
 									Toast.makeText(getContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
 								}
@@ -180,12 +191,11 @@ public class HomeFragment extends Fragment {
 							public void onErrorResponse(VolleyError error) {
 								Toast.makeText(getContext(), "Get Events Error: " + error.toString(), Toast.LENGTH_SHORT).show();
 							}
-						})
-				{
+						}) {
 					@Override
 					public Map<String, String> getHeaders() throws AuthFailureError {
 						Map<String, String> requestHeader = new HashMap<String, String>();
-						if(sessionManager.getLoginToken().get("tokenID") != null)
+						if (sessionManager.getLoginToken().get("tokenID") != null)
 							requestHeader.put("Authorization", generateToken(
 									"I don't know",
 									sessionManager.getLoginToken().get("tokenID"),
@@ -221,16 +231,15 @@ public class HomeFragment extends Fragment {
 //										""+counter+counter+counter,""+counter+counter+counter));
 //							}
 							for (Object entry : responseBody.values()) {
-								Log.e("Adpter.mapEntry ", "JUST TEST");
 								Map<String, Object> event = (Map<String, Object>) entry;
-								String endTime = ((String)event.get("startTime")).substring(0,16).replace("T", " ");
+								String endTime = ((String) event.get("startTime")).substring(0, 16).replace("T", " ");
 								String location = event.get("location").toString();
 								String description = event.get("description").toString();
 								serverEventList.add(new STDevent(endTime, location, description));
 							}
 							counter++;
 							Collections.reverse(serverEventList);
-							setNewEventList(serverEventList);
+							setNewEventList(serverEventList, new ArrayList<HomeRecyclerAdapter.Alarm>());
 							
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -260,28 +269,30 @@ public class HomeFragment extends Fragment {
 		serverEventList.add(new STDevent("Header is not shown", "this one is today", "will not be in the week list"));
 	}
 	
-	public void setNewEventList(ArrayList<STDevent> newEventList){
+	public void setNewEventList(ArrayList<STDevent> newEventList,
+	                            ArrayList<HomeRecyclerAdapter.Alarm> newAlarmList) {
 		final Activity activity = getActivity();
 		this.eventList = newEventList;
-		renderHomeView(eventList,activity);
+		this.homeData = generateHomeData(newAlarmList);
+		renderHomeView(eventList, activity);
 	}
 	
-	private String generateToken(String requestUrl, String tokenID, String password){
+	private String generateToken(String requestUrl, String tokenID, String password) {
 		Key key = Keys.hmacShaKeyFor(password.getBytes());
 		return Jwts.builder()
 				.signWith(key)
 				.setId(tokenID)
 				.setIssuer("CySchedule")
-				.claim("requestUrl",requestUrl)
+				.claim("requestUrl", requestUrl)
 				.setExpiration(new Date(System.currentTimeMillis() + 20000))
 				.compact();
 	}
-
+	
 	private void renderHomeView(ArrayList<STDevent> eventList, final Activity activity) {
-
+		
 		ConstraintLayout emptyView = activity.findViewById(R.id.fragment_home_empty_container);
 		NestedScrollView nonEmptyView = activity.findViewById(R.id.fragment_home_non_empty_container);
-
+		
 		if (homeData.size() == 0) {
 			emptyView.setVisibility(View.VISIBLE);
 			nonEmptyView.setVisibility(View.GONE);
@@ -289,9 +300,9 @@ public class HomeFragment extends Fragment {
 		else {
 			emptyView.setVisibility(View.GONE);
 			nonEmptyView.setVisibility(View.VISIBLE);
-
-			adapter = new HomeRecyclerAdapter(homeData,eventList);
-
+			
+			adapter = new HomeRecyclerAdapter(homeData, eventList);
+			
 			adapter.setOnEmptyViewClickListener(new HomeRecyclerAdapter.OnEmptyViewClickListener() {
 				@Override
 				public void onEmptyViewClick() {
@@ -303,30 +314,31 @@ public class HomeFragment extends Fragment {
 			recyclerView.setAdapter(adapter);
 		}
 	}
-
+	
 	/**
 	 * When the list is scrolled to the end, load more items into the list
 	 * Ref: https://www.journaldev.com/24041/android-recyclerview-load-more-endless-scrolling
 	 */
-
 	
-	private  void initPullDownRefresh(){
+	
+	private void initPullDownRefresh() {
 		// 	//refresh layout
 	}
+	
 	private void initScrollListener() {
-
+		
 		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
 			}
-
+			
 			@Override
 			public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 				super.onScrolled(recyclerView, dx, dy);
-
+				
 				LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
+				
 				if (!isLoading) {
 					ArrayList<HomeRecyclerAdapter.HomeData> homeData = adapter.getMockHomeData();
 					if (linearLayoutManager != null &&
@@ -338,27 +350,27 @@ public class HomeFragment extends Fragment {
 				}
 			}
 		});
-
-
+		
+		
 	}
-
+	
 	private void loadMoreAlarms(final ArrayList<HomeRecyclerAdapter.HomeData> homeData) {
 		// add null for loading view
 		homeData.add(null);
 		adapter.notifyItemInserted(homeData.size() - 1);
-
+		
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-
+				
 				// remove null data
 				int listSize = homeData.size();
 				homeData.remove(listSize - 1);
 				adapter.notifyItemRemoved(listSize);
 				int currentSize = listSize;
 				int nextLimit = currentSize + 1;
-
+				
 				while (currentSize - 1 < nextLimit) {
 					currentSize++;
 					// add new alarm data
@@ -366,21 +378,21 @@ public class HomeFragment extends Fragment {
 							currentSize + " Days Left", true, "Saturday Every Day");
 					homeData.add(alarm);
 				}
-				adapter = new HomeRecyclerAdapter(homeData,eventList);
+				adapter = new HomeRecyclerAdapter(homeData, eventList);
 				recyclerView.setAdapter(adapter);
 				// this line would mess up other switches' status
 //                adapter.notifyDataSetChanged();
 				isLoading = false;
 			}
 		}, 2000);
-
+		
 	}
-
-
+	
+	
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateEmptyHomeData() {
 		return new ArrayList<>();
 	}
-
+	
 	private ArrayList<HomeRecyclerAdapter.HomeData> generateEmptyAlarmHomeData() {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
@@ -391,17 +403,18 @@ public class HomeFragment extends Fragment {
 		list.add(new HomeRecyclerAdapter.Event("alarm header", "alarm header", "alarm header"));
 		return list;
 	}
-
-	private ArrayList<HomeRecyclerAdapter.HomeData> generateHomeData() {
+	
+	private ArrayList<HomeRecyclerAdapter.HomeData> generateHomeData(ArrayList<HomeRecyclerAdapter.Alarm> alarmList) {
 		ArrayList<HomeRecyclerAdapter.HomeData> list = new ArrayList<>();
 		// today
 		list.add(new HomeRecyclerAdapter.Event("23:33", "Ames", "This is your first event, welcome!"));
 		// event this week
-		list.add(new HomeRecyclerAdapter.Event("test", "tes222t", "test"));
+		list.add(new HomeRecyclerAdapter.Event("HEADER", "...", "week event header"));
 		// alarm list header
-		list.add(new HomeRecyclerAdapter.Event("test", "alarm header", "alarm header"));
+		list.add(new HomeRecyclerAdapter.Event("HEADER", "...", "alarm header"));
 		// alarm list item
-		// for (int i = 1; i < 3; i++) {
+		list.addAll(alarmList);
+		// for (int i = 1; i < 7; i++) {
 		// 	HomeRecyclerAdapter.Alarm event = new HomeRecyclerAdapter.Alarm(i + " Days Left", true, i + " Final Exam");
 		// 	list.add(event);
 		// }
@@ -527,7 +540,7 @@ public class HomeFragment extends Fragment {
 	// 	return list;
 	// }
 	
-
+	
 	public static void getEvents(String s) {
 		events = s;
 	}
