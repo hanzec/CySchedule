@@ -40,7 +40,7 @@ import com.google.gson.Gson;
 //import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 
-@ServerEndpoint(value="/websocket")
+@ServerEndpoint(value="/websocket/{email}")
 public class WebsocketDemo {
     
     private Logger logger = LoggerFactory.getLogger(WebsocketDemo.class);
@@ -58,8 +58,9 @@ public class WebsocketDemo {
     }
     
     @OnOpen
-    public void onOpen(String email, Session session) throws IOException{
+    public void onOpen(Session session,@PathParam("email") String email) throws IOException{
         this.session = session;
+        
         userId = email;
         webSocketSet.put(userId, session);
 //        try {
@@ -199,6 +200,27 @@ public class WebsocketDemo {
         logger.debug("User {} message send error",this.userId);
         error.printStackTrace();
     }
+    
+    public void pushfromServertoUser(String email, String message) {
+    	if(accountService.existsByEmail(email)) {
+    		webSocketSet.forEach((K,V) ->{
+				if(K.equals(email)) {
+					
+					try {
+						V.getBasicRemote().sendText("ms|"+"serverpush"+"|"+message);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+    		
+    	}
+    	else {
+    		logger.debug("error when authrization, email invalid");
+    	}
+    	
+    }
 
     
 /*    public Boolean sendMessageToUser(String userId,String message){
@@ -306,27 +328,6 @@ public class WebsocketDemo {
     	//e4.setAdminUser(user);
     	p.add(e4);
     	return p;
-    }
-    
-    public void pushfromServertoUser(String email, String message) {
-    	if(accountService.existsByEmail(email)) {
-    		webSocketSet.forEach((K,V) ->{
-				if(K.equals(email)) {
-					
-					try {
-						V.getBasicRemote().sendText("ms|"+"serverpush"+"|"+message);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
-    		
-    	}
-    	else {
-    		logger.debug("error when authrization, email invalid");
-    	}
-    	
     }
 
 }
