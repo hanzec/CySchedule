@@ -1,4 +1,4 @@
-# YT_4
+# CySchedule-Server
 See details [**@ PROJECT WIki**](https://git.linux.iastate.edu/cs309/fall2019/yt_4/wikis/home)
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)

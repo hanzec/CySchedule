@@ -3,6 +3,7 @@ package edu.iastate.coms309.cyschedulebackend.configuration;
 import com.google.gson.*;
 import edu.iastate.coms309.cyschedulebackend.Service.EventService;
 import edu.iastate.coms309.cyschedulebackend.Utils.SpringfoxJsonToGsonAdapter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import java.time.ZonedDateTime;
 @EnableCaching
 @EnableSwagger2
 @EnableTransactionManagement
+@EnableConfigurationProperties
 public class SpringBootConfiguration {
 
     @Bean

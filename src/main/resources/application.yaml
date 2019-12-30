@@ -1,0 +1,58 @@
+account:
+  security:
+    PBKDF2Count: 1000
+    saltLength: 8
+    token:
+      accesstoken:
+        expiretime: 7200000
+      authtoken:
+        expiretime: 7200000
+
+server:
+  address: 127.0.0.1
+
+spring:
+  datasource:
+    username: ENC(Y+AckWP0ledFJqDAMwkcouyL3Hb7p3P+YdrR8S9Rtog=)
+    password: ENC(UoqLe6BwoqIHVWs4pOSRsZ/zJwX5PncNGEd3mfVH8VM=)
+    url: ENC(9EtVXAd4BeSMfNbFigY43T36INdoFOEknRG4eiBir6+hYr5qRJkWfKdsGybNaOIdkrl3vobJMa9TTP8ivhmuBS+x9U4hInEYBQhmsji/2eYLXF5bRRuhDEJbHlwXzsA6OmJp0HtGMXE4zPPvVukyGCa5zIYQQWbqNmd1lby60l4KcdMSHnL4Fw==)
+
+  http:
+    converters:
+      preferred-json-mapper: gson
+
+  jpa:
+    open-in-view: true
+    properties:
+      hibernate:
+        cache:
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+          use_query_cache: true
+          use_second_level_cache: true
+        enable_lazy_load_no_trans: true
+        generate_statistics: true
+        hbm2ddl:
+          auto: update
+        hikari:
+          connectionTimeout: 20000
+          maximumPoolSize: 300000
+          minimumIdle: 10
+      javax:
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE
+
+  mvc:
+    static-path-pattern: /docs/**£¬
+
+  resources:
+    static-locations: classpath:/static/docs,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+
+storage:
+  accessKey: KC5CTIPOYYHPB5RLY23O
+  accessSecret: I0Mfg8ENlp+PzfY/ztZN0Bpm+ZSUHS9hnrvLQ0B8p9w
+  bucketName: cyschedule-test
+  region: nyc3
+  s3EndPoint: nyc3.digitaloceanspaces.com
+  service: s3

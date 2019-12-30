@@ -35,7 +35,4 @@ public class EventServiceTest {
 
         eventService.updateEvent(eventRequest,anyString());
     }
-
-
-
 }

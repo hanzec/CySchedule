@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "account.security.PBKDF2Count",
+      "type": "java.lang.String",
+      "description": "Description for account.security.PBKDF2Count."
+    },
+    {
+      "name": "account.security.token.accesstoken.expiretime",
+      "type": "java.lang.String",
+      "description": "Description for account.security.token.accesstoken.expiretime."
+    },
+    {
+      "name": "account.security.token.authtoken.expiretime",
+      "type": "java.lang.String",
+      "description": "Description for account.security.token.authtoken.expiretime."
+    },
+    {
+      "name": "account.security.saltLength",
+      "type": "java.lang.String",
+      "description": "Description for account.security.saltLength."
+    }
+  ] }
