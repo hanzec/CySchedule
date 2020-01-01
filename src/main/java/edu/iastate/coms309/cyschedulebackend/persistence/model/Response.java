@@ -20,8 +20,6 @@ public class Response {
     @Expose
     String path;
 
-    @Expose
-    String status;
 
     @Expose
     String message;
@@ -36,39 +34,33 @@ public class Response {
     private Map<String,Object> responseBody = new HashMap<>();
 
     public Response OK(){
-        this.status = "200";
         success = Boolean.TRUE;
         return this;
     }
 
     public Response Created(){
-        this.status = "201";
         success = Boolean.TRUE;
         return this;
     }
 
     public Response NotFound(){
-        this.status = "404";
         success = Boolean.FALSE;
 
         return this;
     }
 
     public Response Forbidden(){
-        this.status = "403";
         success = Boolean.FALSE;
         return this;
     }
 
     public Response noContent(){
-        this.status = "204";
         success = Boolean.TRUE;
 
         return this;
     }
 
     public Response Unauthorized(){
-        this.status = "401";
         success = Boolean.FALSE;
 
         return this;
@@ -76,7 +68,6 @@ public class Response {
 
     public Response BadRequested(String msg){
         message = msg;
-        this.status = "401";
         success = Boolean.FALSE;
 
         return this;

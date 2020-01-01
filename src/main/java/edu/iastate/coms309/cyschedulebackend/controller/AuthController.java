@@ -1,25 +1,19 @@
 package edu.iastate.coms309.cyschedulebackend.controller;
 
-import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.UserToken;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.LoginRequest;
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
-import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.TokenRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
 import edu.iastate.coms309.cyschedulebackend.Service.AccountService;
 import edu.iastate.coms309.cyschedulebackend.Service.UserTokenService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.Response;
@@ -54,7 +48,7 @@ public class AuthController {
         logger.debug("User [ " + loginRequest.getEmail() + " ] is permit to login");
         return new Response()
                 .OK()
-                .addResponse("loginToken",userTokenService.creat(userCredential))
+                .addResponse("loginToken",userTokenService.newToken(userCredential))
                 .send(request.getRequestURI());
     }
 

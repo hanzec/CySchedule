@@ -3,10 +3,8 @@ package edu.iastate.coms309.cyschedulebackend.Service;
 
 import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
-import edu.iastate.coms309.cyschedulebackend.exception.user.UserAvatarNotFoundException;
-import edu.iastate.coms309.cyschedulebackend.persistence.dao.FileManagementService;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.FileObject;
-import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.permission.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserInformation;
 
@@ -16,11 +14,8 @@ import edu.iastate.coms309.cyschedulebackend.persistence.repository.UserInformat
 import edu.iastate.coms309.cyschedulebackend.persistence.requestModel.RegisterRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,10 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.PushBuilder;
-import java.io.File;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Service

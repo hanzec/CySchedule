@@ -3,8 +3,9 @@ package edu.iastate.coms309.cyschedulebackend.exception;
 import com.google.gson.Gson;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.EmailAlreadyExistException;
 import edu.iastate.coms309.cyschedulebackend.exception.auth.PasswordNotMatchException;
-import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenAlreadyExpireException;
-import edu.iastate.coms309.cyschedulebackend.exception.auth.TokenVerifyFaildException;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.request.RequestAlreadyExpireException;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.request.RequestVerifyFaildException;
+import edu.iastate.coms309.cyschedulebackend.exception.auth.token.TokenNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.exception.event.EventNotFoundException;
 import edu.iastate.coms309.cyschedulebackend.exception.event.NotPrimitiveException;
 import edu.iastate.coms309.cyschedulebackend.exception.io.FileUploadFailedException;
@@ -30,15 +31,18 @@ import java.util.List;
 @ControllerAdvice
 public class ExceptionHandlers {
 
-    @Autowired
-    Gson gson;
+    private final Gson gson;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    public ExceptionHandlers(Gson gson) {
+        this.gson = gson;
+    }
+
     @ExceptionHandler({
-            TokenVerifyFaildException.class,
+            RequestVerifyFaildException.class,
             EmailAlreadyExistException.class,
-            TokenAlreadyExpireException.class,
+            RequestAlreadyExpireException.class,
             MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void GenericBadRequestException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -48,6 +52,7 @@ public class ExceptionHandlers {
 
     @ExceptionHandler({
             EventNotFoundException.class,
+            TokenNotFoundException.class,
             UsernameNotFoundException.class,
             UserAvatarNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)

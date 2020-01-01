@@ -1,5 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.model;
 
+import edu.iastate.coms309.cyschedulebackend.persistence.model.permission.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Set;
@@ -24,6 +25,10 @@ public class UserCredential implements org.springframework.security.core.userdet
 
     private String password;
 
+    private boolean lockStatus = true;
+
+    private boolean activeStatus = false;
+
     @Column(
             name = "user_id",
             updatable = false,
@@ -37,7 +42,7 @@ public class UserCredential implements org.springframework.security.core.userdet
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
-    private Set<Permission> permissions ;
+    private Set<UserRole> permissions;
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(
@@ -47,13 +52,6 @@ public class UserCredential implements org.springframework.security.core.userdet
     )
     private UserInformation userInformation;
 
-    @OneToMany(
-            mappedBy = "owner",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    private Set<UserToken> userLoginTokens;
-
     @Override
     public String getUsername() { return email; }
 
@@ -61,9 +59,7 @@ public class UserCredential implements org.springframework.security.core.userdet
     public String getPassword() { return password; }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return permissions;
-    }
+    public Collection<? extends GrantedAuthority> getAuthorities() { return permissions;}
 
     @Override
     public boolean isAccountNonExpired() {

@@ -1,6 +1,6 @@
 package edu.iastate.coms309.cyschedulebackend.persistence.repository;
 
-import edu.iastate.coms309.cyschedulebackend.persistence.model.Permission;
+import edu.iastate.coms309.cyschedulebackend.persistence.model.permission.Permission;
 import edu.iastate.coms309.cyschedulebackend.persistence.model.UserCredential;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -17,6 +17,19 @@ spring:
     password: ENC(UoqLe6BwoqIHVWs4pOSRsZ/zJwX5PncNGEd3mfVH8VM=)
     url: ENC(9EtVXAd4BeSMfNbFigY43T36INdoFOEknRG4eiBir6+hYr5qRJkWfKdsGybNaOIdkrl3vobJMa9TTP8ivhmuBS+x9U4hInEYBQhmsji/2eYLXF5bRRuhDEJbHlwXzsA6OmJp0HtGMXE4zPPvVukyGCa5zIYQQWbqNmd1lby60l4KcdMSHnL4Fw==)
 
+  redis:
+    port: 25061
+    database: 0
+    password: ENC(HPUwN1KLkXjL3uloi4Afs1EdRNjYeh+k6gRHqRK0a2U=)
+    host: ENC(CUfUmji12EruvE4kKWYABW6lJJn6mFNhv/uEP+JsnsLdV1RvYawMp48fLkqcIGrUlFUBlWSUQaWACIs/ZxIndvhSDgjWPW9I0F0jLzlpYSA=)
+    lettuce:
+      pool:
+        min-idle: 0
+        max-wait: -1
+        max-idle: 10
+        max-active: 10
+
+
   http:
     converters:
       preferred-json-mapper: gson
