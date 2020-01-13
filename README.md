@@ -1,7 +1,9 @@
 # CySchedule-Server
 See details [**@ PROJECT WIki**](https://git.linux.iastate.edu/cs309/fall2019/yt_4/wikis/home)
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+[![coverage report](https://git.hanzec.com/hanzech/cyschedule/badges/master/coverage.svg)](https://git.hanzec.com/hanzech/cyschedule/commits/master)
+[![pipeline status](https://git.hanzec.com/hanzech/cyschedule/badges/master/pipeline.svg)](https://git.hanzec.com/hanzech/cyschedule/commits/master)
+
 YT_4 is ... wait, it's a what?
   > Dashboard
   > Calendar
